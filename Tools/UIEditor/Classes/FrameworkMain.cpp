@@ -66,6 +66,7 @@ void FrameworkDidLaunched()
 	Sprite::SetSpriteClipping(false);
 
 	Core::Instance()->SetOptions(appOptions);
+    Core::Instance()->EnableReloadResourceOnResize(false);
 
 	GameCore * core = new GameCore();
 	Core::SetApplicationCore(core);
