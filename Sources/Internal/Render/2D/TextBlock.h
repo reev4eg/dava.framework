@@ -98,6 +98,7 @@ protected:
 	~TextBlock();
 	
 	void Prepare();
+	void Prepare2();
 	void PrepareInternal(BaseObject * caller, void * param, void *callerData);
 	
 	void DrawToBuffer(Font *font, int16 *buf);
@@ -111,7 +112,6 @@ protected:
     Vector2 cacheFinalSize;
 
 	float32 originalFontSize;
-    
 	int32 cacheDx;
 	int32 cacheDy;
 	int32 cacheW;
