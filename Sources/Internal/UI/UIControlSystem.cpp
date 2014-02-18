@@ -262,7 +262,6 @@ void UIControlSystem::ProcessScreenLogic()
 
 void UIControlSystem::Update()
 {
-    updateCounter = 0;
 	ProcessScreenLogic();
 	
 	float32 timeElapsed = SystemTimer::FrameDelta();
@@ -278,12 +277,10 @@ void UIControlSystem::Update()
 	}
 	
 	SafeRelease(prevScreen);
-    //Logger::Info("UIControlSystem::updates: %d", updateCounter);
 }
 	
 void UIControlSystem::Draw()
 {
-    drawCounter = 0;
 //	if(currentScreen && (!currentPopup || currentPopup->isTransparent))
 	if (currentScreen)
 	{
@@ -297,7 +294,6 @@ void UIControlSystem::Draw()
 	{
 		frameSkip--;
 	}
-    //Logger::Info("UIControlSystem::draws: %d", drawCounter);
 }
 	
 void UIControlSystem::SwitchInputToControl(int32 eventID, UIControl *targetControl)
@@ -336,7 +332,6 @@ void UIControlSystem::SwitchInputToControl(int32 eventID, UIControl *targetContr
 	
 void UIControlSystem::OnInput(int32 touchType, const Vector<UIEvent> &activeInputs, const Vector<UIEvent> &allInputs, bool fromReplay/* = false*/)
 {
-    inputCounter = 0;
 	if(Replay::IsPlayback() && !fromReplay) return;
 	if (lockInputCounter > 0)return;
 
@@ -509,7 +504,6 @@ void UIControlSystem::OnInput(int32 touchType, const Vector<UIEvent> &activeInpu
 			}
 		}
 	}
-    //Logger::Info("UIControlSystem::inputs: %d", inputCounter);
 }
 
 void UIControlSystem::OnInput(UIEvent * event)
