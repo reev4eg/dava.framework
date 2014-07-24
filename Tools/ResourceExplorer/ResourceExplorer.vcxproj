@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugQt|Win32">
+      <Configuration>DebugQt</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseQt|Win32">
+      <Configuration>ReleaseQt</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Classes\FrameworkMain.cpp" />
+    <ClCompile Include="Classes\main.cpp" />
+    <ClCompile Include="Classes\UI\mainwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\FrameworkMain_moc.cpp" />
+    <ClCompile Include="GeneratedFiles\UI\mainwindow_moc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Classes\FrameworkMain.h" />
+    <ClInclude Include="Classes\UI\mainwindow.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">"$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\moc.exe"   -D_WINDOWS -DWIN32 -DQT_LARGEFILE_SUPPORT -DDAVA_DEBUG -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_DEBUG -D_CRT_SECURE_NO_DEPRECATE -DDAVA_QT -DDAVA_SAVE_TO_YAML -D_UNICODE -DUNICODE  "-I." "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtCore" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtNetwork" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtGui" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtOpenGL" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\ActiveQt" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\mkspecs\default" "-Ic:\Program Files\OpenAL 1.1 SDK\include" "-Ic:\Program Files (x86)\OpenAL 1.1 SDK\include" "-I$(DXSDK_DIR)\include" "-I.\..\..\Sources\Internal" "-I.\..\..\Sources\External" "-I.\..\..\Libs\include" "-I.\..\..\Libs\glew\include" "-I.\Classes" "-I.\Classes\Helpers" "-I.\Classes\Models" "-I.\Classes\Controllers" "-I.\Classes\Metadata" "-I.\Classes\Commands" "-I.\Classes\UI" "-I.\Classes\UI\Dialogs" "-I.\Classes\UI\PropertyGridWidgets" "-I$Configuration" "-I.\GeneratedFiles" "-I." "-I." "-I." "-I." "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">"$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\moc.exe"   -D_WINDOWS -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DNDEBUG -D_CRT_SECURE_NO_DEPRECATE -DDAVA_QT -DDAVA_SAVE_TO_YAML  "-I." "-I.\..\..\Sources\Internal" "-I.\..\..\Sources\External" "-I.\..\..\Libs\glew\Include" "-I.\..\..\Libs\include" "-I.\Classes" "-I.\Classes\Commands" "-I.\Classes\Controllers" "-I.\Classes\Helpers" "-I.\Classes\Metadata" "-I.\Classes\Models" "-I.\Classes\UI" "-I.\Classes\UI\Dialogs" "-I.\Classes\UI\PropertyGridWidgets" "-I$(DXSDK_DIR)\include" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtCore" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtNetwork" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtGui" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\QtOpenGL" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\include\ActiveQt" "-I$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\mkspecs\default" "-Ic:\Program Files\OpenAL 1.1 SDK\include" "-Ic:\Program Files (x86)\OpenAL 1.1 SDK\include" "-I$(Configuration)\." "-I.\GeneratedFiles" "-I." "-I." "-I." "-I." "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\mainwindow.ui">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+      </AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">"$(QT_HOME)\Desktop\Qt\4.8.1\msvc2010\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{39D57C77-6E88-35CC-A5C4-41750E5A8CE4}</ProjectGuid>
+    <RootNamespace>ResourceEditorQtVS2010</RootNamespace>
+    <Keyword>Qt4VSv1.0</Keyword>
+    <ProjectName>ResourceExplorer</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'" Label="Configuration">
+    <OutputDirectory>debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>ResourceEditorQtVS2010</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'" Label="Configuration">
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>ResourceEditorQtVS2010</PrimaryOutput>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">$(ProjectName)</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">true</IgnoreImportLibrary>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">$(ProjectName)</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">false</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">false</LinkIncremental>
+    <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">PreBuildEvent</CustomBuildBeforeTargets>
+    <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">PreBuildEvent</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../libs/imagemagick-6.7.4-windows/magick++/lib/magick++;../../libs/imagemagick-6.7.4-windows/magick++/lib;../../Libs/ImageMagick-6.7.4-Windows;$(QT_HOME)\include\QtCore;$(QT_HOME)\include\QtNetwork;$(QT_HOME)\include\QtGui;$(QT_HOME)\include\QtOpenGL;$(QT_HOME)\include\ActiveQt;$(QT_HOME)\include;$(QT_HOME)\mkspecs\default;c:\Program Files\OpenAL 1.1 SDK\include;c:\Program Files (x86)\OpenAL 1.1 SDK\include;$(DXSDK_DIR)/include;..\..\Sources\Internal;..\..\Sources\External;..\..\Sources\Tools;../../Libs/include;..\..\Libs\glew\include;.\Classes;.\Classes\ResourcePacker;.\Classes\Helpers;.\Classes\Models;.\Classes\Controllers;.\Classes\Metadata;.\Classes\Commands;.\Classes\UI;.\Classes\UI\Dialogs;.\Classes\UI\PropertyGridWidgets;.;$Configuration;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;QT_LARGEFILE_SUPPORT;DAVA_DEBUG;QT_DLL;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;_CRT_SECURE_NO_DEPRECATE;DAVA_QT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>
+      </RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;Win32Framework.lib;glew32.lib;$(DXSDK_DIR)/Lib/x86/DxErr.lib;$(DXSDK_DIR)/Lib/x86/d3d9.lib;shfolder.lib;Shell32.lib;qtmaind.lib;QtOpenGLd4.lib;QtGuid4.lib;QtNetworkd4.lib;QtCored4.lib;kernel32.lib;odbc32.lib;odbccp32.lib;ole32.lib;oleaut32.lib;winmm.lib;wsock32.lib;advapi32.lib;msvcmrtd.lib;msvcrtd.lib;CORE_DB_Magick++_.lib;CORE_DB_magick_.lib;CORE_DB_bzlib_.lib;CORE_DB_coders_.lib;CORE_DB_filters_.lib;CORE_DB_jbig_.lib;CORE_DB_jp2_.lib;CORE_DB_jpeg_.lib;CORE_DB_lcms_.lib;CORE_DB_libxml_.lib;CORE_DB_tiff_.lib;CORE_DB_ttf_.lib;CORE_DB_wand_.lib;CORE_DB_wmf_.lib;CORE_DB_xlib_.lib;CORE_DB_zlib_.lib;X11.lib;Xext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Projects\Win32Framework\FrameworkTools/DebugQt;../../Libs/ImageMagick-6.7.4-Windows/VisualMagick/lib;../../Projects\Win32Framework\DebugQt;../../Libs/ImageMagick-6.7.4-Windows/VisualMagick/bin;../../Libs/glew/lib/;../../Libs/ImageMagick-6.7.4-Windows/Magick++/lib/;$(QT_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib</IgnoreSpecificDefaultLibraries>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;DAVA_DEBUG;QT_DLL;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>$(SolutionDir)/make.bat -f MakefileQt all</Command>
+      <Message>QT generate: MOC, UI, QRC</Message>
+      <Outputs>$(SolutionDir)/alwaysrun</Outputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../Libs/ImageMagick-6.7.4-Windows;../../libs/imagemagick-6.7.4-windows/magick++/lib;../../libs/imagemagick-6.7.4-windows/magick++/lib/magick++;./../../Sources/Internal;..\..\Sources\Tools;./../../Sources/External;./../../Libs/glew/Include;./../../Libs/include;./Classes;./Classes/ResourcePacker;.\Classes\Commands;.\Classes\Controllers;.\Classes\Helpers;.\Classes\Metadata;.\Classes\Models;.\Classes\UI;.\Classes\UI\Dialogs;.\Classes\UI\PropertyGridWidgets;$(DXSDK_DIR)/include;$(QT_HOME)\include\QtCore;$(QT_HOME)\include\QtNetwork;$(QT_HOME)\include\QtGui;$(QT_HOME)\include\QtOpenGL;$(QT_HOME)\include;$(QT_HOME)\include\ActiveQt;$(QT_HOME)\mkspecs\default;.;c:\Program Files\OpenAL 1.1 SDK\include;c:\Program Files (x86)\OpenAL 1.1 SDK\include;$(Configuration);.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DAVA_QT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>
+      </RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Win32Framework.lib;kernel32.lib;user32.lib;gdi32.lib;odbc32.lib;odbccp32.lib;ole32.lib;oleaut32.lib;winmm.lib;wsock32.lib;advapi32.lib;glu32.lib;opengl32.lib;qtmain.lib;glew32.lib;$(DXSDK_DIR)/Lib/x86/DxErr.lib;$(DXSDK_DIR)/Lib/x86/d3d9.lib;shfolder.lib;Shell32.lib;QtOpenGL4.lib;QtGui4.lib;QtNetwork4.lib;QtCore4.lib;msvcmrt.lib;msvcrt.lib;CORE_RL_Magick++_.lib;CORE_RL_magick_.lib;CORE_RL_bzlib_.lib;CORE_RL_coders_.lib;CORE_RL_filters_.lib;CORE_RL_jbig_.lib;CORE_RL_jp2_.lib;CORE_RL_jpeg_.lib;CORE_RL_lcms_.lib;CORE_RL_libxml_.lib;CORE_RL_tiff_.lib;CORE_RL_ttf_.lib;CORE_RL_wand_.lib;CORE_RL_wmf_.lib;CORE_RL_xlib_.lib;CORE_RL_zlib_.lib;X11.lib;Xext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Projects/Win32Framework/FrameworkTools/ReleaseQt;$(QT_HOME)\lib;../../Projects\Win32Framework\ReleaseQt;../../Libs/glew/lib/;../../Libs/ImageMagick-6.7.4-Windows/VisualMagick/lib;../../Libs/ImageMagick-6.7.4-Windows/VisualMagick/bin;../../Libs/ImageMagick-6.7.4-Windows/Magick++/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>$(SolutionDir)/make.bat -f MakefileQt all</Command>
+      <Message>QT generate: MOC, UI, QRC</Message>
+      <Outputs>$(SolutionDir)/alwaysrun</Outputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
