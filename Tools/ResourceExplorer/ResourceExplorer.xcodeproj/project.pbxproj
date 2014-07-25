@@ -9,22 +9,20 @@
 /* Begin PBXBuildFile section */
 		020AB22C17463AA70082F336 /* libfmodevent.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 02E9E447173A3AED00C501BC /* libfmodevent.dylib */; };
 		020AB22D17463AA70082F336 /* libfmodex.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 02E9E448173A3AED00C501BC /* libfmodex.dylib */; };
-		02D69CAA16F08CEE00F3803F /* FrameworkMain_moc.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 02D69C3C16F08CED00F3803F /* FrameworkMain_moc.cpp */; };
-		02D69CB216F08CEE00F3803F /* icons_qrc.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 02D69C4516F08CED00F3803F /* icons_qrc.cpp */; };
-		02D69CDC16F08CEE00F3803F /* mainwindow_moc.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 02D69C7516F08CED00F3803F /* mainwindow_moc.cpp */; };
 		02E9E449173A3AED00C501BC /* libfmodevent.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 02E9E447173A3AED00C501BC /* libfmodevent.dylib */; };
 		02E9E44A173A3AED00C501BC /* libfmodex.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 02E9E448173A3AED00C501BC /* libfmodex.dylib */; };
 		0C6D4628EE0B0D1479A20551 /* AGL.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = C6766F86E49E9C8701C8E637 /* AGL.framework */; };
 		17183C3F18C8830000491E66 /* AVFoundation.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 17183C3E18C8830000491E66 /* AVFoundation.framework */; };
 		17183C4118C8833A00491E66 /* CoreMedia.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 17183C4018C8833A00491E66 /* CoreMedia.framework */; };
-		17B0617518892C1500FD8007 /* WebKit.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 17B0617418892C1500FD8007 /* WebKit.framework */; };
 		5C190C9F15AEC6F9005731F8 /* Data in Bundle Resources */ = {isa = PBXBuildFile; fileRef = 5C190C9E15AEC6F9005731F8 /* Data */; };
 		5CCC10E715B460BF00DA83EB /* libz.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 5CCC10E615B460BF00DA83EB /* libz.dylib */; };
 		5CCC10E915B460C900DA83EB /* libbz2.dylib in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 5CCC10E815B460C900DA83EB /* libbz2.dylib */; };
+		74DCF0FD19823F9600A02BFA /* FrameworkMain_moc.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 74DCF0FC19823F9600A02BFA /* FrameworkMain_moc.cpp */; };
+		74DCF0FF19823FAD00A02BFA /* mainwindow_moc.cpp in Build Sources */ = {isa = PBXBuildFile; fileRef = 74DCF0FE19823FAD00A02BFA /* mainwindow_moc.cpp */; };
+		74DCF10B198250A900A02BFA /* WebKit.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 74DCF10A198250A900A02BFA /* WebKit.framework */; };
 		77BDEC8E56A833D3814BC614 /* QtNetwork.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 82153068A36B6EA46DD82A06 /* QtNetwork.framework */; };
 		77C663449ABEE93BEE5F2771 /* Cocoa.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 336CB11D929F5E35FA69020F /* Cocoa.framework */; };
 		A51FBC516D952C0C5AB72EA1 /* QtGui.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 9B8EE51E126C761F3F797428 /* QtGui.framework */; };
-		A641262F17D0C98B004D3C5E /* libFrameworkToolsQt.a in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = A641262C17D0C97C004D3C5E /* libFrameworkToolsQt.a */; };
 		A93E34BD17283146D6E95207 /* QtCore.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 419FFB6CDDEB353FF0A4F469 /* QtCore.framework */; };
 		B08AE0866171E2B79EF2D621 /* QtOpenGL.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = 6AB05FD3B5F9D1E725443AAE /* QtOpenGL.framework */; };
 		BCEF71E1EDFB18DA77DC750B /* OpenGL.framework in Frameworks & Libraries */ = {isa = PBXBuildFile; fileRef = DA18A6831232F53228631AD1 /* OpenGL.framework */; };
@@ -82,9 +80,6 @@
 
 /* Begin PBXFileReference section */
 		00BD80432B2C7B49A27A3DC5 /* ResourceExplorer.pro */ = {isa = PBXFileReference; lastKnownFileType = text; path = ResourceExplorer.pro; sourceTree = "<group>"; };
-		02D69C3C16F08CED00F3803F /* FrameworkMain_moc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameworkMain_moc.cpp; sourceTree = "<group>"; };
-		02D69C4516F08CED00F3803F /* icons_qrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = icons_qrc.cpp; sourceTree = "<group>"; };
-		02D69C7516F08CED00F3803F /* mainwindow_moc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainwindow_moc.cpp; sourceTree = "<group>"; };
 		02D69C9416F08CEE00F3803F /* ui_mainwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui_mainwindow.h; sourceTree = "<group>"; };
 		02E9E447173A3AED00C501BC /* libfmodevent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodevent.dylib; path = ../../Libs/fmod/lib/macos/libfmodevent.dylib; sourceTree = "<group>"; };
 		02E9E448173A3AED00C501BC /* libfmodex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodex.dylib; path = ../../Libs/fmod/lib/macos/libfmodex.dylib; sourceTree = "<group>"; };
@@ -104,6 +99,9 @@
 		5CCC10E815B460C900DA83EB /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		6AB05FD3B5F9D1E725443AAE /* QtOpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtOpenGL.framework; path = ../../../../QtSDK/Desktop/Qt/4.8.1/gcc/lib/QtOpenGL.framework; sourceTree = "<group>"; };
 		6C21256244E578A9DE07EE60 /* xml_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = xml_macos; path = ../dava.framework/Libs/libs/libxml_macos.a; sourceTree = "<group>"; };
+		74DCF0FC19823F9600A02BFA /* FrameworkMain_moc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameworkMain_moc.cpp; sourceTree = "<group>"; };
+		74DCF0FE19823FAD00A02BFA /* mainwindow_moc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mainwindow_moc.cpp; path = UI/mainwindow_moc.cpp; sourceTree = "<group>"; };
+		74DCF10A198250A900A02BFA /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		8157E7438190A1EEF4A4D363 /* mongodb_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = mongodb_macos; path = ../dava.framework/Libs/libs/libmongodb_macos.a; sourceTree = "<group>"; };
 		8159B90213E2E13CB65C75B4 /* vorbis_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = vorbis_macos; path = ../dava.framework/Libs/oggvorbis/lib/libvorbis_macos.a; sourceTree = "<group>"; };
 		81BBDA0F1849B4A35FAB7D00 /* freetype_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = freetype_macos; path = ../dava.framework/Libs/freetype/lib/libfreetype_macos.a; sourceTree = "<group>"; };
@@ -115,12 +113,10 @@
 		C15C2FE5162AD6E400818631 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C15C2FEB162AD6E400818631 /* mainwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainwindow.cpp; sourceTree = "<group>"; };
 		C15C2FEC162AD6E400818631 /* mainwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainwindow.h; sourceTree = "<group>"; };
-		C15C2FF4162AD71C00818631 /* davaglwidget.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = davaglwidget.ui; sourceTree = "<group>"; };
 		C15C2FF5162AD71C00818631 /* mainwindow.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mainwindow.ui; sourceTree = "<group>"; };
 		C6766F86E49E9C8701C8E637 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		CBE0854C74E7E8A8F67923BE /* yaml_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = yaml_macos; path = ../dava.framework/Libs/libs/libyaml_macos.a; sourceTree = "<group>"; };
 		DA18A6831232F53228631AD1 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		E8FFFF9D16FB17A500E315AE /* ui_spinnerpropertygridwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui_spinnerpropertygridwidget.h; sourceTree = "<group>"; };
 		F7C12D3D2FE75302773F34BB /* vorbisfile_macos */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = vorbisfile_macos; path = ../dava.framework/Libs/oggvorbis/lib/libvorbisfile_macos.a; sourceTree = "<group>"; };
 		FAC1F4E071D49CE850E70770 /* Data/ */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data/; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,13 +131,14 @@
 				C107916716D78CCD0081E58C /* libFrameworkQt.a in Frameworks & Libraries */,
 				5CCC10E915B460C900DA83EB /* libbz2.dylib in Frameworks & Libraries */,
 				5CCC10E715B460BF00DA83EB /* libz.dylib in Frameworks & Libraries */,
+				74DCF10B198250A900A02BFA /* WebKit.framework in Frameworks & Libraries */,
 				B08AE0866171E2B79EF2D621 /* QtOpenGL.framework in Frameworks & Libraries */,
 				A51FBC516D952C0C5AB72EA1 /* QtGui.framework in Frameworks & Libraries */,
 				A93E34BD17283146D6E95207 /* QtCore.framework in Frameworks & Libraries */,
 				77BDEC8E56A833D3814BC614 /* QtNetwork.framework in Frameworks & Libraries */,
 				BCEF71E1EDFB18DA77DC750B /* OpenGL.framework in Frameworks & Libraries */,
 				0C6D4628EE0B0D1479A20551 /* AGL.framework in Frameworks & Libraries */,
-				17B0617518892C1500FD8007 /* WebKit.framework in Frameworks & Libraries */,
+				17B0617518892C1500FD8007 /* (null) in Frameworks & Libraries */,
 				17183C3F18C8830000491E66 /* AVFoundation.framework in Frameworks & Libraries */,
 				77C663449ABEE93BEE5F2771 /* Cocoa.framework in Frameworks & Libraries */,
 				17183C4118C8833A00491E66 /* CoreMedia.framework in Frameworks & Libraries */,
@@ -152,19 +149,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-sourceTree = "<group>";
-		};
-
-		02D69C6A16F08CED00F3803F /* UI */ = {
+		05596AB53D8D521C69802C27 /* TemplateProjectQt */ = {
 			isa = PBXGroup;
 			children = (
-
-				02D69C7516F08CED00F3803F /* mainwindow_moc.cpp */,
+				74DCF10A198250A900A02BFA /* WebKit.framework */,
+				17183C4018C8833A00491E66 /* CoreMedia.framework */,
+				17183C3E18C8830000491E66 /* AVFoundation.framework */,
+				02E9E447173A3AED00C501BC /* libfmodevent.dylib */,
+				02E9E448173A3AED00C501BC /* libfmodex.dylib */,
+				C107915B16D78C9E0081E58C /* Framework.xcodeproj */,
+				5C190C9E15AEC6F9005731F8 /* Data */,
+				5C190CA015AEC704005731F8 /* Info.plist */,
+				C15C2FDF162AD6E400818631 /* Classes */,
+				ED1E82605DD74B483AF3C982 /* External Frameworks and Libraries */,
+				C15C2FC9162AD5DD00818631 /* GeneratedFiles */,
+				5C190C9615AEC58B005731F8 /* Products */,
+				C90923F6A2E654060C34742C /* Source [bundle data] */,
+				7CABE3C80E79AD2B307756D2 /* Sources [qmake] */,
+				C15C2FF3162AD71C00818631 /* UI */,
 			);
-			path = UI;
+			name = TemplateProjectQt;
 			sourceTree = "<group>";
 		};
-
 		5C190C9615AEC58B005731F8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -181,7 +187,6 @@ sourceTree = "<group>";
 			name = "Sources [qmake]";
 			sourceTree = "<group>";
 		};
-
 		C107915C16D78C9E0081E58C /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,10 +200,8 @@ sourceTree = "<group>";
 		C15C2FC9162AD5DD00818631 /* GeneratedFiles */ = {
 			isa = PBXGroup;
 			children = (
-				02D69C3C16F08CED00F3803F /* FrameworkMain_moc.cpp */,
-				02D69C3C16F08CED00F3803F /* FrameworkMain_moc.cpp */,
-				02D69C4516F08CED00F3803F /* icons_qrc.cpp */,
-				02D69C6A16F08CED00F3803F /* UI */,
+				74DCF0FE19823FAD00A02BFA /* mainwindow_moc.cpp */,
+				74DCF0FC19823F9600A02BFA /* FrameworkMain_moc.cpp */,
 				02D69C9416F08CEE00F3803F /* ui_mainwindow.h */,
 			);
 			path = GeneratedFiles;
@@ -207,7 +210,6 @@ sourceTree = "<group>";
 		C15C2FDF162AD6E400818631 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-
 				C15C2FE1162AD6E400818631 /* FrameworkMain.cpp */,
 				C15C2FE2162AD6E400818631 /* FrameworkMain.h */,
 				C15C2FE5162AD6E400818631 /* main.cpp */,
@@ -353,6 +355,7 @@ sourceTree = "<group>";
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C190C9F15AEC6F9005731F8 /* Data in Bundle Resources */,
 				C15C2FF7162AD71C00818631 /* mainwindow.ui in Bundle Resources */,
 			);
 			name = "Bundle Resources";
@@ -410,11 +413,10 @@ sourceTree = "<group>";
 			buildActionMask = 2147483647;
 			files = (
 				C15C2FED162AD6E400818631 /* FrameworkMain.cpp in Build Sources */,
+				74DCF0FF19823FAD00A02BFA /* mainwindow_moc.cpp in Build Sources */,
 				C15C2FEF162AD6E400818631 /* main.cpp in Build Sources */,
 				C15C2FF2162AD6E400818631 /* mainwindow.cpp in Build Sources */,
-				02D69CAA16F08CEE00F3803F /* FrameworkMain_moc.cpp in Build Sources */,
-				02D69CB216F08CEE00F3803F /* icons_qrc.cpp in Build Sources */,
-				02D69CDC16F08CEE00F3803F /* mainwindow_moc.cpp in Build Sources */,
+				74DCF0FD19823F9600A02BFA /* FrameworkMain_moc.cpp in Build Sources */,
 			);
 			name = "Build Sources";
 			runOnlyForDeploymentPostprocessing = 0;

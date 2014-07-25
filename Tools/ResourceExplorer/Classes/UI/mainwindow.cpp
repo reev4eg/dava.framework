@@ -61,6 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setWindowTitle("Resource Explorer");
 
 	RestoreProjectSettings();
+    
+    ui->deleteResourcesButton->setVisible(false);
 
 	connect(ui->yamlButton, SIGNAL(clicked()), this, SLOT(OnOpenYamlDirectoryDialog()));
 	connect(ui->resourcesButton, SIGNAL(clicked()), this, SLOT(OnOpenResourceDirectoryDialog()));
@@ -158,6 +160,7 @@ void MainWindow::OnGetUnusedResourcesList()
 
 	BuildUnusedResourcesList();
 /*	qDebug() << " FOUND RESOURCES COUNT - " << resourcesList.count();
+    qDebug() << " FOUND YAML COUNT - " << resourcesList.count();
 	for (int i = 0; i < resourcesList.size(); ++i) 
 	{
 	 qDebug() << " RES - " << resourcesList.at(i);
@@ -165,8 +168,7 @@ void MainWindow::OnGetUnusedResourcesList()
 	for (int i = 0; i < yamlList.size(); ++i) 
 	{
 	 qDebug() << " YAML - " << yamlList.at(i);
-	}
-	*/
+	}*/
 }
 
 void MainWindow::BuildYamlResourcesList(const QString &filePath)
@@ -191,9 +193,8 @@ void MainWindow::LoadResourcesFromYamlFile(const FilePath & pathName)
 	YamlParser	*parser	= DAVA::YamlParser::Create(pathName);
     if(NULL == parser)
         return;
-	
-    YamlNode *rootNode = parser->GetRootNode();
-    LoadFromYamlNode(rootNode);    
+
+    LoadFromYamlNode(parser->GetRootNode());
 	SafeRelease(parser);
 }
 
@@ -219,7 +220,7 @@ void MainWindow::LoadFromYamlNode(const YamlNode* rootNode)
 
 			if (spriteFilePath.GetType() == FilePath::PATH_IN_RESOURCES)
 			{
-				absoluteSpritePath = ConvertPathToUnixStyle(ui->yamlLineEdit->text()) + QString::fromStdString(spritePath.substr(5));
+				absoluteSpritePath = QString::fromStdString(spritePath.substr(5));
 			}
 			else
 			{				
@@ -227,7 +228,7 @@ void MainWindow::LoadFromYamlNode(const YamlNode* rootNode)
 			}
 			
 			if (!absoluteSpritePath.isEmpty())
-				yamlList.push_back(absoluteSpritePath + ".txt");
+				yamlList.push_back(absoluteSpritePath + ".psd");
 		}
 
 		LoadFromYamlNode(node);
@@ -243,7 +244,7 @@ void MainWindow::BuildResourcesList(const QString &filePath)
 		if (QFileInfo(dirIt.filePath()).isFile())
 		{
 			// Get yaml file and find resources
-			if (QFileInfo(dirIt.filePath()).suffix() == "txt")
+			if (QFileInfo(dirIt.filePath()).suffix() == "psd")
 			{
 				resourcesList.push_back(dirIt.filePath());
 			}
@@ -268,20 +269,36 @@ void MainWindow::BuildIgnoreResourcesList(const QString &filePath)
 
 void MainWindow::BuildUnusedResourcesList()
 {
-	QStringList unusedResourcesList;
+	QStringList unusedResList(resourcesList);
 	ui->unusedRecourcesList->clear();
-
-	for (int i = 0; i < resourcesList.size(); ++i) 
+    
+	for (int i = 0; i < yamlList.size(); ++i)
 	{
-		QString resourceStr = resourcesList.at(i);
-
-		if (!yamlList.contains(resourceStr) && !ignoreList.contains(resourceStr))
-		{
-			unusedResourcesList.push_back(resourceStr);
-		}
+		QString resourceStr = yamlList.at(i);
+        QStringList searchResult = resourcesList.filter(resourceStr);
+        // Remove used resources from list
+        for (int k = 0; k < searchResult.size(); ++k)
+        {
+        	unusedResList.removeAll(searchResult.at(k));
+        }
 	}
+    
+    for (int i = 0; i < ignoreList.size(); ++i)
+    {
+		QString resourceStr = ignoreList.at(i);
+        QStringList searchResult = resourcesList.filter(resourceStr);
+        // Remove ignored resources from list
+        for (int k = 0; k < searchResult.size(); ++k)
+        {
+        	unusedResList.removeAll(searchResult.at(k));
+        }
+    }
 
-	ui->unusedRecourcesList->addItems(unusedResourcesList);
+	if (unusedResList.size() > 0)
+    {
+		ui->unusedRecourcesList->addItems(unusedResList);
+        ui->statusBar->showMessage(QString("Found %1 unused resources.").arg(unusedResList.size()), 10000);
+    }
 }
 
 QString MainWindow::ConvertPathToUnixStyle(const QString& inputString)
