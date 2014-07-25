@@ -127,7 +127,7 @@ void MainWindow::RestoreProjectSettings()
 	{
 		ui->ignoreLineEdit->setText(settings.value(IGNORE_PATH).toString());
 	}
-
+	// Do not restore yaml and resources path if flag is dropped
 	if (ui->saveSettingsCheckBox->isChecked())
 	{
 		if (!settings.value(YAML_PATH).isNull() && settings.value(YAML_PATH).isValid())
@@ -149,21 +149,29 @@ void MainWindow::OnExitApplication()
 void MainWindow::OnGetUnusedResourcesList()
 {
 	resourcesList.clear();
-	usedResourcesList.clear();
+	yamlList.clear();
 	ignoreList.clear();
 
-	BuildYamlResourcesList();
-	BuildResourcesList();
-	GetIgnoreResourcesList();
+	BuildYamlResourcesList(ui->yamlLineEdit->text());
+	BuildResourcesList(ui->resourcesLineEdit->text());
+	BuildIgnoreResourcesList(ui->ignoreLineEdit->text());
+
+	BuildUnusedResourcesList();
 /*	qDebug() << " FOUND RESOURCES COUNT - " << resourcesList.count();
- for (int i = 0; i < resourcesList.size(); ++i) {
+	for (int i = 0; i < resourcesList.size(); ++i) 
+	{
 	 qDebug() << " RES - " << resourcesList.at(i);
- }*/
+	}
+	for (int i = 0; i < yamlList.size(); ++i) 
+	{
+	 qDebug() << " YAML - " << yamlList.at(i);
+	}
+	*/
 }
 
-void MainWindow::BuildYamlResourcesList()
+void MainWindow::BuildYamlResourcesList(const QString &filePath)
 {
-	QDirIterator dirIt(ui->yamlLineEdit->text(), QDirIterator::Subdirectories);
+	QDirIterator dirIt(filePath, QDirIterator::Subdirectories);
 	while (dirIt.hasNext()) 
 	{
 		dirIt.next();
@@ -205,30 +213,30 @@ void MainWindow::LoadFromYamlNode(const YamlNode* rootNode)
 		// Get resource path from sprite node
 		if (spriteNode) 
 		{ 
-			QString absoluteSptitePath;
+			QString absoluteSpritePath;
 			String spritePath = spriteNode->AsString();
 			FilePath spriteFilePath = FilePath(spritePath);
 
 			if (spriteFilePath.GetType() == FilePath::PATH_IN_RESOURCES)
 			{
-				absoluteSptitePath = ConvertPathToUnixStyle(ui->yamlLineEdit->text()) + QString::fromStdString(spritePath.substr(5));
+				absoluteSpritePath = ConvertPathToUnixStyle(ui->yamlLineEdit->text()) + QString::fromStdString(spritePath.substr(5));
 			}
 			else
 			{				
-				absoluteSptitePath = QString::fromStdString(spriteFilePath.GetAbsolutePathname());
+				absoluteSpritePath = QString::fromStdString(spriteFilePath.GetAbsolutePathname());
 			}
 			
-			if (!absoluteSptitePath.isEmpty())
-				usedResourcesList.push_back(absoluteSptitePath);
+			if (!absoluteSpritePath.isEmpty())
+				yamlList.push_back(absoluteSpritePath + ".txt");
 		}
 
 		LoadFromYamlNode(node);
 	}
 }
 
-void MainWindow::BuildResourcesList()
+void MainWindow::BuildResourcesList(const QString &filePath)
 {
-	QDirIterator dirIt(ui->resourcesLineEdit->text(), QDirIterator::Subdirectories);
+	QDirIterator dirIt(filePath, QDirIterator::Subdirectories);
 	while (dirIt.hasNext()) 
 	{
 		dirIt.next();
@@ -243,8 +251,37 @@ void MainWindow::BuildResourcesList()
 	}
 }
 
-void MainWindow::GetIgnoreResourcesList()
+void MainWindow::BuildIgnoreResourcesList(const QString &filePath)
 {
+	QFile inputFile(filePath);
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFile);
+       while ( !in.atEnd() )
+       {
+          QString line = in.readLine();
+		  ignoreList.push_back(line);
+       }
+       inputFile.close();
+    }
+}
+
+void MainWindow::BuildUnusedResourcesList()
+{
+	QStringList unusedResourcesList;
+	ui->unusedRecourcesList->clear();
+
+	for (int i = 0; i < resourcesList.size(); ++i) 
+	{
+		QString resourceStr = resourcesList.at(i);
+
+		if (!yamlList.contains(resourceStr) && !ignoreList.contains(resourceStr))
+		{
+			unusedResourcesList.push_back(resourceStr);
+		}
+	}
+
+	ui->unusedRecourcesList->addItems(unusedResourcesList);
 }
 
 QString MainWindow::ConvertPathToUnixStyle(const QString& inputString)

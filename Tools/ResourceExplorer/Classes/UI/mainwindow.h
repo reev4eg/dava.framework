@@ -64,13 +64,15 @@ private:
 	void LoadFromYamlNode(const DAVA::YamlNode* rootNode);
 	QString ConvertPathToUnixStyle(const QString& inputString);
 
-	void BuildYamlResourcesList();
-	void BuildResourcesList();
-	void GetIgnoreResourcesList();
+	void BuildYamlResourcesList(const QString &filePath);
+	void BuildResourcesList(const QString &filePath);
+	void BuildIgnoreResourcesList(const QString &filePath);
 
-	QList<QString> resourcesList;
-	QList<QString> usedResourcesList;
-	QList<QString> ignoreList;
+	void BuildUnusedResourcesList();
+
+	QStringList resourcesList;
+	QStringList yamlList;
+	QStringList ignoreList;
 
 private:
     Ui::MainWindow *ui;
