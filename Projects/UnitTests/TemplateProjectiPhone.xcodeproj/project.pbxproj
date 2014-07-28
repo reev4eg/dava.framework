@@ -13,6 +13,11 @@
 		15CBB0B018D300310038ABA3 /* StringFormatTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15CBB0AE18D300310038ABA3 /* StringFormatTest.cpp */; };
 		1770DF4517DF446600000391 /* UIMovieTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1770DF4317DF446600000391 /* UIMovieTest.cpp */; };
 		1770DF4717DF497600000391 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1770DF4617DF497600000391 /* MediaPlayer.framework */; };
+		17D4116E1973E95F00CF6BC0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D4116D1973E95F00CF6BC0 /* SystemConfiguration.framework */; };
+		17DD1616193F506500B73BEE /* ParseTextTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17DD1614193F506500B73BEE /* ParseTextTest.cpp */; };
+		17DD1618193F512600B73BEE /* liblua_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17DD1617193F512600B73BEE /* liblua_ios.a */; };
+		17FE6F2E19810CF700194FAE /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE9895581163F13500500198 /* libFramework.a */; };
+		17FE6F3019810E9D00194FAE /* libmongodb_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17FE6F2F19810E9D00194FAE /* libmongodb_ios.a */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -22,7 +27,6 @@
 		4998996B18B238F7007A8DF2 /* RectSpriteTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4998996918B238F7007A8DF2 /* RectSpriteTest.cpp */; };
 		49A0DB291796F8050000970C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49A0DB281796F8050000970C /* MessageUI.framework */; };
 		49C4331F1675F1A6000EA877 /* DXTTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49C4331D1675F1A6000EA877 /* DXTTest.cpp */; };
-		5C6EF11415751B5F001E45AD /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE9895581163F13500500198 /* libFramework.a */; };
 		5035302F194A4026006B66DB /* SceneSystemTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5035302D194A4026006B66DB /* SceneSystemTest.cpp */; };
 		5C8B42A61589D866001B2597 /* SampleTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8B42A41589D866001B2597 /* SampleTest.cpp */; };
 		5C8D42441580E4D700441032 /* BaseScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8D42421580E4D700441032 /* BaseScreen.cpp */; };
@@ -33,9 +37,7 @@
 		74338640179D18CF0014FBD3 /* UIListTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7433863C179D18CE0014FBD3 /* UIListTest.cpp */; };
 		74338641179D18CF0014FBD3 /* UIScrollViewTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7433863E179D18CE0014FBD3 /* UIScrollViewTest.cpp */; };
 		7497447517B3D61800282DAA /* AlignTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7497447317B3D61800282DAA /* AlignTest.cpp */; };
-		74990F5C193F60B20013BCC7 /* libmongodb_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74990F5B193F60B20013BCC7 /* libmongodb_ios.a */; };
 		74AF633D18852FE100070C35 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AF633C18852FE100070C35 /* Security.framework */; };
-		74AF84BD193F70A300FDB3C5 /* ParseTextTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74AF84BB193F70A300FDB3C5 /* ParseTextTest.cpp */; };
 		74BF981A1876B3A8001D4CFE /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74BF98191876B3A7001D4CFE /* GameController.framework */; };
 		74F7355F18F596D000685E69 /* UIParticlesTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74F7355D18F596D000685E69 /* UIParticlesTest.cpp */; };
 		8475938D18DA3FAC00C464CB /* DateTimeTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8475938B18DA3FAC00C464CB /* DateTimeTest.cpp */; };
@@ -111,6 +113,11 @@
 		1770DF4317DF446600000391 /* UIMovieTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIMovieTest.cpp; sourceTree = "<group>"; };
 		1770DF4417DF446600000391 /* UIMovieTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIMovieTest.h; sourceTree = "<group>"; };
 		1770DF4617DF497600000391 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		17D4116D1973E95F00CF6BC0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		17DD1614193F506500B73BEE /* ParseTextTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParseTextTest.cpp; sourceTree = "<group>"; };
+		17DD1615193F506500B73BEE /* ParseTextTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseTextTest.h; sourceTree = "<group>"; };
+		17DD1617193F512600B73BEE /* liblua_ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua_ios.a; path = ../../Libs/libs/liblua_ios.a; sourceTree = "<group>"; };
+		17FE6F2F19810E9D00194FAE /* libmongodb_ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmongodb_ios.a; path = ../../Libs/libs/libmongodb_ios.a; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -146,10 +153,7 @@
 		7433863F179D18CF0014FBD3 /* UIScrollViewTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIScrollViewTest.h; sourceTree = "<group>"; };
 		7497447317B3D61800282DAA /* AlignTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AlignTest.cpp; sourceTree = "<group>"; };
 		7497447417B3D61800282DAA /* AlignTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlignTest.h; sourceTree = "<group>"; };
-		74990F5B193F60B20013BCC7 /* libmongodb_ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmongodb_ios.a; path = ../../Libs/libs/libmongodb_ios.a; sourceTree = "<group>"; };
 		74AF633C18852FE100070C35 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		74AF84BB193F70A300FDB3C5 /* ParseTextTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParseTextTest.cpp; sourceTree = "<group>"; };
-		74AF84BC193F70A300FDB3C5 /* ParseTextTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseTextTest.h; sourceTree = "<group>"; };
 		74BF98191876B3A7001D4CFE /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		74F7355D18F596D000685E69 /* UIParticlesTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIParticlesTest.cpp; sourceTree = "<group>"; };
 		74F7355E18F596D000685E69 /* UIParticlesTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIParticlesTest.h; sourceTree = "<group>"; };
@@ -224,14 +228,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74990F5C193F60B20013BCC7 /* libmongodb_ios.a in Frameworks */,
+				17FE6F2E19810CF700194FAE /* libFramework.a in Frameworks */,
+				17FE6F3019810E9D00194FAE /* libmongodb_ios.a in Frameworks */,
+				17DD1618193F512600B73BEE /* liblua_ios.a in Frameworks */,
 				C12DE7A218E322B2002EEBB4 /* AssetsLibrary.framework in Frameworks */,
 				74AF633D18852FE100070C35 /* Security.framework in Frameworks */,
 				74BF981A1876B3A8001D4CFE /* GameController.framework in Frameworks */,
 				1770DF4717DF497600000391 /* MediaPlayer.framework in Frameworks */,
 				496ABE8D179E6FEB00BCA6E9 /* AdSupport.framework in Frameworks */,
 				49A0DB291796F8050000970C /* MessageUI.framework in Frameworks */,
-				5C6EF11415751B5F001E45AD /* libFramework.a in Frameworks */,
 				5CDC2533156CE21000742348 /* libz.dylib in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -242,6 +247,7 @@
 				FE76D9FF1163F316009E83B6 /* AudioToolbox.framework in Frameworks */,
 				FE76DA041163F32F009E83B6 /* QuartzCore.framework in Frameworks */,
 				FEFB01D311C8F28A00B65B8B /* GameKit.framework in Frameworks */,
+				17D4116E1973E95F00CF6BC0 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,7 +319,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				74990F5B193F60B20013BCC7 /* libmongodb_ios.a */,
+				17FE6F2F19810E9D00194FAE /* libmongodb_ios.a */,
+				17D4116D1973E95F00CF6BC0 /* SystemConfiguration.framework */,
+				17DD1617193F512600B73BEE /* liblua_ios.a */,
 				C12DE7A118E322B2002EEBB4 /* AssetsLibrary.framework */,
 				74AF633C18852FE100070C35 /* Security.framework */,
 				74BF98191876B3A7001D4CFE /* GameController.framework */,
@@ -336,12 +344,12 @@
 		5C7BE30F156E0EF400F9F538 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				74AF84BB193F70A300FDB3C5 /* ParseTextTest.cpp */,
-				74AF84BC193F70A300FDB3C5 /* ParseTextTest.h */,
 				E890390E196D4FCE003126C8 /* ImageSizeTest.cpp */,
 				E890390F196D4FCE003126C8 /* ImageSizeTest.h */,
 				5035302D194A4026006B66DB /* SceneSystemTest.cpp */,
 				5035302E194A4026006B66DB /* SceneSystemTest.h */,
+				17DD1614193F506500B73BEE /* ParseTextTest.cpp */,
+				17DD1615193F506500B73BEE /* ParseTextTest.h */,
 				E8983CBF18C89733002FB974 /* OpenGLES30FormatTest.cpp */,
 				E8983CC018C89733002FB974 /* OpenGLES30FormatTest.h */,
 				627C796B18ED9DA900C05154 /* JPEGTest.cpp */,
@@ -475,7 +483,7 @@
 			attributes = {
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 6V9352ME4J;
+						DevelopmentTeam = 9KMD79CS7L;
 					};
 				};
 			};
@@ -561,6 +569,7 @@
 				15CBB0B018D300310038ABA3 /* StringFormatTest.cpp in Sources */,
 				FEC9201013BA2D7D006F347F /* main.mm in Sources */,
 				8475938D18DA3FAC00C464CB /* DateTimeTest.cpp in Sources */,
+				17DD1616193F506500B73BEE /* ParseTextTest.cpp in Sources */,
 				5C8D42441580E4D700441032 /* BaseScreen.cpp in Sources */,
 				5C8B42A61589D866001B2597 /* SampleTest.cpp in Sources */,
 				5CA2462E158F472100465879 /* EntityTest.cpp in Sources */,
@@ -598,7 +607,6 @@
 				74338641179D18CF0014FBD3 /* UIScrollViewTest.cpp in Sources */,
 				7497447517B3D61800282DAA /* AlignTest.cpp in Sources */,
 				02F8B01C17CF996C00D5A334 /* ThreadSyncTest.cpp in Sources */,
-				74AF84BD193F70A300FDB3C5 /* ParseTextTest.cpp in Sources */,
 				1770DF4517DF446600000391 /* UIMovieTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

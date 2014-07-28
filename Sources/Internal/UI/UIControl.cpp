@@ -40,6 +40,7 @@
 #include "Utils/Utils.h"
 #include "Input/InputSystem.h"
 #include "Utils/StringFormat.h"
+#include "FileSystem/YamlNode.h"
 
 namespace DAVA
 {
@@ -978,19 +979,14 @@ namespace DAVA
         if (recursiveVisible == isVisible)
             return;
 
-        bool onScreen = IsOnScreen();
-        if (onScreen && !isVisible)
-        {
-            SystemWillDisappear();
-            SystemDidDisappear();
-        }
-
         recursiveVisible = isVisible;
 
-        if (!onScreen && isVisible)
+        if (parent && parent->IsOnScreen())
         {
-            SystemWillAppear();
-            SystemDidAppear();
+            if (recursiveVisible)
+                SystemWillBecomeVisible();
+            else
+                SystemWillBecomeInvisible();
         }
     }
 
@@ -1121,18 +1117,22 @@ namespace DAVA
         control->Retain();
         control->RemoveFromParent();
 
-        bool onScreen = IsOnScreen();
-        if(onScreen)
+        bool inHierarchy = InViewHierarchy();
+        if (inHierarchy)
         {
             control->SystemWillAppear();
         }
         control->isUpdated = false;
         control->SetParent(this);
         childs.push_back(control);
-        if(onScreen)
+        if (inHierarchy)
         {
             control->SystemDidAppear();
         }
+
+        if (IsOnScreen() && control->GetRecursiveVisible())
+            control->SystemWillBecomeVisible();
+
         isIteratorCorrupted = true;
     }
     void UIControl::RemoveControl(UIControl *control)
@@ -1147,14 +1147,17 @@ namespace DAVA
         {
             if((*it) == control)
             {
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                if (IsOnScreen() && control->GetRecursiveVisible())
+                    control->SystemWillBecomeInvisible();
+
+                bool inHierarchy = InViewHierarchy();
+                if (inHierarchy)
                 {
                     control->SystemWillDisappear();
                 }
                 control->SetParent(NULL);
                 childs.erase(it);
-                if(onScreen)
+                if (inHierarchy)
                 {
                     control->SystemDidDisappear();
                 }
@@ -1220,17 +1223,21 @@ namespace DAVA
                 control->Retain();
                 control->RemoveFromParent();
 
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                bool inHierarchy = InViewHierarchy();
+                if(inHierarchy)
                 {
                     control->SystemWillAppear();
                 }
                 childs.insert(it, control);
                 control->SetParent(this);
-                if(onScreen)
+                if(inHierarchy)
                 {
                     control->SystemDidAppear();
                 }
+
+                if (IsOnScreen() && control->GetRecursiveVisible())
+                    control->SystemWillBecomeVisible();
+
                 isIteratorCorrupted = true;
                 return;
             }
@@ -1248,17 +1255,21 @@ namespace DAVA
                 control->Retain();
                 control->RemoveFromParent();
 
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                bool inHierarchy = InViewHierarchy();
+                if(inHierarchy)
                 {
                     control->SystemWillAppear();
                 }
                 childs.insert(++it, control);
                 control->SetParent(this);
-                if(onScreen)
+                if(inHierarchy)
                 {
                     control->SystemDidAppear();
                 }
+
+                if (IsOnScreen() && control->GetRecursiveVisible())
+                    control->SystemWillBecomeVisible();
+
                 isIteratorCorrupted = true;
                 return;
             }
@@ -1393,17 +1404,32 @@ namespace DAVA
         // Yuri Coder, 2012/11/30. Use Real Children List to avoid copying
         // unnecessary children we have on the for example UIButton.
         const List<UIControl*>& realChildren = srcControl->GetRealChildren();
-		List<UIControl*>::const_iterator it = realChildren.begin();
-		for(; it != realChildren.end(); ++it)
-		{
-			
-			UIControl *c = (*it)->Clone();
-			AddControl(c);
-			c->Release();
-		}
-	}
+        List<UIControl*>::const_iterator it = realChildren.begin();
+        for(; it != realChildren.end(); ++it)
+        {
 
-	
+            UIControl *c = (*it)->Clone();
+            AddControl(c);
+            c->Release();
+        }
+    }
+
+
+    bool UIControl::InViewHierarchy() const
+    {
+        if (UIControlSystem::Instance()->GetScreen() == this ||
+            UIControlSystem::Instance()->GetPopupContainer() == this)
+        {
+            return true;
+        }
+
+        if (parent)
+            return parent->InViewHierarchy();
+
+        return false;
+    }
+
+
     bool UIControl::IsOnScreen() const
     {
         if(UIControlSystem::Instance()->GetScreen() == this ||
@@ -1419,12 +1445,9 @@ namespace DAVA
 	}
 
 
-	void UIControl::SystemWillAppear()
-	{
-        if (!GetRecursiveVisible())
-            return;
-
-		WillAppear();
+    void UIControl::SystemWillAppear()
+    {
+        WillAppear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1442,25 +1465,9 @@ namespace DAVA
             ++it;
         }
     }
-	
-	void UIControl::SystemWillDisappear()
-	{
-        if (GetHover())
-        {
-            UIControlSystem::Instance()->SetHoveredControl(NULL);
-        }
-        if (UIControlSystem::Instance()->GetFocusedControl() == this) 
-        {
-            UIControlSystem::Instance()->SetFocusedControl(NULL, true);
-        }
-        if (GetInputEnabled())
-        {
-            UIControlSystem::Instance()->CancelInputs(this, false);
-        }
 
-        if (!GetRecursiveVisible())
-            return;
-
+    void UIControl::SystemWillDisappear()
+    {
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
         {
@@ -1477,15 +1484,12 @@ namespace DAVA
             ++it;
         }
 
-		WillDisappear();
-	}
-	
-	void UIControl::SystemDidAppear()
-	{
-        if (!GetRecursiveVisible())
-            return;
+        WillDisappear();
+    }
 
-		DidAppear();
+    void UIControl::SystemDidAppear()
+    {
+        DidAppear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1503,13 +1507,10 @@ namespace DAVA
             ++it;
         }
     }
-	
-	void UIControl::SystemDidDisappear()
-	{
-        if (!GetRecursiveVisible())
-            return;
 
-		DidDisappear();
+    void UIControl::SystemDidDisappear()
+    {
+        DidDisappear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1609,46 +1610,39 @@ namespace DAVA
 	{
         if( !recursiveVisible )
             return;
-		UIGeometricData drawData;
-		drawData.position = relativePosition;
-		drawData.size = size;
-		drawData.pivotPoint = pivotPoint;
-		drawData.scale = scale;
-		drawData.angle = angle;
-		drawData.AddToGeometricData(geometricData);
-		
-        if(parent)
-        {
-            GetBackground()->SetParentColor(parent->GetBackground()->GetDrawColor());
-        }
-        else
-        {
-            GetBackground()->SetParentColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
-        }
-				
-		const Rect& unrotatedRect = drawData.GetUnrotatedRect();
-		
-		if(clipContents)
-		{//WARNING: for now clip contents don't work for rotating controls if you have any ideas you are welcome
-			RenderManager::Instance()->ClipPush();
-			RenderManager::Instance()->ClipRect(unrotatedRect);
-		}
 
-		if(visible && visibleForUIEditor)
-		{
-			Draw(drawData);
-		}
-	
-		if (debugDrawEnabled && !clipContents)
-		{	//TODO: Add debug draw for rotated controls
-			DrawDebugRect(drawData, false);
-		}
-		DrawPivotPoint(unrotatedRect);
-		
-		
-		// Do not draw child controls if parent is not visible
-		if (visible && visibleForUIEditor)
-		{
+        UIControlSystem::Instance()->drawCounter++;
+        UIGeometricData drawData;
+        drawData.position = relativePosition;
+        drawData.size = size;
+        drawData.pivotPoint = pivotPoint;
+        drawData.scale = scale;
+        drawData.angle = angle;
+        drawData.AddToGeometricData(geometricData);
+
+        const Color &parentColor = parent ? parent->GetBackground()->GetDrawColor() : Color::White;
+
+        SetParentColor(parentColor);
+
+        const Rect& unrotatedRect = drawData.GetUnrotatedRect();
+
+        if(clipContents)
+        {//WARNING: for now clip contents don't work for rotating controls if you have any ideas you are welcome
+            RenderManager::Instance()->ClipPush();
+            RenderManager::Instance()->ClipRect(unrotatedRect);
+        }
+
+        if(visible && visibleForUIEditor)
+        {
+            Draw(drawData);
+        }
+
+        if (debugDrawEnabled && !clipContents)
+        {	//TODO: Add debug draw for rotated controls
+            DrawDebugRect(drawData, false);
+        }
+        DrawPivotPoint(unrotatedRect);
+
         isIteratorCorrupted = false;
         List<UIControl*>::iterator it = childs.begin();
         List<UIControl*>::iterator itEnd = childs.end();
@@ -1683,7 +1677,12 @@ namespace DAVA
             RenderManager::Instance()->ClipPop();
         }
     }
-	
+
+    void UIControl::SetParentColor( const Color &parentColor )
+    {
+        GetBackground()->SetParentColor(parentColor);
+    }
+
     void UIControl::DrawDebugRect(const UIGeometricData &gd, bool useAlpha)
     {
         Color oldColor = RenderManager::Instance()->GetColor();
@@ -2101,45 +2100,92 @@ namespace DAVA
     void UIControl::DidSetHovered()
     {
     }
-    
-	void UIControl::DidRemoveHovered()
+
+    void UIControl::DidRemoveHovered()
     {
     }
 
-	void UIControl::Input(UIEvent *currentInput)
-	{
-		currentInput->SetInputHandledType(UIEvent::INPUT_NOT_HANDLED);
-	}
+    void UIControl::Input(UIEvent *currentInput)
+    {
+        currentInput->SetInputHandledType(UIEvent::INPUT_NOT_HANDLED);
+    }
 
-	void UIControl::InputCancelled(UIEvent *currentInput)
-	{
-	}
+    void UIControl::InputCancelled(UIEvent *currentInput)
+    {
+    }
 
-	void UIControl::Update(float32 timeElapsed)
-	{
-		
-	}
-	void UIControl::Draw(const UIGeometricData &geometricData)
-	{
-		background->Draw(geometricData);
-	}
-	void UIControl::DrawAfterChilds(const UIGeometricData &geometricData)
-	{
-		
-	}
-	
-	YamlNode* UIControl::SaveToYamlNode(UIYamlLoader * loader)
-	{
-		// Temp variables
-		String stringValue;
-		VariantType *nodeValue = new VariantType();
-		// Return node
-		YamlNode *node = new YamlNode(YamlNode::TYPE_MAP);
-		// Model UIControl to be used in comparing
-		UIControl *baseControl = new UIControl();
+    void UIControl::Update(float32 timeElapsed)
+    {
 
-		// Control name
-		//node->Set("name", this->GetName());
+    }
+    void UIControl::Draw(const UIGeometricData &geometricData)
+    {
+        background->Draw(geometricData);
+    }
+    void UIControl::DrawAfterChilds(const UIGeometricData &geometricData)
+    {
+
+    }
+
+    void UIControl::SystemWillBecomeVisible()
+    {
+        WillBecomeVisible();
+
+        List<UIControl*>::const_iterator it = childs.begin();
+        List<UIControl*>::const_iterator end = childs.end();
+        for (; it != end; ++it)
+        {
+            if ((*it)->GetRecursiveVisible())
+                (*it)->SystemWillBecomeVisible();
+        }
+    }
+
+    void UIControl::SystemWillBecomeInvisible()
+    {
+        if (GetHover())
+        {
+            UIControlSystem::Instance()->SetHoveredControl(NULL);
+        }
+        if (UIControlSystem::Instance()->GetFocusedControl() == this)
+        {
+            UIControlSystem::Instance()->SetFocusedControl(NULL, true);
+        }
+        if (GetInputEnabled())
+        {
+            UIControlSystem::Instance()->CancelInputs(this, false);
+        }
+
+        List<UIControl*>::const_iterator it = childs.begin();
+        List<UIControl*>::const_iterator end = childs.end();
+        for (; it != end; ++it)
+        {
+            if ((*it)->GetRecursiveVisible())
+                (*it)->SystemWillBecomeInvisible();
+        }
+
+        WillBecomeInvisible();
+    }
+
+    void UIControl::WillBecomeVisible()
+    {
+    }
+
+    void UIControl::WillBecomeInvisible()
+    {
+    }
+
+    YamlNode* UIControl::SaveToYamlNode(UIYamlLoader * loader)
+    {
+        // Temp variables
+        String stringValue;
+        VariantType *nodeValue = new VariantType();
+        // Return node
+        YamlNode *node = new YamlNode(YamlNode::TYPE_MAP);
+        // Model UIControl to be used in comparing
+        UIControl *baseControl = new UIControl();
+
+        // Control name
+        //node->Set("name", this->GetName());
         // Recursive Visible
         if (baseControl->GetRecursiveVisible() != GetRecursiveVisible())
         {
@@ -2403,16 +2449,260 @@ namespace DAVA
             bool isVisible = loader->GetBoolFromYamlNode(recursiveVisibleNode, true);
             SetRecursiveVisible(isVisible);
         }
-		
-		const YamlNode * visibleNode = node->Get("visible");
-		if(visibleNode)
-		{
-			bool visible = loader->GetBoolFromYamlNode(visibleNode, false); 
-			SetVisible(visible);
-		}
-		
-		if (pivotNode)
-		{
+
+        // Input
+        if (baseControl->GetInputEnabled() != this->GetInputEnabled())
+        {
+            node->Set("noInput", !this->GetInputEnabled());
+        }
+        // Sprite
+        Sprite *sprite =  this->GetSprite();
+        if (sprite)
+        {
+            node->Set("sprite", GetSpriteFrameworkPath(sprite));
+        }
+
+        // Color
+        const Color &color =  this->GetBackground()->GetColor();
+        if (baseControl->GetBackground()->color != color)
+        {
+            nodeValue->SetColor(color);
+            node->Set("color", nodeValue);
+        }
+        // Frame
+        if (baseControl->GetFrame() != this->GetFrame())
+        {
+            node->Set("frame", this->GetFrame());
+        }
+        // Rect
+        Rect rect = this->GetRect();
+        if (baseControl->GetRect() != rect)
+        {
+            Vector4 rectVector4(rect.x + pivotPoint.x, rect.y + pivotPoint.y, rect.dx, rect.dy);
+            nodeValue->SetVector4(rectVector4);
+            node->Set("rect", nodeValue);
+        }
+        // Align
+        int32 align = this->GetSpriteAlign();
+        if (baseControl->GetSpriteAlign() != align)
+        {
+            node->AddNodeToMap("align", loader->GetAlignNodeValue(align));
+        }
+        // Left Align
+        if (this->GetLeftAlignEnabled())
+        {
+            node->Set("leftAlign", this->GetLeftAlign());
+        }
+        // Horizontal Center Align
+        if (this->GetHCenterAlignEnabled())
+        {
+            node->Set("hcenterAlign", this->GetHCenterAlign());
+        }
+        // Right Align
+        if (this->GetRightAlignEnabled())
+        {
+            node->Set("rightAlign", this->GetRightAlign());
+        }
+        // Top Align
+        if (this->GetTopAlignEnabled())
+        {
+            node->Set("topAlign", this->GetTopAlign());
+        }
+        // Vertical Center Align
+        if (this->GetVCenterAlignEnabled())
+        {
+            node->Set("vcenterAlign", this->GetVCenterAlign());
+        }
+        // Bottom Align
+        if (this->GetBottomAlignEnabled())
+        {
+            node->Set("bottomAlign", this->GetBottomAlign());
+        }
+
+        // Pivot
+        if (baseControl->pivotPoint != this->pivotPoint)
+        {
+            nodeValue->SetVector2(this->pivotPoint);
+            node->Set("pivot", nodeValue);
+        }
+        // Color inherit
+        UIControlBackground::eColorInheritType colorInheritType =  this->GetBackground()->GetColorInheritType();
+        if (baseControl->GetBackground()->GetColorInheritType() != colorInheritType)
+        {
+            node->Set("colorInherit", loader->GetColorInheritTypeNodeValue(colorInheritType));
+        }
+        // Draw type, obligatory for UI controls.
+        UIControlBackground::eDrawType drawType =  this->GetBackground()->GetDrawType();
+        node->Set("drawType", loader->GetDrawTypeNodeValue(drawType));
+
+        // LeftRightStretchCapNode
+        if (baseControl->GetBackground()->GetLeftRightStretchCap() != this->GetBackground()->GetLeftRightStretchCap())
+        {
+            node->Set("leftRightStretchCap", this->GetBackground()->GetLeftRightStretchCap());
+        }
+        // topBottomStretchCap
+        if (baseControl->GetBackground()->GetTopBottomStretchCap() != this->GetBackground()->GetTopBottomStretchCap())
+        {
+            node->Set("topBottomStretchCap", this->GetBackground()->GetTopBottomStretchCap());
+        }
+        // Angle
+        if (baseControl->angle != this->angle)
+        {
+            node->Set("angle", this->angle);
+        }
+        // Tag
+        if (baseControl->tag != this->tag)
+        {
+            node->Set("tag", this->tag);
+        }
+        // spriteModification
+        if (baseControl->GetBackground()->GetModification() != this->GetBackground()->GetModification())
+        {
+            node->Set("spriteModification", this->GetBackground()->GetModification());
+        }
+
+        // Initial state.
+        if (baseControl->GetInitialState() != this->initialState)
+        {
+            node->Set("initialState", this->initialState);
+        }
+
+        // Release variantType variable
+        SafeDelete(nodeValue);
+        // Release model variable
+        SafeRelease(baseControl);
+
+        SetPreferredNodeType(node, GetClassName());
+        return node;
+    }
+
+    void UIControl::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader)
+    {
+        const YamlNode * spriteNode = node->Get("sprite");
+        const YamlNode * colorNode = node->Get("color");
+        const YamlNode * frameNode = node->Get("frame");
+        const YamlNode * rectNode = node->Get("rect");
+        const YamlNode * alignNode = node->Get("align");
+        const YamlNode * leftAlignNode = node->Get("leftAlign");
+        const YamlNode * hcenterAlignNode = node->Get("hcenterAlign");
+        const YamlNode * rightAlignNode = node->Get("rightAlign");
+        const YamlNode * topAlignNode = node->Get("topAlign");
+        const YamlNode * vcenterAlignNode = node->Get("vcenterAlign");
+        const YamlNode * bottomAlignNode = node->Get("bottomAlign");
+        const YamlNode * pivotNode = node->Get("pivot");
+        const YamlNode * colorInheritNode = node->Get("colorInherit");
+
+        const YamlNode * drawTypeNode = node->Get("drawType");
+        const YamlNode * leftRightStretchCapNode = node->Get("leftRightStretchCap");
+        const YamlNode * topBottomStretchCapNode = node->Get("topBottomStretchCap");
+
+        const YamlNode * angleNode = node->Get("angle");
+        const YamlNode * tagNode = node->Get("tag");
+
+        const YamlNode * spriteModificationNode = node->Get("spriteModification");
+        const YamlNode * initialStateNode = node->Get("initialState");
+
+        Rect rect = GetRect();
+        if (rectNode)
+        {
+            rect = rectNode->AsRect();
+        }
+
+        Sprite * sprite = 0;
+        if(spriteNode)
+        {
+            sprite = Sprite::Create(spriteNode->AsString());
+            if (rect.dx == -1.0f)rect.dx = (float32)sprite->GetWidth();
+            if (rect.dy == -1.0f)rect.dy = (float32)sprite->GetHeight();
+        }
+
+        if(colorNode)
+        {
+            GetBackground()->SetColor( loader->GetColorFromYamlNode(colorNode) );
+            if(!spriteNode)
+            {
+                GetBackground()->SetDrawType(UIControlBackground::DRAW_FILL);
+            }
+        }
+        SetRect(rect);
+
+        int frame = 0;
+        if (frameNode)frame = frameNode->AsInt32();
+
+        if(spriteNode)
+        {
+            GetBackground()->SetSprite(sprite, frame);
+            SafeRelease(sprite);
+        }
+
+        if (alignNode)
+        {
+            int32 align = loader->GetAlignFromYamlNode(alignNode);
+            SetSpriteAlign(align);
+            //GetBackground()->SetAlign(align);
+        }
+
+        if (leftAlignNode)
+        {
+            int32 leftAlign = leftAlignNode->AsInt32();
+            SetLeftAlignEnabled(true);
+            SetLeftAlign(leftAlign);
+        }
+        if (hcenterAlignNode)
+        {
+            int32 hcenterAlign = hcenterAlignNode->AsInt32();
+            SetHCenterAlignEnabled(true);
+            SetHCenterAlign(hcenterAlign);
+
+        }
+        if (rightAlignNode)
+        {
+            int32 rightAlign = rightAlignNode->AsInt32();
+            SetRightAlignEnabled(true);
+            SetRightAlign(rightAlign);
+        }
+        if (topAlignNode)
+        {
+            int32 topAlign = topAlignNode->AsInt32();
+            SetTopAlignEnabled(true);
+            SetTopAlign(topAlign);
+        }
+        if (vcenterAlignNode)
+        {
+            int32 vcenterAlign = vcenterAlignNode->AsInt32();
+            SetVCenterAlignEnabled(true);
+            SetVCenterAlign(vcenterAlign);
+        }
+        if (bottomAlignNode)
+        {
+            int32 bottomAlign = bottomAlignNode->AsInt32();
+            SetBottomAlignEnabled(true);
+            SetBottomAlign(bottomAlign);
+        }
+
+        const YamlNode * clipNode = node->Get("clip");
+        if (clipNode)
+        {
+            bool clipContents = loader->GetBoolFromYamlNode(clipNode, false);
+            SetClipContents(clipContents);
+        }
+
+        const YamlNode * recursiveVisibleNode = node->Get("recursiveVisible");
+        if(recursiveVisibleNode)
+        {
+            bool isVisible = loader->GetBoolFromYamlNode(recursiveVisibleNode, true);
+            SetRecursiveVisible(isVisible);
+        }
+
+        const YamlNode * visibleNode = node->Get("visible");
+        if(visibleNode)
+        {
+            bool visible = loader->GetBoolFromYamlNode(visibleNode, false);
+            SetVisible(visible);
+        }
+
+        if (pivotNode)
+        {
             if (pivotNode->GetType() == YamlNode::TYPE_STRING)
             {
                 if (pivotNode->AsString() == "center")
@@ -2464,10 +2754,10 @@ namespace DAVA
 			angle = angleNode->AsFloat();
 		}
 
-		if(tagNode)
-		{
-			tag = tagNode->AsInt();
-		}
+        if(tagNode)
+        {
+            tag = tagNode->AsInt32();
+        }
 
 		if(spriteModificationNode)
         {

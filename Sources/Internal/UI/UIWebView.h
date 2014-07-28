@@ -71,9 +71,6 @@ public:
     void OpenFromBuffer(const String& string, const FilePath& basePath);
     
 	// Overloaded virtual methods.
-	virtual void WillAppear();
-	virtual void WillDisappear();
-
 	virtual void SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates = false);
 	virtual void SetSize(const Vector2 &newSize);
 	virtual void SetVisible(bool isVisible, bool hierarchic = true);
@@ -87,6 +84,11 @@ public:
     virtual UIControl* Clone();
     virtual void CopyDataFrom(UIControl *srcControl);
 
+protected:
+    virtual void WillBecomeVisible();
+    virtual void WillBecomeInvisible();
+
+public:
     void SetNativeControlVisible(bool isVisible);
     bool GetNativeControlVisible() const;
 
@@ -105,7 +107,7 @@ public:
 protected:
 
     // Set the visibility of native control.
-    void UpdateNativeControlVisible(bool value, bool hierarchic);
+    void UpdateNativeControlVisible(bool value);
 
     // Update the rect of the web view control.
     void UpdateControlRect();

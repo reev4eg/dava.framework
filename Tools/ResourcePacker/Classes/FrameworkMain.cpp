@@ -37,6 +37,7 @@
 
 #include "Render/GPUFamilyDescriptor.h"
 #include "Render/PixelFormatDescriptor.h"
+#include "TeamcityOutput/TeamcityOutput.h"
 
 using namespace DAVA;
  
@@ -48,6 +49,7 @@ void PrintUsage()
     printf("\t-exo - extended output\n"); 
     printf("\t-v or --verbose - detailed output\n");
 	printf("\t-s or --silent - silent mode. Log only warnings and errors.\n");
+    printf("\t-teamcity - extra output in teamcity format\n");
 
     printf("\n");
     printf("resourcepacker [src_dir] - will pack resources from src_dir\n");
@@ -142,7 +144,7 @@ void ProcessRecourcePacker()
     GPUFamilyDescriptor::SetupGPUParameters();
     
     
-    eGPUFamily exportForGPU = GPU_UNKNOWN;
+    eGPUFamily exportForGPU = GPU_PNG;
     if(CommandLineParser::CommandIsFound(String("-gpu")))
     {
         String gpuName = CommandLineParser::GetCommandParam(String("-gpu"));
@@ -190,6 +192,15 @@ void FrameworkDidLaunched()
 			Logger::Instance()->SetLogLevel(Logger::LEVEL_WARNING);
 		}
 		
+
+        if(CommandLineParser::CommandIsFound(String("-teamcity")))
+        {
+            CommandLineParser::Instance()->SetUseTeamcityOutput(true);
+
+            DAVA::TeamcityOutput *out = new DAVA::TeamcityOutput();
+            DAVA::Logger::AddCustomOutput(out);
+        }
+
 	}
 
     ProcessRecourcePacker();

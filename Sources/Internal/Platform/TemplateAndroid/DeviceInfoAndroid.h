@@ -34,6 +34,8 @@
 #include "JniExtensions.h"
 #include "Base/BaseTypes.h"
 
+#if defined(__DAVAENGINE_ANDROID__)
+
 namespace DAVA
 {
 
@@ -51,8 +53,16 @@ public:
 	String GetHTTPProxyHost();
 	String GetHTTPNonProxyHosts();
 	int GetHTTPProxyPort();
-	int GetZBufferSize();
-	int GetGPUFamily();
+	int32 GetZBufferSize();
+	int32 GetGPUFamily();
+	int32 GetNetworkType();
+	int32 GetSignalStrength(int networkType);
+
+	int64 GetInternalStorageCapacity();
+	int64 GetInternalStorageFree();
+	int64 GetExternalStorageCapacity();
+	int64 GetExternalStorageFree();
+	bool IsExternalStoragePresent();
 
 protected:
 	virtual jclass GetJavaClass() const;
@@ -64,5 +74,7 @@ public:
 };
 
 };
+
+#endif //defined(__DAVAENGINE_ANDROID__)
 
 #endif /* defined(__FRAMEWORK__DEVICEINFOANDROID__) */

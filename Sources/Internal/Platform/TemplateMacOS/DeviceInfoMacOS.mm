@@ -107,7 +107,13 @@ int DeviceInfo::GetHTTPProxyPort()
 
 eGPUFamily DeviceInfo::GetGPUFamily()
 {
-    return GPU_UNKNOWN;
+    return GPU_INVALID;
+}
+
+DeviceInfo::NetworkInfo DeviceInfo::GetNetworkInfo()
+{
+    // For now return default network info for MacOS.
+    return NetworkInfo();
 }
 
 }
