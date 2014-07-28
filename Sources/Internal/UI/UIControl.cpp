@@ -1650,7 +1650,6 @@ namespace DAVA
         {
             (*it)->SystemDraw(drawData);
             DVASSERT(!isIteratorCorrupted);
-			}
         }
 
         if(visible && visibleForUIEditor)
@@ -2191,265 +2190,21 @@ namespace DAVA
         {
             node->Set("recursiveVisible", GetRecursiveVisible());
         }
-		// Visible
-		if (baseControl->GetVisible() != this->GetVisible())
-		{
-			node->Set("visible", this->GetVisible());
-		}
-		// Enabled
-		if (baseControl->GetDisabled() != this->GetDisabled())
-		{
-			node->Set("enabled", !this->GetDisabled());
-		}
-		// Clip contents
-		if (baseControl->GetClipContents() != this->GetClipContents())
-		{
-			node->Set("clip", this->GetClipContents());
-		}
-		// Input
-		if (baseControl->GetInputEnabled() != this->GetInputEnabled())
-		{
-			node->Set("noInput", !this->GetInputEnabled());
-		}
-		// Sprite
-		Sprite *sprite =  this->GetSprite();
-		if (sprite)
-		{
-			node->Set("sprite", GetSpriteFrameworkPath(sprite));
-		}
-
-		// Color
-		const Color &color =  this->GetBackground()->GetColor();
-		if (baseControl->GetBackground()->color != color)
-		{
-			nodeValue->SetColor(color);
-			node->Set("color", nodeValue);
-		}
-		// Frame
-		if (baseControl->GetFrame() != this->GetFrame())
-		{
-			node->Set("frame", this->GetFrame());
-		}
-		// Rect
-		Rect rect = this->GetRect();
-		if (baseControl->GetRect() != rect)
-		{
-			Vector4 rectVector4(rect.x + pivotPoint.x, rect.y + pivotPoint.y, rect.dx, rect.dy);
-			nodeValue->SetVector4(rectVector4);
-			node->Set("rect", nodeValue);
-		}
-		// Align
-		int32 align = this->GetSpriteAlign();
-		if (baseControl->GetSpriteAlign() != align)
-		{
-			node->AddNodeToMap("align", loader->GetAlignNodeValue(align));
-		}
-		// Left Align
-		if (this->GetLeftAlignEnabled())
-		{
-			node->Set("leftAlign", this->GetLeftAlign());
-		}
-		// Horizontal Center Align
-		if (this->GetHCenterAlignEnabled())
-		{
-			node->Set("hcenterAlign", this->GetHCenterAlign());
-		}
-		// Right Align
-		if (this->GetRightAlignEnabled())
-		{
-			node->Set("rightAlign", this->GetRightAlign());
-		}
-		// Top Align
-		if (this->GetTopAlignEnabled())
-		{
-			node->Set("topAlign", this->GetTopAlign());
-		}
-		// Vertical Center Align
-		if (this->GetVCenterAlignEnabled())
-		{
-			node->Set("vcenterAlign", this->GetVCenterAlign());
-		}
-		// Bottom Align
-		if (this->GetBottomAlignEnabled())
-		{
-			node->Set("bottomAlign", this->GetBottomAlign());
-		}
-		
-		// Pivot
-		if (baseControl->pivotPoint != this->pivotPoint)
-		{
-			nodeValue->SetVector2(this->pivotPoint);
-			node->Set("pivot", nodeValue);
-		}
-		// Color inherit
-		UIControlBackground::eColorInheritType colorInheritType =  this->GetBackground()->GetColorInheritType();
-		if (baseControl->GetBackground()->GetColorInheritType() != colorInheritType)
-		{
-			node->Set("colorInherit", loader->GetColorInheritTypeNodeValue(colorInheritType));
-		}
-		// Draw type, obligatory for UI controls.
-		UIControlBackground::eDrawType drawType =  this->GetBackground()->GetDrawType();
-		node->Set("drawType", loader->GetDrawTypeNodeValue(drawType));
-
-		// LeftRightStretchCapNode
-		if (baseControl->GetBackground()->GetLeftRightStretchCap() != this->GetBackground()->GetLeftRightStretchCap())
-		{
-			node->Set("leftRightStretchCap", this->GetBackground()->GetLeftRightStretchCap());
-		}
-		// topBottomStretchCap
-		if (baseControl->GetBackground()->GetTopBottomStretchCap() != this->GetBackground()->GetTopBottomStretchCap())
-		{
-			node->Set("topBottomStretchCap", this->GetBackground()->GetTopBottomStretchCap());
-		}
-		// Angle
-		if (baseControl->angle != this->angle)
-		{
-			node->Set("angle", this->angle);
-		}
-		// Tag
-		if (baseControl->tag != this->tag)
-		{
-			node->Set("tag", this->tag);
-		}
-		// spriteModification
-		if (baseControl->GetBackground()->GetModification() != this->GetBackground()->GetModification())
-		{
-			node->Set("spriteModification", this->GetBackground()->GetModification());
-		}
-
-		// Initial state.
-		if (baseControl->GetInitialState() != this->initialState)
-		{
-			node->Set("initialState", this->initialState);
-		}
-
-		// Release variantType variable
-		SafeDelete(nodeValue);
-		// Release model variable
-		SafeRelease(baseControl);
-
-        SetPreferredNodeType(node, GetClassName());
-		return node;
-	}
-
-	void UIControl::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader)
-	{
-		const YamlNode * spriteNode = node->Get("sprite");
-		const YamlNode * colorNode = node->Get("color");
-		const YamlNode * frameNode = node->Get("frame"); 
-		const YamlNode * rectNode = node->Get("rect");
-		const YamlNode * alignNode = node->Get("align");
-		const YamlNode * leftAlignNode = node->Get("leftAlign");
-		const YamlNode * hcenterAlignNode = node->Get("hcenterAlign");
-		const YamlNode * rightAlignNode = node->Get("rightAlign");
-		const YamlNode * topAlignNode = node->Get("topAlign");
-		const YamlNode * vcenterAlignNode = node->Get("vcenterAlign");
-		const YamlNode * bottomAlignNode = node->Get("bottomAlign");
-		const YamlNode * pivotNode = node->Get("pivot");
-		const YamlNode * colorInheritNode = node->Get("colorInherit");
-        
-        const YamlNode * drawTypeNode = node->Get("drawType");
-        const YamlNode * leftRightStretchCapNode = node->Get("leftRightStretchCap");
-        const YamlNode * topBottomStretchCapNode = node->Get("topBottomStretchCap");
-		
-		const YamlNode * angleNode = node->Get("angle");
-		const YamlNode * tagNode = node->Get("tag");
-
-		const YamlNode * spriteModificationNode = node->Get("spriteModification");
-		const YamlNode * initialStateNode = node->Get("initialState");
-		
-		Rect rect = GetRect();
-		if (rectNode)
-		{
-			rect = rectNode->AsRect();
-		}
-		
-		Sprite * sprite = 0;
-		if(spriteNode)
-		{
-			sprite = Sprite::Create(spriteNode->AsString());
-			if (rect.dx == -1.0f)rect.dx = (float32)sprite->GetWidth();
-			if (rect.dy == -1.0f)rect.dy = (float32)sprite->GetHeight();
-		}
-		
-		if(colorNode)
-		{
-			GetBackground()->SetColor( loader->GetColorFromYamlNode(colorNode) );
-			if(!spriteNode)
-			{
-				GetBackground()->SetDrawType(UIControlBackground::DRAW_FILL);
-			}
-		}
-		SetRect(rect);
-		
-		int frame = 0;
-		if (frameNode)frame = frameNode->AsInt();
-
-		if(spriteNode)
-		{
-			GetBackground()->SetSprite(sprite, frame);
-			SafeRelease(sprite);
-		}
-		
-		if (alignNode)
-		{
-			int32 align = loader->GetAlignFromYamlNode(alignNode);
-			SetSpriteAlign(align);
-        	//GetBackground()->SetAlign(align);
-		}
-		
-		if (leftAlignNode)
-		{
-			int32 leftAlign = leftAlignNode->AsInt();
-			SetLeftAlignEnabled(true);
-			SetLeftAlign(leftAlign);
-		}
-		if (hcenterAlignNode)
-		{
-			int32 hcenterAlign = hcenterAlignNode->AsInt();
-			SetHCenterAlignEnabled(true);
-			SetHCenterAlign(hcenterAlign);
-			
-		}
-		if (rightAlignNode)
-		{
-			int32 rightAlign = rightAlignNode->AsInt();
-			SetRightAlignEnabled(true);
-			SetRightAlign(rightAlign);
-		}
-		if (topAlignNode)
-		{
-			int32 topAlign = topAlignNode->AsInt();
-			SetTopAlignEnabled(true);
-			SetTopAlign(topAlign);
-		}
-		if (vcenterAlignNode)
-		{
-			int32 vcenterAlign = vcenterAlignNode->AsInt();
-			SetVCenterAlignEnabled(true);
-			SetVCenterAlign(vcenterAlign);
-		}
-		if (bottomAlignNode)
-		{
-			int32 bottomAlign = bottomAlignNode->AsInt();
-			SetBottomAlignEnabled(true);
-			SetBottomAlign(bottomAlign);
-		}
-	
-		const YamlNode * clipNode = node->Get("clip");
-		if (clipNode)
-		{
-			bool clipContents = loader->GetBoolFromYamlNode(clipNode, false); 
-			SetClipContents(clipContents);
-		}
-
-        const YamlNode * recursiveVisibleNode = node->Get("recursiveVisible");
-        if(recursiveVisibleNode)
+        // Visible
+        if (baseControl->GetVisible() != this->GetVisible())
         {
-            bool isVisible = loader->GetBoolFromYamlNode(recursiveVisibleNode, true);
-            SetRecursiveVisible(isVisible);
+            node->Set("visible", this->GetVisible());
         }
-
+        // Enabled
+        if (baseControl->GetDisabled() != this->GetDisabled())
+        {
+            node->Set("enabled", !this->GetDisabled());
+        }
+        // Clip contents
+        if (baseControl->GetClipContents() != this->GetClipContents())
+        {
+            node->Set("clip", this->GetClipContents());
+        }
         // Input
         if (baseControl->GetInputEnabled() != this->GetInputEnabled())
         {
@@ -2713,9 +2468,9 @@ namespace DAVA
             }
             else
             {
-			    pivotPoint = pivotNode->AsPoint();
+                pivotPoint = pivotNode->AsPoint();
             }
-		}
+        }
 
         const YamlNode * inputNode = node->Get("noInput");
 
@@ -2725,53 +2480,53 @@ namespace DAVA
             SetInputEnabled(!inputDis, false);
         }
 
-		if(colorInheritNode)
-		{
-			UIControlBackground::eColorInheritType type = (UIControlBackground::eColorInheritType)loader->GetColorInheritTypeFromNode(colorInheritNode);
-			GetBackground()->SetColorInheritType(type);
-		}
-        
+        if(colorInheritNode)
+        {
+            UIControlBackground::eColorInheritType type = (UIControlBackground::eColorInheritType)loader->GetColorInheritTypeFromNode(colorInheritNode);
+            GetBackground()->SetColorInheritType(type);
+        }
+
         if(drawTypeNode)
-		{
-			UIControlBackground::eDrawType type = (UIControlBackground::eDrawType)loader->GetDrawTypeFromNode(drawTypeNode);
-			GetBackground()->SetDrawType(type);
-            
+        {
+            UIControlBackground::eDrawType type = (UIControlBackground::eDrawType)loader->GetDrawTypeFromNode(drawTypeNode);
+            GetBackground()->SetDrawType(type);
+
             if(leftRightStretchCapNode)
             {
                 float32 leftStretchCap = leftRightStretchCapNode->AsFloat();
                 GetBackground()->SetLeftRightStretchCap(leftStretchCap);
             }
-            
+
             if(topBottomStretchCapNode)
             {
                 float32 topStretchCap = topBottomStretchCapNode->AsFloat();
                 GetBackground()->SetTopBottomStretchCap(topStretchCap);
             }
-		}
+        }
 
-		if(angleNode)
-		{
-			angle = angleNode->AsFloat();
-		}
+        if(angleNode)
+        {
+            angle = angleNode->AsFloat();
+        }
 
         if(tagNode)
         {
             tag = tagNode->AsInt32();
         }
 
-		if(spriteModificationNode)
+        if(spriteModificationNode)
         {
-			int32 spriteModification = spriteModificationNode->AsInt32();
+            int32 spriteModification = spriteModificationNode->AsInt32();
             GetBackground()->SetModification(spriteModification);
         }
-		
-		if (initialStateNode)
-		{
-			int32 newInitialState = initialStateNode->AsInt32();
-			SetInitialState(newInitialState);
-			SetState(newInitialState);
-		}
-	}
+
+        if (initialStateNode)
+        {
+            int32 newInitialState = initialStateNode->AsInt32();
+            SetInitialState(newInitialState);
+            SetState(newInitialState);
+        }
+    }
 	
 	Animation *	UIControl::WaitAnimation(float32 time, int32 track)
 	{
