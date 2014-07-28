@@ -28,15 +28,13 @@
 
 
 
-#ifndef __DAVAENGINE_UI_SCROLLVIEWCONTAINER__
-#define __DAVAENGINE_UI_SCROLLVIEWCONTAINER__
+#ifndef __Framework__UIScrollViewContainer__
+#define __Framework__UIScrollViewContainer__
 
-#include "Base/BaseTypes.h"
-#include "UI/UIControl.h"
+#include "DAVAEngine.h"
 
 namespace DAVA 
 {
-class ScrollHelper;
 
 class UIScrollViewContainer : public UIControl
 {
@@ -93,4 +91,4 @@ protected:
 };
 };
 
-#endif /* defined(__DAVAENGINE_UI_SCROLLVIEWCONTAINER__) */
+#endif /* defined(__Framework__UIScrollViewContainer__) */

@@ -30,7 +30,6 @@
 #include "Render/Material/MaterialGraph.h"
 #include "Render/Material/MaterialGraphNode.h"
 #include "FileSystem/FileSystem.h"
-#include "FileSystem/YamlNode.h"
 
 namespace DAVA
 {

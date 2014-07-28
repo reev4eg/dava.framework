@@ -154,7 +154,7 @@ protected:
     HierarchyTreeNode::HIERARCHYTREENODEID GetActiveTreeNodeID() const;
     
     // Helper to access active UI Control.
-    virtual UIControl* GetActiveUIControl() const;
+    UIControl* GetActiveUIControl() const;
 
     // Get the UI control class name.
     virtual QString GetUIControlClassName() const { return QString(); };

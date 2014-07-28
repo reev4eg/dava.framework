@@ -671,10 +671,11 @@ void TexturePacker::ExportImage(PngImageExt *image, const FilePath &exportedPath
     image->DitherAlpha();
     image->Write(exportedPathname);
 
-    eGPUFamily gpuFamily = GPUFamilyDescriptor::ConvertValueToGPU(descriptor->exportedAsGpuFamily);
-    if(GPUFamilyDescriptor::IsGPUForDevice(gpuFamily))
+    eGPUFamily gpuFamily = (eGPUFamily)descriptor->exportedAsGpuFamily;
+    if(gpuFamily != GPU_UNKNOWN)
     {
 		TextureConverter::ConvertTexture(*descriptor, gpuFamily, false, quality);
+        
         FileSystem::Instance()->DeleteFile(exportedPathname);
     }
 
@@ -692,10 +693,10 @@ TextureDescriptor * TexturePacker::CreateDescriptor(eGPUFamily forGPU)
 	TexturePacker::FilterItem ftItem = GetDescriptorFilter(descriptor->GetGenerateMipMaps());
 	descriptor->drawSettings.minFilter = ftItem.minFilter;
 	descriptor->drawSettings.magFilter = ftItem.magFilter;
-
-	if(!GPUFamilyDescriptor::IsGPUForDevice(forGPU)) // not need compression
+	
+    if(forGPU == GPU_UNKNOWN)   // not need compression
         return descriptor;
-
+    
     descriptor->exportedAsGpuFamily = forGPU;
 
     const String gpuNameFlag = "--" + GPUFamilyDescriptor::GetGPUName(forGPU);
@@ -718,14 +719,14 @@ TextureDescriptor * TexturePacker::CreateDescriptor(eGPUFamily forGPU)
 									formatName.c_str(),
 									GPUFamilyDescriptor::GetGPUName(forGPU).c_str()));
 			
-			descriptor->exportedAsGpuFamily = GPU_PNG;
+			descriptor->exportedAsGpuFamily = GPU_UNKNOWN;
 		}
     }
     else
     {
         Logger::Warning("params for GPU %s were not set.\n", gpuNameFlag.c_str());
         
-        descriptor->exportedAsGpuFamily = GPU_PNG;
+        descriptor->exportedAsGpuFamily = GPU_UNKNOWN;
     }
     
     return descriptor;
@@ -791,7 +792,7 @@ TexturePacker::FilterItem TexturePacker::GetDescriptorFilter(bool generateMipMap
     
 bool TexturePacker::NeedSquareTextureForCompression(eGPUFamily forGPU)
 {
-    if(GPUFamilyDescriptor::IsGPUForDevice(forGPU))
+    if(forGPU != GPU_UNKNOWN)
     {
         const String gpuNameFlag = "--" + GPUFamilyDescriptor::GetGPUName(forGPU);
         if(CommandLineParser::Instance()->IsFlagSet(gpuNameFlag))

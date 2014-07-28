@@ -32,8 +32,6 @@
  
 using namespace DAVA;
 
-void FrameworkDidLaunched();
-void FrameworkWillTerminate();
 
 void FrameworkDidLaunched()
 {

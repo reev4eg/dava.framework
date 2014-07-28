@@ -32,9 +32,6 @@
 #define __QT_PROPERY_ITEM_DELEGATE_H__
 
 #include <QStyledItemDelegate>
-#include <QPointer>
-#include <QWidget>
-#include <QAbstractItemView>
 
 class QtPropertyData;
 class QtPropertyModel;
@@ -43,14 +40,8 @@ class QtPropertyItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
-	enum OptionalButtonsType
-	{
-		NORMAL,
-		OVERLAYED
-	};
-
 public:
-	QtPropertyItemDelegate(QAbstractItemView *view, QtPropertyModel *model, QWidget *parent = 0);
+	QtPropertyItemDelegate(QtPropertyModel *model, QWidget *parent = 0);
 	virtual ~QtPropertyItemDelegate();
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
@@ -66,15 +57,18 @@ public slots:
 	void showButtons(QtPropertyData *data);
 	void invalidateButtons();
 
-private:
-    bool eventFilter(QObject *obj, QEvent *event);
+protected:
+	QtPropertyModel *model;
+	QtPropertyData *lastHoverData;
+
+	enum OptionalButtonsType
+	{
+		NORMAL,
+		OVERLAYED
+	};
+
 	void drawOptionalButtons(QPainter *painter, QStyleOptionViewItem &option, const QModelIndex &index, OptionalButtonsType type) const;
 	void showOptionalButtons(QtPropertyData *data, bool show);
-
-	QtPropertyModel *model;
-	QPointer<QtPropertyData> lastHoverData;
-    QPointer<QAbstractItemView> view;
-    mutable QPointer<QWidget> activeEditor;
 };
 
 #endif // __QT_PROPERY_ITEM_DELEGATE_H__

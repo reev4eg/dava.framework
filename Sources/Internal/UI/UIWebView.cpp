@@ -30,7 +30,6 @@
 
 #include "UIWebView.h"
 #include "Render/RenderManager.h"
-#include "FileSystem/YamlNode.h"
 
 #if defined(__DAVAENGINE_MACOS__)
 #include "../Platform/TemplateMacOS/WebViewControlMacOS.h"
@@ -46,16 +45,16 @@
 
 namespace DAVA {
 
-UIWebView::UIWebView(const Rect &rect, bool rectInAbsoluteCoordinates)
-    : UIControl(rect, rectInAbsoluteCoordinates)
-    , webViewControl(new WebViewControl())
-    , isNativeControlVisible(false)
+UIWebView::UIWebView(const Rect &rect, bool rectInAbsoluteCoordinates) :
+    webViewControl(new WebViewControl()),
+    UIControl(rect, rectInAbsoluteCoordinates),
+    isNativeControlVisible(true)
 {
     Rect newRect = GetRect(true);
     this->webViewControl->Initialize(newRect);
     UpdateControlRect();
 
-    UpdateNativeControlVisible(false); // will be displayed in WillAppear.
+    UpdateNativeControlVisible(false, true); // will be displayed in WillAppear.
     SetDataDetectorTypes(DATA_DETECTOR_LINKS);
 }
 
@@ -104,16 +103,16 @@ void UIWebView::OpenFromBuffer(const String& string, const FilePath& basePath)
     this->webViewControl->OpenFromBuffer(string, basePath);
 }
 
-void UIWebView::WillBecomeVisible()
+void UIWebView::WillAppear()
 {
-    UIControl::WillBecomeVisible();
-    UpdateNativeControlVisible(GetVisible());
+    UIControl::WillAppear();
+    UpdateNativeControlVisible(GetVisible(), true);
 }
 
-void UIWebView::WillBecomeInvisible()
+void UIWebView::WillDisappear()
 {
-    UIControl::WillBecomeInvisible();
-    UpdateNativeControlVisible(false);
+    UIControl::WillDisappear();
+    UpdateNativeControlVisible(false, true);
 }
 
 void UIWebView::SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates)
@@ -132,7 +131,7 @@ void UIWebView::SetVisible(bool isVisible, bool hierarchic)
 {
 	UIControl::SetVisible(isVisible, hierarchic);
     if (IsOnScreen())
-        UpdateNativeControlVisible(isVisible);
+        UpdateNativeControlVisible(isVisible, hierarchic);
 }
 
 void UIWebView::SetScalesPageToFit(bool isScalesToFit)
@@ -173,7 +172,8 @@ void UIWebView::UpdateControlRect()
 
 void UIWebView::SetNativeControlVisible(bool isVisible)
 {
-    UpdateNativeControlVisible(isVisible);
+    isNativeControlVisible = isVisible;
+    UpdateNativeControlVisible(GetVisible(), true);
 }
 
 bool UIWebView::GetNativeControlVisible() const
@@ -181,10 +181,11 @@ bool UIWebView::GetNativeControlVisible() const
     return isNativeControlVisible;
 }
 
-void UIWebView::UpdateNativeControlVisible(bool value)
+void UIWebView::UpdateNativeControlVisible(bool value, bool hierarchic)
 {
-    isNativeControlVisible = value;
-    webViewControl->SetVisible(value, true);
+    // In case isDisplayNativeControl is set to false - always hide the native control.
+    bool visibleValue = isNativeControlVisible ? value : false;
+    webViewControl->SetVisible(visibleValue, hierarchic);
 }
 
 void UIWebView::SetDataDetectorTypes(int32 value)

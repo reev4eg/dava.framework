@@ -66,7 +66,7 @@ FontManagerDialog::FontManagerDialog(bool okButtonEnable,  const QString& graphi
 	if (!inDir.empty() && !outDir.empty())
 	{
 		resPacker->InitFolders(inDir, outDir);
-		resPacker->PackResources(GPU_PNG);
+		resPacker->PackResources(GPU_UNKNOWN);
 	}
     // Initialize dialog
     ConnectToSignals();

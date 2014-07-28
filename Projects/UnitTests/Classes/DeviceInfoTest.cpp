@@ -28,43 +28,28 @@
 
 
 #include "DeviceInfoTest.h"
+#include "Platform/DeviceInfo.h"
 #include "Platform/DateTime.h"
 
 DeviceInfoTest::DeviceInfoTest()
-:	UITestTemplate<DeviceInfoTest>("DeviceInfoTest"),
-    deviceInfoText(NULL)
+:	TestTemplate<DeviceInfoTest>("DeviceInfoTest")
 {
 	RegisterFunction(this, &DeviceInfoTest::TestFunction, Format("DeviceInfo test"), NULL);
 }
 
 void DeviceInfoTest::LoadResources()
 {
-    UITestTemplate::LoadResources();
-    Font *font = FTFont::Create("~res:/Fonts/korinna.ttf");
-    DVASSERT(font);
-	font->SetSize(20);
-	
-    Rect textRect = GetRect();
-    textRect.SetPosition(textRect.GetPosition() + Vector2(1.0f, 31.0f));
-    textRect.SetSize(textRect.GetSize() - Vector2(1.0f, 31.0f));
-
-	deviceInfoText = new UIStaticText(textRect);
-    deviceInfoText->SetMultiline(true);
-    deviceInfoText->SetTextAlign(ALIGN_LEFT | ALIGN_TOP);
-    deviceInfoText->SetFont(font);
-    deviceInfoText->SetTextColor(Color::White);
-    deviceInfoText->SetDebugDraw(true);
-
-    AddControl(deviceInfoText);
 }
 
 void DeviceInfoTest::UnloadResources()
 {
-    UITestTemplate::UnloadResources();
-    SafeRelease(deviceInfoText);
 }
 
-void DeviceInfoTest::DidAppear()
+void DeviceInfoTest::Draw(const DAVA::UIGeometricData &geometricData)
+{
+}
+
+void DeviceInfoTest::TestFunction(TestTemplate<DeviceInfoTest>::PerfFuncData *data)
 {
     String platform = DeviceInfo::GetPlatformString();
     String version = DeviceInfo::GetVersion();
@@ -78,94 +63,58 @@ void DeviceInfoTest::DidAppear()
     int proxyPort = DeviceInfo::GetHTTPProxyPort();
     String proxyExculde = DeviceInfo::GetHTTPNonProxyHosts();
     WideString name = DeviceInfo::GetName();
-    List<DeviceInfo::StorageRecord> storages = DeviceInfo::GetStorageList();
-    
-    String deviceInfoString;
-    deviceInfoString += Format("Platform: %s\n", platform.c_str());
-    deviceInfoString += Format("OS version: %s\n", version.c_str());
-	deviceInfoString += Format("Manufacturer: %s\n", manufacturer.c_str());
-	deviceInfoString += Format("Model: %s\n", model.c_str());
-	deviceInfoString += Format("Locale: %s\n", locale.c_str());
-	deviceInfoString += Format("Region: %s\n", region.c_str());
-	deviceInfoString += Format("Time zone: %s\n", timezone.c_str());
-    deviceInfoString += Format("UDID: %s\n", udid.c_str());
-    deviceInfoString += Format("Name: %s\n", WStringToString(name).c_str());
-    deviceInfoString += Format("ZBufferSize: %d\n", DeviceInfo::GetZBufferSize());
-    deviceInfoString += Format("Proxy Host: %s\n",proxyHost.c_str());
-    deviceInfoString += Format("Proxy Port: %d\n", proxyPort);
-    deviceInfoString += Format("Proxy Exclude Hosts: %s\n",proxyExculde.c_str());
-	const eGPUFamily gpu = DeviceInfo::GetGPUFamily();
-	if(gpu == GPU_INVALID)
-	{
-		deviceInfoString += "GPU family: INVALID\n";
-	}
-	else
-	{
-		deviceInfoString += Format("GPU family: %s\n", GPUFamilyDescriptor::GetGPUName(gpu).c_str());
-	}
-    deviceInfoString += Format("Network connection type: %s\n", GetNetworkTypeString().c_str());
-    deviceInfoString += Format("Network signal strength: %i%%\n", DeviceInfo::GetNetworkInfo().signalStrength);
 
-    List<DeviceInfo::StorageRecord>::const_iterator iter = storages.begin();
-    for (;iter != storages.end(); ++iter)
-    {
-    	String storageName;
-
-    	switch(iter->type)
-    	{
-    		case DeviceInfo::STORAGE_TYPE_INTERNAL:
-    			storageName = "Internal storage";
-    			break;
-
-    		case DeviceInfo::STORAGE_TYPE_EXTERNAL:
-    			storageName = "External storage";
-    			break;
-
-    		default:
-    			storageName = "Unknown storage";
-    			break;
-    	}
-
-    	deviceInfoString += Format("%s: capacity: %lld; free: %lld\n", storageName.c_str(), iter->totalSpace, iter->freeSpace);
-    }
-
-    deviceInfoText->SetText(StringToWString(deviceInfoString));
 	Logger::Debug("********** Device info **********");
-	Logger::Debug(deviceInfoString.c_str());
+	Logger::Debug("Platform: %s", platform.c_str());
+	Logger::Debug("OS version: %s", version.c_str());
+	Logger::Debug("Manufacturer: %s", manufacturer.c_str());
+	Logger::Debug("Model: %s", model.c_str());
+	Logger::Debug("Locale: %s", locale.c_str());
+	Logger::Debug("Region: %s", region.c_str());
+	Logger::Debug("Time zone: %s", timezone.c_str());
+    Logger::Debug("UDID: %s", udid.c_str());
+    Logger::Debug("Name: %s", WStringToString(name).c_str());
+    Logger::Debug("ZBufferSize: %d", DeviceInfo::GetZBufferSize());
+	Logger::Debug("Proxy Host: %s", proxyHost.c_str());
+	Logger::Debug("Proxy Port: %d", proxyPort);
+	Logger::Debug("Proxy Exclude Hosts: %s", proxyExculde.c_str());
+    Logger::Debug("GPU family: %s", GetGpuFamilyString(DeviceInfo::GetGPUFamily()).c_str());
 	Logger::Debug("********** Device info **********");
+
+	data->testData.message = "DeviceInfo test - passed";
+	TEST_VERIFY(true);
 }
 
-void DeviceInfoTest::TestFunction(TestTemplate<DeviceInfoTest>::PerfFuncData *data)
+String DeviceInfoTest::GetGpuFamilyString(eGPUFamily gpuFamily)
 {
-	return;
-}
+    String res;
+    switch (gpuFamily)
+    {
+        case DAVA::GPU_ADRENO:
+            res = "Adreno";
+            break;
 
-String DeviceInfoTest::GetNetworkTypeString()
-{
-    static const struct
-    {
-        DeviceInfo::eNetworkType networkType;
-        String networkTypeString;
-    } networkTypesMap[] =
-    {
-        { DeviceInfo::NETWORK_TYPE_NOT_CONNECTED, "Not Connected" },
-        { DeviceInfo::NETWORK_TYPE_CELLULAR, "Cellular" },
-        { DeviceInfo::NETWORK_TYPE_WIFI, "Wi-Fi" },
-        { DeviceInfo::NETWORK_TYPE_WIMAX, "WiMAX" },
-        { DeviceInfo::NETWORK_TYPE_ETHERNET, "Ehternet" },
-        { DeviceInfo::NETWORK_TYPE_BLUETOOTH, "Bluetooth" },
-        { DeviceInfo::NETWORK_TYPE_UNKNOWN, "Unknown" }
-    };
-    
-    const DeviceInfo::NetworkInfo& networkInfo = DeviceInfo::GetNetworkInfo();
-    uint32 networkTypesCount = COUNT_OF(networkTypesMap);
-    for (uint32 i = 0; i < networkTypesCount; i ++)
-    {
-        if (networkTypesMap[i].networkType == networkInfo.networkType)
-        {
-            return networkTypesMap[i].networkTypeString;
-        }
+        case DAVA::GPU_MALI:
+            res = "Mali";
+            break;
+
+        case DAVA::GPU_POWERVR_ANDROID:
+            res = "PowerVR Android";
+            break;
+
+        case DAVA::GPU_POWERVR_IOS:
+            res = "PowerVR iOS";
+            break;
+
+        case DAVA::GPU_TEGRA:
+            res = "Tegra";
+            break;
+
+        case DAVA::GPU_UNKNOWN:
+        default:
+            res = "Unknown GPU family";
+            break;
     }
-    
-    return "Unknown";
+
+    return res;
 }

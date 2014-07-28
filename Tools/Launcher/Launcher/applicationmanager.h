@@ -56,7 +56,6 @@ public:
 
     void RunApplication(const QString & branchID, const QString & appID, const QString & versionID);
     bool RemoveApplication(const QString & branchID, const QString & appID, const QString & versionID);
-    bool RemoveBranch(const QString & branchID);
 
     bool ShouldShowNews();
     void NewsShowed();

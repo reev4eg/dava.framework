@@ -32,7 +32,6 @@
 #include "Utils/Utils.h"
 #include "FileSystem/DynamicMemoryFile.h"
 #include "FileSystem/YamlParser.h"
-#include "FileSystem/YamlNode.h"
 #include "FileSystem/VariantType.h"
 
 namespace DAVA 

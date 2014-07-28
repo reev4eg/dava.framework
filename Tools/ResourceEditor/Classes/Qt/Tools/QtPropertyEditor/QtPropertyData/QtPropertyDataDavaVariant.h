@@ -149,17 +149,33 @@ protected:
     QStringList GetFlagsList() const;
 };
 
-class QtPropertyDataDavaVariantSubValue
-    : public QtPropertyDataDavaVariant
+class QtPropertyDataDavaVariantSubValue : public QtPropertyDataDavaVariant
 {
 public:
-    QtPropertyDataDavaVariantSubValue(QtPropertyDataDavaVariant* _parentVariant, const DAVA::VariantType& subvalue);
+	QtPropertyDataDavaVariantSubValue(QtPropertyDataDavaVariant *_parentVariant, const DAVA::VariantType &subvalue)
+		: QtPropertyDataDavaVariant(subvalue)
+		, parentVariant(_parentVariant)
+		, trackParent(true)
+	{ }
 
-    QtPropertyDataDavaVariant *parentVariant;
+	QtPropertyDataDavaVariant *parentVariant;
 	bool trackParent;
 
-    virtual void SetValueInternal(const QVariant& value);
-    virtual bool IsMergable() const;
+	virtual void SetValueInternal(const QVariant &value)
+	{
+		QtPropertyDataDavaVariant::SetValueInternal(value);
+		if(NULL != parentVariant && trackParent)
+		{
+			parentVariant->MeSetFromChilds();
+		}
+
+		trackParent = true;
+	}
+
+    virtual bool IsMergable() const
+    {
+        return false;
+    }
 };
 
 #endif // __QT_PROPERTY_DATA_DAVA_VARIANT_H__

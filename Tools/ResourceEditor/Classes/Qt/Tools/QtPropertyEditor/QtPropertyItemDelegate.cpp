@@ -28,27 +28,20 @@
 
 
 
-#include <QToolTip>
-#include <QHelpEvent>
-#include <QPainter>
-#include <QMouseEvent>
+#include <QtGui>
 
 #include "QtPropertyItemDelegate.h"
 #include "QtPropertyModel.h"
 #include "QtPropertyData.h"
 
-QtPropertyItemDelegate::QtPropertyItemDelegate(QAbstractItemView *_view, QtPropertyModel *_model, QWidget *parent /* = 0 */)
+QtPropertyItemDelegate::QtPropertyItemDelegate(QtPropertyModel *_model, QWidget *parent /* = 0 */)
 	: QStyledItemDelegate(parent)
 	, model(_model)
 	, lastHoverData(NULL)
-    , view(_view)
-{
-    DVASSERT(view);
-    view->viewport()->installEventFilter(this);
-}
+{ }
 
 QtPropertyItemDelegate::~QtPropertyItemDelegate()
-{}
+{ }
 
 void QtPropertyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -82,7 +75,6 @@ QWidget* QtPropertyItemDelegate::createEditor(QWidget *parent, const QStyleOptio
 
 	if(model == index.model())
 	{
-        int paddingRight = 0;
 		QtPropertyData* data = model->itemFromIndex(index);
 
 		if(NULL != data)
@@ -97,8 +89,6 @@ QWidget* QtPropertyItemDelegate::createEditor(QWidget *parent, const QStyleOptio
 			editWidget = QStyledItemDelegate::createEditor(parent, option, index);
 		}
 	}
-
-    activeEditor = editWidget;
 
     return editWidget;
 }
@@ -127,34 +117,13 @@ bool QtPropertyItemDelegate::editorEvent(QEvent * event, QAbstractItemModel * _m
 	if(event->type() == QEvent::MouseMove)
 	{
 		QtPropertyData* data = model->itemFromIndex(index);
-		showButtons(data);
+		if(data != lastHoverData)
+		{
+			showButtons(data);
+		}
 	}
 
 	return QStyledItemDelegate::editorEvent(event, model, option, index);
-}
-
-bool QtPropertyItemDelegate::eventFilter(QObject* obj, QEvent* event)
-{
-    const bool needOverride = activeEditor && activeEditor->isVisible();
-
-    if (needOverride)
-    {
-        switch (event->type())
-        {
-        case QEvent::MouseMove:
-	        {
-                QMouseEvent *me = static_cast<QMouseEvent *>(event);
-                QModelIndex index = view->indexAt(me->pos());
-		        QtPropertyData* data = model->itemFromIndex(index);
-		        showButtons(data);
-	        }
-            break;
-        default:
-            break;
-        }
-    }
-
-    return QStyledItemDelegate::eventFilter(obj, event);
 }
 
 void QtPropertyItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *_model, const QModelIndex &index) const
@@ -187,23 +156,10 @@ void QtPropertyItemDelegate::updateEditorGeometry(QWidget * editor, const QStyle
 		editor->setStyleSheet("#customPropertyEditor{ border: 1px solid gray; }");
 		QRect r = option.rect;
 
-        QtPropertyData* data = model->itemFromIndex(index);
-        if (data)
-        {
-            const int n = data->GetButtonsCount();
-            int padding = 0;
-            for (int i = 0; i < n; i++)
-            {
-                QtPropertyToolButton* btn = data->GetButton(i);
-                // Skip QComboBox button
-                if (!btn->overlayed)
-                {
-                    padding += btn->geometry().width();
-                }
-            }
-
-            r.adjust(0, 0, -padding, 0);
-        }
+		if(!index.model()->data(index, Qt::DecorationRole).isNull())
+		{
+			r.adjust(17, 0, 0, 0);
+		}
 
 		editor->setGeometry(r);
 	}
@@ -299,13 +255,10 @@ void QtPropertyItemDelegate::drawOptionalButtons(QPainter *painter, QStyleOption
 
 void QtPropertyItemDelegate::showButtons(QtPropertyData *data)
 {
-	if(data != lastHoverData)
-	{
-	    showOptionalButtons(lastHoverData, false);
-	    showOptionalButtons(data, true);
+	showOptionalButtons(lastHoverData, false);
+	showOptionalButtons(data, true);
 
-	    lastHoverData = data;
-	}
+	lastHoverData = data;
 }
 
 void QtPropertyItemDelegate::showOptionalButtons(QtPropertyData *data, bool show)
@@ -334,4 +287,3 @@ void QtPropertyItemDelegate::invalidateButtons()
 		lastHoverData = NULL;
 	}
 }
-

@@ -110,6 +110,8 @@ protected:
     
 private:
     int32 BufferData();
+    unsigned char ClampFloatToByte(const float &value);
+    uint32 binCeil(uint32 value);
     
     float32             currFrameTime;
     float32             frameTime;

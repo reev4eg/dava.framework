@@ -58,7 +58,6 @@
 #include "particleeffectpropertygridwidget.h"
 #include "joypadpropertygridwidget.h"
 #include "webviewpropertygridwidget.h"
-#include "UIListCellPropertyGridWidget.h"
 
 #include "Custom/guidepropertygridwidget.h"
 
@@ -102,8 +101,7 @@ private:
 	ScrollViewPropertyGridWidget* scrollViewWidget;
     ParticleEffectPropertyGridWidget* particleWidget;
     JoypadPropertyGridWidget* joypadWidget;
-    WebViewPropertyGridWidget* webViewWidget;
-    UIListCellPropertyGridWidget* listCellWidget;
+    WebViewPropertyGridWidget* webViewWidget;    
     GuidePropertyGridWidget* guideWidget;
 
     // The same widgets in the list manner - for easier handling of group operations.

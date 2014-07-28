@@ -152,7 +152,7 @@ public:
 	int	fboMemoryUsed;
 };
 
-eGPUFamily Texture::defaultGPU = GPU_PNG;
+eGPUFamily Texture::defaultGPU = GPU_UNKNOWN;
     
 static TextureMemoryUsageInfo texMemoryUsageInfo;
 	
@@ -203,7 +203,7 @@ Texture::Texture()
 ,	height(0)
 ,	depthFormat(DEPTH_NONE)
 ,	isRenderTarget(false)
-,   loadedAsFile(GPU_PNG)
+,   loadedAsFile(GPU_UNKNOWN)
 ,	textureType(Texture::TEXTURE_2D)
 ,	isPink(false)
 ,	state(STATE_INVALID)
@@ -583,14 +583,12 @@ Texture * Texture::CreateFromImage(TextureDescriptor *descriptor, eGPUFamily gpu
 
 bool Texture::LoadImages(eGPUFamily gpu, Vector<Image *> * images)
 {
-    DVASSERT(gpu != GPU_INVALID);
-    
 	if(!IsLoadAvailable(gpu))
 		return false;
 	
     int32 baseMipMap = GetBaseMipMap();
-    
-	if(texDescriptor->IsCubeMap() && (!GPUFamilyDescriptor::IsGPUForDevice(gpu)))
+
+	if(texDescriptor->IsCubeMap() && (GPU_UNKNOWN == gpu))
 	{
 		Vector<FilePath> faceNames;
 		GenerateCubeFaceNames(texDescriptor->GetSourceTexturePathname(), faceNames);
@@ -627,9 +625,9 @@ bool Texture::LoadImages(eGPUFamily gpu, Vector<Image *> * images)
 	else
 	{
 		FilePath imagePathname = GPUFamilyDescriptor::CreatePathnameForGPU(texDescriptor, gpu);
-
         ImageSystem::Instance()->Load(imagePathname, *images,baseMipMap);
-        if(images->size() == 1 && gpu == GPU_PNG && texDescriptor->GetGenerateMipMaps())
+        
+        if(images->size() == 1 && gpu == GPU_UNKNOWN && texDescriptor->GetGenerateMipMaps())
         {
             Image * img = *images->begin();
             *images = img->CreateMipMapsImages(texDescriptor->dataSettings.GetIsNormalMap());
@@ -832,7 +830,9 @@ bool Texture::IsLoadAvailable(const eGPUFamily gpuFamily) const
         return true;
     }
     
-    if(GPUFamilyDescriptor::IsGPUForDevice(gpuFamily) && texDescriptor->compression[gpuFamily].format == FORMAT_INVALID)
+    DVASSERT(gpuFamily < GPU_FAMILY_COUNT);
+    
+    if(gpuFamily != GPU_UNKNOWN && texDescriptor->compression[gpuFamily].format == FORMAT_INVALID)
     {
         return false;
     }
@@ -1101,12 +1101,12 @@ Image * Texture::CreateImageFromMemory(UniqueHandle renderState)
     }
     else
     {
-        Sprite *renderTarget = Sprite::CreateAsRenderTarget((float32)width, (float32)height, texDescriptor->format, true);
+        Sprite *renderTarget = Sprite::CreateAsRenderTarget((float32)width, (float32)height, texDescriptor->format);
         RenderManager::Instance()->SetRenderTarget(renderTarget);
 
         RenderManager::Instance()->ClearWithColor(0.f, 0.f, 0.f, 0.f);
 
-		Sprite *drawTexture = Sprite::CreateFromTexture(this, 0, 0, (float32)width, (float32)height, true);
+		Sprite *drawTexture = Sprite::CreateFromTexture(this, 0, 0, (float32)width, (float32)height);
 
         Sprite::DrawState drawState;
         drawState.SetPosition(0, 0);
@@ -1248,7 +1248,7 @@ void Texture::GenerateCubeFaceNames(const FilePath & filePath, const Vector<Stri
 		DAVA::FilePath faceFilePath = filePath;
 		faceFilePath.ReplaceFilename(fileNameWithoutExtension +
 									 faceNameSuffixes[i] +
-									 GPUFamilyDescriptor::GetFilenamePostfix(GPU_INVALID, FORMAT_INVALID));
+									 GPUFamilyDescriptor::GetFilenamePostfix(GPU_UNKNOWN, FORMAT_INVALID));
 			
 		faceNames.push_back(faceFilePath);
 	}

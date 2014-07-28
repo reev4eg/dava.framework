@@ -43,7 +43,6 @@
 #include "TexturePacker/CommandLineParser.h"
 
 #include "../Qt/Main/QtUtils.h"
-#include "TeamcityOutput/TeamcityOutput.h"
 
 
 using namespace DAVA;
@@ -55,7 +54,6 @@ void CommandLineManager::PrintUsage()
     printf("\t-h or --help to display this help\n");
     printf("\t-exo - extended output\n");
     printf("\t-v or --verbose - detailed output\n");
-    printf("\t-teamcity - extra output in teamcity format\n");
     printf("\t-forceclose - close editor after job would be finished\n");
     
     Map<String, CommandLineTool *>::const_iterator endIT = commandLineTools.end();
@@ -74,7 +72,6 @@ void CommandLineManager::PrintUsageForActiveTool()
     printf("\t-h or --help to display this help\n");
     printf("\t-exo - extended output\n");
     printf("\t-v or --verbose - detailed output\n");
-    printf("\t-teamcity - extra output in teamcity format\n");
     printf("\t-forceclose - close editor after job would be finished\n");
     
     if(activeTool)
@@ -154,12 +151,6 @@ void CommandLineManager::ParseCommandLine()
     {
         CommandLineParser::Instance()->SetExtendedOutput(true);
     }
-
-    if(CommandLineParser::CommandIsFound(String("-teamcity")))
-    {
-        CommandLineParser::Instance()->SetUseTeamcityOutput(true);
-    }
-
 }
 
 void CommandLineManager::DetectCommandLineMode()
@@ -232,10 +223,4 @@ void CommandLineManager::InitalizeTool()
 		isToolInitialized = activeTool->InitializeFromCommandLine();
         activeTool->DumpParams();
 	}
-
-    if(CommandLineParser::Instance()->UseTeamcityOutput())
-    {
-        DAVA::TeamcityOutput *out = new DAVA::TeamcityOutput();
-        DAVA::Logger::AddCustomOutput(out);
-    }
 }

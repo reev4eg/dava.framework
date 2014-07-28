@@ -138,33 +138,21 @@ namespace DAVA
 		// Возвращает указатель на член интроспекции по заданному имени, или NULL если такой не найден.
 		const InspMember* Member(const char* name) const
 		{
+			const InspMember *member = NULL;
+
 			for(int i = 0; i < members_count; ++i)
 			{
 				if(NULL != members[i])
 				{
 					if(members[i]->name == name)
 					{
-						return members[i];
+						member = members[i];
+						break;
 					}
 				}
 			}
 
-            //Второй проход с strcpm необходим, т.к. под дебагом и строковые литералы могут иметь разные указатели.
-            //Под релизом же, строковые литералы лучше сначала проверить по указателям, т.к. имеет место быть оптимизация компилятором.
-            //Очевидно, что первый проход в принципе не будет работать для runtime строк. 
-            //Поэтому, TODO-ка: переделаь интроспекцию на FastName, будет работать во всех случаях и, к тому же, иногда быстрее.
-            for(int i = 0; i < members_count; ++i)
-            {
-                if(NULL != members[i])
-                {
-                    if(strcmp(members[i]->name, name) == 0)
-                    {
-                        return members[i];
-                    }
-                }
-            }
-
-			return NULL;
+			return member;
 		}
 
 		// Возвращает указатель на базовую интроспекцию, или NULL если такой не существует.

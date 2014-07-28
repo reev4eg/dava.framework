@@ -45,6 +45,7 @@ public:
         String name;
         float32 maxValue;
         float32 minValue;
+        float32 currentValue;
     };
 
     enum eSoundEventCallbackType
@@ -86,7 +87,6 @@ public:
     virtual void GetEventParametersInfo(Vector<SoundEventParameterInfo> & paramsInfo) const = 0;
 
     virtual String GetEventName() const = 0;
-    virtual float32 GetMaxDistance() const = 0;
 
 protected:
     float32 volume;

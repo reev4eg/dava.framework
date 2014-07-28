@@ -164,7 +164,6 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Sources\Tools\TeamcityOutput\TeamcityOutput.h" />
     <ClInclude Include="..\..\Sources\Tools\TextureCompression\DXTConverter.h" />
     <ClInclude Include="..\..\Sources\Tools\TextureCompression\PVRConverter.h" />
     <ClInclude Include="..\..\Sources\Tools\TextureCompression\TextureConverter.h" />
@@ -177,7 +176,6 @@
     <ClInclude Include="..\..\Sources\Tools\TexturePacker\TexturePacker.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Sources\Tools\TeamcityOutput\TeamcityOutput.cpp" />
     <ClCompile Include="..\..\Sources\Tools\TextureCompression\DXTConverter.cpp" />
     <ClCompile Include="..\..\Sources\Tools\TextureCompression\PVRConverter.cpp" />
     <ClCompile Include="..\..\Sources\Tools\TextureCompression\TextureConverter.cpp" />

@@ -139,7 +139,7 @@ void ShowErrorDialog(const DAVA::String &errorMessage)
 {
 	bool forceClose =    CommandLineParser::CommandIsFound(String("-force"))
 					||  CommandLineParser::CommandIsFound(String("-forceclose"));
-	if(!forceClose && !Core::Instance()->IsConsoleMode())
+	if(!forceClose)
 	{
 		QMessageBox::critical(QtMainWindow::Instance(), "Error", errorMessage.c_str());
 	}

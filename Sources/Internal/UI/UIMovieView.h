@@ -29,8 +29,7 @@
 #ifndef __DAVAENGINE_UIMOVIEVIEW__H__
 #define __DAVAENGINE_UIMOVIEVIEW__H__
 
-#include "Base/BaseTypes.h"
-#include "UI/UIControl.h"
+#include "DAVAEngine.h"
 #include "IMovieViewControl.h"
 
 namespace DAVA {

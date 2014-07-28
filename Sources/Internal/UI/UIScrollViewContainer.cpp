@@ -29,9 +29,6 @@
 
 
 #include "UI/UIScrollViewContainer.h"
-#include "UI/UIScrollView.h"
-#include "UI/UIControlSystem.h"
-#include "UI/ScrollHelper.h"
 
 namespace DAVA 
 {

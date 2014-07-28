@@ -27,13 +27,9 @@
 =====================================================================================*/
 
 #include "SoundComponent.h"
-#include "TransformComponent.h"
 #include "Sound/SoundSystem.h"
 #include "Sound/SoundEvent.h"
 #include "Base/FastName.h"
-#include "ComponentHelpers.h"
-#include "Scene3D/Systems/EventSystem.h"
-#include "Scene3D/Systems/GlobalEventSystem.h"
 
 namespace DAVA
 {
@@ -55,8 +51,6 @@ void SoundComponent::AddSoundEvent(SoundEvent * _event)
 
     SafeRetain(_event);
     events.push_back(_event);
-
-    GlobalEventSystem::Instance()->Event(entity, EventSystem::SOUND_COMPONENT_CHANGED);
 }
 
 void SoundComponent::RemoveSoundEvent(SoundEvent * event)
@@ -78,10 +72,7 @@ void SoundComponent::RemoveAllEvents()
 {
     uint32 eventsCount = events.size();
     for(uint32 i = 0; i < eventsCount; ++i)
-    {
-        events[i]->Stop();
         SafeRelease(events[i]);
-    }
 
     events.clear();
 }
@@ -96,10 +87,9 @@ Component * SoundComponent::Clone(Entity * toEntity)
     SoundComponent * soundComponent = new SoundComponent();
     soundComponent->SetEntity(toEntity);
     
-    SoundSystem * soundSystem = SoundSystem::Instance();
     int32 eventCount = events.size();
     for(int32 i = 0; i < eventCount; ++i)
-        soundComponent->AddSoundEvent(soundSystem->CloneEvent(events[i]));
+        soundComponent->AddSoundEvent(events[i]);
     
     soundComponent->localDirection = localDirection;
 

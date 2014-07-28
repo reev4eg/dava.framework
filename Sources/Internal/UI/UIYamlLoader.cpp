@@ -32,7 +32,6 @@
 #include "Platform/SystemTimer.h"
 #include "UI/UIControl.h"
 #include "FileSystem/YamlParser.h"
-#include "FileSystem/YamlNode.h"
 #include "FileSystem/FileSystem.h"
 #include "Render/2D/GraphicsFont.h"
 #include "Render/2D/FontManager.h"
@@ -543,7 +542,7 @@ void UIYamlLoader::LoadFontsFromNode(const YamlNode * rootNode)
             const YamlNode * fontVerticalSpacingNode = node->Get("verticalSpacing");
             if(fontVerticalSpacingNode)
             {
-                font->SetVerticalSpacing(fontVerticalSpacingNode->AsInt32());
+                font->SetVerticalSpacing(fontVerticalSpacingNode->AsInt());
             }
             
 			//fontMap[t->first] = font;
@@ -574,13 +573,13 @@ void UIYamlLoader::LoadFontsFromNode(const YamlNode * rootNode)
             const YamlNode * fontVerticalSpacingNode = node->Get("verticalSpacing");
             if(fontVerticalSpacingNode)
             {
-                font->SetVerticalSpacing(fontVerticalSpacingNode->AsInt32());
+                font->SetVerticalSpacing(fontVerticalSpacingNode->AsInt());
             }
             
             const YamlNode * fontHorizontalSpacingNode = node->Get("horizontalSpacing");
             if(fontHorizontalSpacingNode)
             {
-                font->SetHorizontalSpacing(fontHorizontalSpacingNode->AsInt32());
+                font->SetHorizontalSpacing(fontHorizontalSpacingNode->AsInt());
             }
             
 			//fontMap[t->first] = font;

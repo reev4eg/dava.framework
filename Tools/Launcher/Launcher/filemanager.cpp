@@ -155,7 +155,7 @@ void FileManager::MoveFilesOnlyToDirectory(const QString & dirFrom, const QStrin
     QDir fromDirMac(dirFrom);
 
     fromDirMac.setFilter(QDir::Dirs | QDir::Hidden | QDir::NoSymLinks);
-    fromDirMac.setNameFilters(QStringList() << "Launcher.app");
+    fromDirMac.setNameFilters(QStringList() << "*.app");
     list = fromDirMac.entryInfoList();
     for(int i = 0; i < list.size(); ++i)
     {
@@ -168,16 +168,7 @@ void FileManager::MoveFilesOnlyToDirectory(const QString & dirFrom, const QStrin
 
 QString FileManager::GetApplicationFolder(const QString & branchID, const QString & appID)
 {
-    QString path = GetBranchFolder(branchID) + appID + "/";
-    if(!QDir(path).exists())
-        QDir().mkpath(path);
-
-    return path;
-}
-
-QString FileManager::GetBranchFolder(const QString & branchID)
-{
-    QString path = baseAppDir + branchID + "/";
+    QString path = baseAppDir + branchID + "/" + appID + "/";
     if(!QDir(path).exists())
         QDir().mkpath(path);
 

@@ -50,7 +50,6 @@
 #include "UIMovieViewMetadata.h"
 #include "UIJoypadMetadata.h"
 #include "UI3DViewMetadata.h"
-#include "UIListCellMetadata.h"
 
 #include "Custom/GuideMetadata.h"
 
@@ -89,11 +88,6 @@ BaseMetadata* MetadataFactory::GetMetadataForUIControl(const UIControl* uiContro
     if (dynamic_cast<const UIStaticText*>(uiControl))
     {
         return new UIStaticTextMetadata();
-    }
-
-    if (uiControl->GetClassName() == "UIListCell")
-    {
-        return new UIListCellMetadata();
     }
 
     if (dynamic_cast<const UIButton*>(uiControl))

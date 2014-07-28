@@ -53,7 +53,7 @@ namespace DAVA
 {
 
 RenderSystem::RenderSystem()
-    :   renderPassManager()
+    :   renderPassManager(this)
     ,   mainCamera(0)
     ,   drawCamera(0)
     ,   forceUpdateLights(false)

@@ -63,8 +63,6 @@ public:
 	void DrawText(int x, int y, const DAVA::String &text, const DAVA::Color &color, Align align = TopLeft);
 	void DrawText(DAVA::Vector2 pos2d, const DAVA::String &text, const DAVA::Color &color, Align align = TopLeft);
 
-    inline DAVA::GraphicsFont * GetFont() const;
-
 protected:
 	struct TextToDraw
 	{
@@ -86,10 +84,5 @@ protected:
 	virtual void Process(DAVA::float32 timeElapsed);
 	void Draw();
 };
-
-inline DAVA::GraphicsFont * TextDrawSystem::GetFont() const
-{
-    return font;
-}
 
 #endif

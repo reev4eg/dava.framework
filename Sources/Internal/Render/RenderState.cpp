@@ -34,7 +34,6 @@
 #include "Platform/Thread.h"
 #include "Utils/Utils.h"
 #include "FileSystem/YamlParser.h"
-#include "FileSystem/YamlNode.h"
 #include "Scene3D/SceneFile/SerializationContext.h"
 
 namespace DAVA

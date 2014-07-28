@@ -43,7 +43,7 @@ class RenderSystem;
 class RenderPassManager
 {
 public:
-    RenderPassManager();
+    RenderPassManager(RenderSystem * renderSystem);
     ~RenderPassManager();
     
     void InsertPass(RenderPass * renderPass);

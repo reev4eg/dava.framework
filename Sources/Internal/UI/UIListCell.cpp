@@ -31,10 +31,18 @@
 #include "UI/UIListCell.h"
 #include "Base/ObjectFactory.h"
 #include "UI/UIAggregatorControl.h"
-#include "FileSystem/YamlNode.h"
 
 namespace DAVA 
 {
+
+    UIListCell::UIListCell()
+        :   UIButton()
+        ,	currentIndex(-1)
+        ,	identifier("")
+        ,	cellStore(NULL)
+    {
+    }
+    
     UIListCell::UIListCell(const Rect &rect, const String &cellIdentifier, const FilePath &aggregatorPath)
         :	UIButton(rect)
         ,	currentIndex(-1)
@@ -62,22 +70,22 @@ namespace DAVA
             currentIndex = -1;
     }
     
-    const String & UIListCell::GetIdentifier() const
+    const String & UIListCell::GetIdentifier()
     {
         return identifier;
     }
 
-    void UIListCell::SetIdentifier(const String &newIdentifier)
-    {
-        identifier = newIdentifier;
-    }
-
-    int32 UIListCell::GetIndex() const
+    int32 UIListCell::GetIndex()
     {
         return currentIndex;	
     }
-
-	UIListCell *UIListCell::Clone()
+    
+    UIListCell *UIListCell::CloneListCell()
+	{
+		return (UIListCell *)Clone();
+	}
+    
+	UIControl *UIListCell::Clone()
 	{
 		UIListCell *c = new UIListCell(GetRect(),identifier);
 		c->CopyDataFrom(this);
@@ -93,23 +101,21 @@ namespace DAVA
     
     void UIListCell::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader)
 	{
-        UIButton::LoadFromYamlNode(node, loader);
         const YamlNode * identifierNode = node->Get("identifier");
         if (identifierNode)
         {
-            SetIdentifier(identifierNode->AsString());
+            identifier = identifierNode->AsString();
         }
+        UIButton::LoadFromYamlNode(node, loader);
     }
     
     YamlNode * UIListCell::SaveToYamlNode(UIYamlLoader * loader)
     {
-        YamlNode *node = UIButton::SaveToYamlNode(loader);
+        YamlNode *node = UIControl::SaveToYamlNode(loader);
 
         //Identifier
-        if( !GetIdentifier().empty() )
-        {
-            node->Set("identifier", GetIdentifier());
-        }
+        node->Set("identifier", this->GetIdentifier());
+        
         return node;
     }
 };

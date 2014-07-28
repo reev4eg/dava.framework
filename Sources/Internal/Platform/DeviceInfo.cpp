@@ -64,7 +64,36 @@ DeviceInfo::ePlatform DeviceInfo::GetPlatform()
 
 String DeviceInfo::GetPlatformString()
 {
-    return GlobalEnumMap<ePlatform>::Instance()->ToString(GetPlatform());
+	String res = "";
+
+	switch (GetPlatform())
+	{
+		case PLATFORM_IOS:
+			res = "iOS";
+			break;
+
+		case PLATFORM_IOS_SIMULATOR:
+			res = "iOS Simulator";
+			break;
+
+		case PLATFORM_MACOS:
+			res = "MacOS";
+			break;
+
+		case PLATFORM_ANDROID:
+			res = "Android";
+			break;
+
+		case PLATFORM_WIN32:
+			res = "Win32";
+			break;
+
+		default:
+			res = "Unknown";
+			break;
+	}
+
+	return res;
 }
 
 
@@ -83,12 +112,5 @@ int DeviceInfo::GetZBufferSize()
 {
 	return 24;
 }
-
-List<DeviceInfo::StorageRecord> DeviceInfo::GetStorageList()
-{
-    List<DeviceInfo::StorageRecord> l;
-    return l;
-}
-    
 #endif
 }

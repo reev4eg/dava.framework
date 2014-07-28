@@ -82,10 +82,9 @@ namespace
 }
 
 
-ActionComponentEditor::ActionComponentEditor(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::ActionComponentEditor)
-    , isModified(false)
+ActionComponentEditor::ActionComponentEditor(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::ActionComponentEditor)
 {
     ui->setupUi(this);
 	
@@ -179,7 +178,6 @@ void ActionComponentEditor::OnAddAction()
 		UpdateTableFromComponent(targetComponent);
 		
 		ui->buttonAddItem->setEnabled(false);
-        isModified = true;
 	}
 }
 
@@ -200,7 +198,6 @@ void ActionComponentEditor::OnRemoveAction()
 		}
 		
 		ui->buttonAddItem->setEnabled(!IsActionPresent(GetDefaultAction()));
-        isModified = true;
 	}
 }
 
@@ -255,12 +252,6 @@ void ActionComponentEditor::Update()
 	ui->tableActions->resizeRowsToContents();
 
 	ui->buttonAddItem->setEnabled(!IsActionPresent(GetDefaultAction()));
-    isModified = true;
-}
-
-bool ActionComponentEditor::IsModified() const
-{
-    return isModified;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

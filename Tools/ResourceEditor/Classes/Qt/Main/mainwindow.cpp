@@ -115,7 +115,6 @@
 #include "Render/Highlevel/Vegetation/VegetationRenderObject.h"
 
 #include "Classes/Qt/BeastDialog/BeastDialog.h"
-#include "DebugTools/VersionInfoWidget/VersionInfoWidget.h"
 #include "Classes/Qt/RunActionEventWidget/RunActionEventWidget.h"
 
 
@@ -140,7 +139,7 @@ QtMainWindow::QtMainWindow(QWidget *parent)
 
 	qApp->installEventFilter(this);
 
-    SetupDocks();
+	SetupDocks();
 	SetupMainMenu();
 	SetupToolBars();
 	SetupStatusBar();
@@ -288,7 +287,7 @@ bool QtMainWindow::SaveSceneAs(SceneEditor2 *scene)
 
 DAVA::eGPUFamily QtMainWindow::GetGPUFormat()
 {
-    return GPUFamilyDescriptor::ConvertValueToGPU(SettingsManager::GetValue(Settings::Internal_TextureViewGPU).AsInt32());
+	return (eGPUFamily) SettingsManager::GetValue(Settings::Internal_TextureViewGPU).AsInt32();
 }
 
 void QtMainWindow::SetGPUFormat(DAVA::eGPUFamily gpu)
@@ -573,6 +572,7 @@ void QtMainWindow::SetupDocks()
 	QObject::connect(this, SIGNAL(SpritesReloaded()), ui->sceneInfo , SLOT(SpritesReloaded()));
     
     ui->libraryWidget->SetupSignals();
+
     // Run Action Event dock
     {
         dockActionEvent = new QDockWidget("Run Action Event", this);
@@ -604,7 +604,7 @@ void QtMainWindow::SetupActions()
 	ui->actionExportTegra->setData(GPU_TEGRA);
 	ui->actionExportMali->setData(GPU_MALI);
 	ui->actionExportAdreno->setData(GPU_ADRENO);
-	ui->actionExportPNG->setData(GPU_PNG);
+	ui->actionExportPNG->setData(GPU_UNKNOWN);
 	
 	// import
 #ifdef __DAVAENGINE_SPEEDTREE__
@@ -617,7 +617,7 @@ void QtMainWindow::SetupActions()
 	ui->actionReloadTegra->setData(GPU_TEGRA);
 	ui->actionReloadMali->setData(GPU_MALI);
 	ui->actionReloadAdreno->setData(GPU_ADRENO);
-	ui->actionReloadPNG->setData(GPU_PNG);
+	ui->actionReloadPNG->setData(GPU_UNKNOWN);
 	QObject::connect(ui->menuTexturesForGPU, SIGNAL(triggered(QAction *)), this, SLOT(OnReloadTexturesTriggered(QAction *)));
 	QObject::connect(ui->actionReloadTextures, SIGNAL(triggered()), this, SLOT(OnReloadTextures()));
 	QObject::connect(ui->actionReloadSprites, SIGNAL(triggered()), this, SLOT(OnReloadSprites()));
@@ -707,7 +707,6 @@ void QtMainWindow::SetupActions()
     
     QObject::connect(ui->actionBuildStaticOcclusion, SIGNAL(triggered()), this, SLOT(OnBuildStaticOcclusion()));
     QObject::connect(ui->actionRebuildCurrentOcclusionCell, SIGNAL(triggered()), this, SLOT(OnRebuildCurrentOcclusionCell()));
-    QObject::connect(ui->actionInvalidateStaticOcclusion, SIGNAL(triggered()), this, SLOT(OnInavalidateStaticOcclusion()));
     
 	//Help
     QObject::connect(ui->actionHelp, SIGNAL(triggered()), this, SLOT(OnOpenHelp()));
@@ -725,12 +724,6 @@ void QtMainWindow::SetupActions()
 
     // Debug functions
 	QObject::connect(ui->actionGridCopy, SIGNAL(triggered()), developerTools, SLOT(OnDebugFunctionsGridCopy()));
-	{
-#ifdef USER_VERSIONING_DEBUG_FEATURES
-        QAction *act = ui->menuDebug_Functions->addAction("Edit version tags");
-        connect(act, SIGNAL(triggered()), SLOT(DebugVersionInfo()));
-#endif
-	}
     
  	//Collision Box Types
     objectTypesLabel = new QtLabelWithActions();
@@ -1259,7 +1252,7 @@ void QtMainWindow::OnReloadTextures()
 void QtMainWindow::OnReloadTexturesTriggered(QAction *reloadAction)
 {
 	DAVA::eGPUFamily gpu = (DAVA::eGPUFamily) reloadAction->data().toInt();
-	if(gpu >= 0 && gpu < DAVA::GPU_FAMILY_COUNT)
+	if(gpu >= DAVA::GPU_UNKNOWN && gpu < DAVA::GPU_FAMILY_COUNT)
 	{
 		SetGPUFormat(gpu);
 	}
@@ -2456,13 +2449,6 @@ void QtMainWindow::OnBuildStaticOcclusion()
     delete waitOcclusionDlg;
 }
 
-void QtMainWindow::OnInavalidateStaticOcclusion()
-{
-    SceneEditor2* scene = GetCurrentScene();
-    if(!scene) return;
-    scene->staticOcclusionSystem->InvalidateOcclusion();
-}
-
 void QtMainWindow::OnRebuildCurrentOcclusionCell()
 {
     SceneEditor2* scene = GetCurrentScene();
@@ -2582,6 +2568,10 @@ bool QtMainWindow::OpenScene( const QString & path )
 
 				ret = true;
 			}
+            else
+            {
+                QMessageBox::critical(this, "Open scene error.", "Unexpected opening error. See logs for more info.");
+            }
 		}
 	}
 
@@ -2603,7 +2593,7 @@ void QtMainWindow::closeEvent( QCloseEvent * e )
 	bool changed = IsAnySceneChanged();
 	if(changed)
 	{
-		int answer = QMessageBox::question(this, "Scene was changed", "Do you want to quit anyway?",
+		int answer = QMessageBox::question(NULL, "Scene was changed", "Do you want to quit anyway?",
 			QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
 		if(answer == QMessageBox::No)
@@ -2732,7 +2722,7 @@ void QtMainWindow::OnAddWindEntity()
 
 bool QtMainWindow::LoadAppropriateTextureFormat()
 {
-	if (GetGPUFormat() != GPU_PNG)
+	if (GetGPUFormat() != GPU_UNKNOWN)
 	{
 		int answer = ShowQuestion("Inappropriate texture format",
 								  "Landscape editing is only allowed in PNG texture format.\nDo you want to reload textures in PNG format?",
@@ -2745,7 +2735,7 @@ bool QtMainWindow::LoadAppropriateTextureFormat()
 		OnReloadTexturesTriggered(ui->actionReloadPNG);
 	}
 
-	return (GetGPUFormat() == GPU_PNG);
+	return (GetGPUFormat() == GPU_UNKNOWN);
 }
 
 bool QtMainWindow::IsTilemaskModificationCommand(const Command2* cmd)
@@ -2926,16 +2916,4 @@ void QtMainWindow::OnSwitchWithDifferentLODs(bool checked)
             ++it;
         }
     }
-}
-
-void QtMainWindow::DebugVersionInfo()
-{
-    if (!versionInfoWidget)
-    {
-        versionInfoWidget = new VersionInfoWidget(this);
-        versionInfoWidget->setWindowFlags(Qt::Window);
-        versionInfoWidget->setAttribute(Qt::WA_DeleteOnClose);
-    }
-
-    versionInfoWidget->show();
 }

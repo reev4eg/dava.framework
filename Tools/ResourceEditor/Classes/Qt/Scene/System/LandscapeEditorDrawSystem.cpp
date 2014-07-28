@@ -633,7 +633,6 @@ void LandscapeEditorDrawSystem::ResetTileMaskTexture()
 	}
 
 	FilePath filePath = baseLandscape->GetTextureName(Landscape::TEXTURE_TILE_MASK);
-	baseLandscape->SetTexture(Landscape::TEXTURE_TILE_MASK, "");
 	baseLandscape->SetTexture(Landscape::TEXTURE_TILE_MASK, filePath);
 }
 

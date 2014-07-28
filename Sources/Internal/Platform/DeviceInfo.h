@@ -76,52 +76,6 @@ public:
 		PLATFORMS_COUNT
 	};
 
-    enum eNetworkType
-	{
-		NETWORK_TYPE_NOT_CONNECTED = 0,
-		NETWORK_TYPE_UNKNOWN,
-		NETWORK_TYPE_CELLULAR,
-		NETWORK_TYPE_WIFI,
-		NETWORK_TYPE_WIMAX,
-		NETWORK_TYPE_ETHERNET,
-		NETWORK_TYPE_BLUETOOTH,
-	};
-
-    static const int32 SIGNAL_STRENGTH_UNKNOWN = -1;
-    struct NetworkInfo
-    {
-        eNetworkType networkType;
-        int32 signalStrength; //(0-no signal, 100 - max signal)
-        
-        NetworkInfo()
-        {
-            networkType = NETWORK_TYPE_UNKNOWN;
-            signalStrength = SIGNAL_STRENGTH_UNKNOWN;
-        }
-    };
-
-    enum eStorageType
-    {
-    	STORAGE_TYPE_UNKNOWN = -1,
-    	STORAGE_TYPE_INTERNAL = 0,
-    	STORAGE_TYPE_EXTERNAL,
-
-    	STORAGE_TYPES_COUNT
-    };
-
-    struct StorageRecord
-    {
-        eStorageType type;
-        int64 totalSpace;
-        int64 freeSpace;
-
-        StorageRecord()
-        :   type(STORAGE_TYPE_UNKNOWN)
-        ,   totalSpace(0)
-        ,   freeSpace(0)
-        {}
-    };
-
 	static ePlatform GetPlatform();
 	static String GetPlatformString();
 	static String GetVersion();
@@ -141,8 +95,6 @@ public:
     static void SetScreenInfo(int32 w, int32 h, int32 scale);
     static int GetZBufferSize();
     static eGPUFamily GetGPUFamily();
-    static NetworkInfo GetNetworkInfo();
-    static List<StorageRecord> GetStorageList();
 };
 
 };

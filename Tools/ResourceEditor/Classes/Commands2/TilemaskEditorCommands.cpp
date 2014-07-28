@@ -204,7 +204,7 @@ Sprite* ModifyTilemaskCommand::ApplyImageToTexture(DAVA::Image *image, DAVA::Tex
 	int32 width = texture->GetWidth();
 	int32 height = texture->GetHeight();
     
-	Sprite* resSprite = Sprite::CreateAsRenderTarget((float32)width, (float32)height, FORMAT_RGBA8888, true);
+	Sprite* resSprite = Sprite::CreateAsRenderTarget((float32)width, (float32)height, FORMAT_RGBA8888);
 	RenderManager::Instance()->SetRenderTarget(resSprite);
     
     RenderManager::Instance()->SetColor(Color::White);
@@ -217,11 +217,9 @@ Sprite* ModifyTilemaskCommand::ApplyImageToTexture(DAVA::Image *image, DAVA::Tex
 	s->Draw(&drawState);
 	SafeRelease(s);
     
-    Rect rect = ConvertPhysicalToVirtual(updatedRect);
-    
     RenderManager::Instance()->Reset();
 	RenderManager::Instance()->ClipPush();
-	RenderManager::Instance()->SetClip(rect);
+	RenderManager::Instance()->SetClip(updatedRect);
     
     RenderManager::Instance()->SetColor(Color::White);
     RenderManager::Instance()->SetTextureState(RenderState::TEXTURESTATE_EMPTY);
@@ -232,7 +230,7 @@ Sprite* ModifyTilemaskCommand::ApplyImageToTexture(DAVA::Image *image, DAVA::Tex
 	s = Sprite::CreateFromTexture(t, 0, 0, (float32)t->GetWidth(), (float32)t->GetHeight());
     
     drawState.Reset();
-	drawState.SetPosition(rect.x, rect.y);
+	drawState.SetPosition(updatedRect.x, updatedRect.y);
     drawState.SetRenderState(noBlendDrawState);
 	s->Draw(&drawState);
     
@@ -248,11 +246,9 @@ Sprite* ModifyTilemaskCommand::ApplyImageToTexture(DAVA::Image *image, DAVA::Tex
 
 void ModifyTilemaskCommand::ApplyImageToSprite(Image* image, Sprite* dstSprite)
 {
-    Rect rect = ConvertPhysicalToVirtual(updatedRect);
-    
 	RenderManager::Instance()->SetRenderTarget(dstSprite);
 	RenderManager::Instance()->ClipPush();
-	RenderManager::Instance()->SetClip(rect);
+	RenderManager::Instance()->SetClip(updatedRect);
 
     RenderManager::Instance()->SetColor(Color::White);
 	
@@ -262,7 +258,7 @@ void ModifyTilemaskCommand::ApplyImageToSprite(Image* image, Sprite* dstSprite)
 	
     Sprite::DrawState drawState;
     drawState.SetRenderState(noBlendDrawState);
-	drawState.SetPosition(rect.x, rect.y);
+	drawState.SetPosition(updatedRect.x, updatedRect.y);
 	srcSprite->Draw(&drawState);
     
 	RenderManager::Instance()->ClipPop();

@@ -63,7 +63,6 @@ public:
     virtual void GetEventParametersInfo(Vector<SoundEventParameterInfo> & paramsInfo) const { return; };
 
     virtual String GetEventName() const { return filePath.GetFrameworkPath(); };
-    virtual float32 GetMaxDistance() const { return -1.f; };
     
     void PerformEndCallback();
     

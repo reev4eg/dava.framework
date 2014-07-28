@@ -93,6 +93,7 @@ public:
 	void SetEnableImposters(bool enableImposters);
 	bool GetEnableImposters();
     
+    eGPUFamily GetTextureViewGPU();
     void SetTextureViewGPU(int32 gpu);
 
 	String GetDesignerName();

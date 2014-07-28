@@ -39,8 +39,6 @@
 #define DRAW_PLACEHOLDER_FOR_STUB_UIMOVIEVIEW
 #include "../Platform/MovieViewControlStub.h"
 #endif
-#include "Render/RenderManager.h"
-#include "Render/RenderHelper.h"
 
 namespace DAVA {
 

@@ -57,18 +57,12 @@ namespace DAVA
 
 RenderComponent * GetRenderComponent(const Entity *fromEntity)
 {
-    if(fromEntity)
-	    return static_cast<RenderComponent*>(fromEntity->GetComponent(Component::RENDER_COMPONENT));
-    else
-        return NULL;
+	return static_cast<RenderComponent*>(fromEntity->GetComponent(Component::RENDER_COMPONENT));
 }
 
 TransformComponent * GetTransformComponent(Entity * fromEntity)
 {
-    if(fromEntity)
-	    return static_cast<TransformComponent*>(fromEntity->GetComponent(Component::TRANSFORM_COMPONENT));
-    else
-        return NULL;
+	return static_cast<TransformComponent*>(fromEntity->GetComponent(Component::TRANSFORM_COMPONENT));
 }
 
 RenderObject * GetRenderObject(const Entity * fromEntity)
