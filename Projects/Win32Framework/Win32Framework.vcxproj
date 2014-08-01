@@ -123,6 +123,7 @@
       <AdditionalDependencies>freetype246MT_D.lib;opengl32.lib;glew32.lib;libogg_static_d.lib;libvorbis_static_d.lib;libvorbisfile_static_d.lib;libyaml_wind.lib;libxml_wind.lib;pnglib_wind.lib;libmongodb_wind.lib;libtheora_win.lib;PVRTexLib32.lib;libdxtd.lib;libcurl.lib;ws2_32.lib;winmm.lib;wldap32.lib;lua_wind.lib;TextureConverterD.lib;fmodex_vc.lib;fmod_event.lib;iphlpapi.lib;libjpegd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(Configuration)\$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>./../../Libs/freetype/lib;./../../Libs/libs;./../../Libs/glew/lib;$(DXSDK_DIR)/lib/x86;./../../Libs/oggvorbis/lib/;./../../Libs/fmod/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugQt|Win32'">
@@ -145,6 +146,7 @@
       <AdditionalDependencies>freetype246MT_D.lib;opengl32.lib;glew32.lib;libogg_static_d.lib;libvorbis_static_d.lib;libvorbisfile_static_d.lib;libyaml_wind.lib;libxml_wind.lib;pnglib_wind.lib;libmongodb_wind.lib;libtheora_win.lib;PVRTexLib32.lib;libdxtd.lib;TextureConverterD.lib;fmodex_vc.lib;fmod_event.lib;iphlpapi.lib;libjpegd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(Configuration)\$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>./../../Libs/freetype/lib;./../../Libs/libs;./../../Libs/glew/lib;$(DXSDK_DIR)/lib/x86;./../../Libs/oggvorbis/lib/;./../../Libs/fmod/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,12 +160,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>freetype246MT.lib;opengl32.lib;glew32.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;libyaml_win.lib;libxml_win.lib;pnglib_win.lib;libmongodb_win.lib;libtheora_win.lib;PVRTexLib32.lib;libdxt.lib;libcurl.lib;ws2_32.lib;winmm.lib;wldap32.lib;lua_win.lib;TextureConverter.lib;fmodex_vc.lib;fmod_event.lib;iphlpapi.lib;libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(Configuration)\$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>./../../Libs/freetype/lib;./../../Libs/libs;./../../Libs/glew/lib;$(DXSDK_DIR)/lib/x86;./../../Libs/oggvorbis/lib/;./../../Libs/fmod/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/VERBOSE:LIB /ignore:4006 /ignore:4221 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseAutotesting|Win32'">
@@ -176,12 +180,14 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>freetype246MT.lib;opengl32.lib;glew32.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;libyaml_win.lib;libxml_win.lib;pnglib_win.lib;libmongodb_win.lib;libtheora_win.lib;PVRTexLib32.lib;libdxt.lib;libcurl.lib;ws2_32.lib;winmm.lib;wldap32.lib;lua_win.lib;TextureConverter.lib;fmodex_vc.lib;fmod_event.lib;iphlpapi.lib;libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(Configuration)\$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>./../../Libs/freetype/lib;./../../Libs/libs;./../../Libs/glew/lib;$(DXSDK_DIR)/lib/x86;./../../Libs/oggvorbis/lib/;./../../Libs/fmod/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/VERBOSE:LIB /ignore:4006 /ignore:4221 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseQt|Win32'">
@@ -195,12 +201,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>freetype246MT.lib;opengl32.lib;glew32.lib;libogg_static.lib;libvorbis_static.lib;libvorbisfile_static.lib;libyaml_win.lib;libxml_win.lib;pnglib_win.lib;libmongodb_win.lib;libtheora_win.lib;PVRTexLib32.lib;libdxt.lib;TextureConverter.lib;fmodex_vc.lib;fmod_event.lib;iphlpapi.lib;libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(Configuration)\$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>./../../Libs/freetype/lib;./../../Libs/libs;./../../Libs/glew/lib;$(DXSDK_DIR)/lib/x86;./../../Libs/oggvorbis/lib/;./../../Libs/fmod/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/VERBOSE:LIB /ignore:4006 /ignore:4221 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

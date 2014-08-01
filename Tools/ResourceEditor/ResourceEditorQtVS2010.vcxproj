@@ -64,7 +64,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <PreprocessorDefinitions>_WINDOWS;WIN32;DAVA_DEBUG;QT_DLL;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;_CRT_SECURE_NO_DEPRECATE;__DAVAENGINE_RESOURCEEDITOR__;DAVA_QT;__DAVAENGINE_BEAST__;__DAVAENGINE_SPEEDTREE__;DAVA_FMOD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -93,6 +93,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkStatus>
       </LinkStatus>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -138,13 +139,14 @@
       <WarningLevel>Level3</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FrameworkTools.lib;Win32Framework.lib;CORE_RL_Magick++_.lib;CORE_RL_magick_.lib;CORE_RL_bzlib_.lib;CORE_RL_coders_.lib;CORE_RL_filters_.lib;CORE_RL_jbig_.lib;CORE_RL_jp2_.lib;CORE_RL_jpeg_.lib;CORE_RL_lcms_.lib;CORE_RL_libxml_.lib;CORE_RL_png_.lib;CORE_RL_tiff_.lib;CORE_RL_ttf_.lib;CORE_RL_wand_.lib;CORE_RL_wmf_.lib;CORE_RL_xlib_.lib;CORE_RL_zlib_.lib;X11.lib;Xext.lib;kernel32.lib;user32.lib;gdi32.lib;odbc32.lib;odbccp32.lib;ole32.lib;oleaut32.lib;winmm.lib;wsock32.lib;advapi32.lib;FColladaVS2010.lib;glu32.lib;opengl32.lib;qtmain.lib;glew32.lib;$(DXSDK_DIR)/Lib/x86/DxErr.lib;$(DXSDK_DIR)/Lib/x86/d3d9.lib;shfolder.lib;Shell32.lib;QtOpenGL4.lib;QtGui4.lib;QtNetwork4.lib;QtCore4.lib;msvcmrt.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Projects\Win32Framework\FrameworkTools\ReleaseQt;./../../Libs/ImageMagick-6.7.4-Windows/VisualMagick/lib;./../ColladaConverter/Collada15/External/Cg/lib;./../ColladaConverter/Collada15/FCollada/Output/Release Win32;../../../dava.resourceeditor.beast/beast/lib;$(QT_HOME)\lib;../../Projects\Win32Framework\ReleaseQt;../../Libs/glew/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
       <LinkIncremental>false</LinkIncremental>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -152,6 +154,7 @@
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -168,7 +171,7 @@
       </Message>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Command>$(SolutionDir)/make.bat -f MakefileQt all</Command>
+      <Command>$(SolutionDir)make.bat -f MakefileQt all</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>QT generate: MOC, UI, QRC</Message>
