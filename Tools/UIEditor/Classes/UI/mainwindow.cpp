@@ -50,6 +50,7 @@
 #include "Dialogs/importdialog.h"
 #include "Dialogs/localizationeditordialog.h"
 #include "Dialogs/previewsettingsdialog.h"
+#include "Dialogs/errorslistdialog.h"
 
 #include "ImportCommands.h"
 #include "AlignDistribute/AlignDistributeEnums.h"
@@ -106,6 +107,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	this->setWindowTitle(ResourcesManageHelper::GetProjectTitle());
 
+    findField = new QLineEdit();
+    findField->setValidator(new QRegExpValidator(HierarchyTreeNode::GetNameRegExp(), this));
+    ui->findToolBar->addWidget(findField);
+    ui->findToolBar->addSeparator();
+    connect(findField, SIGNAL(returnPressed() ), this, SLOT(OnSearchPressed()));
+    connect(ui->actionFind,SIGNAL(triggered()),this, SLOT(OnSearchPressed()));
+    
 	int32 scalesCount = COUNT_OF(SCALE_PERCENTAGES);
 
 	// Setup the Scale Slider.
@@ -178,9 +186,9 @@ MainWindow::MainWindow(QWidget *parent) :
 			SLOT(OnSelectedScreenChanged()));
 	
     connect(HierarchyTreeController::Instance(),
-			SIGNAL(SelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES &)),
+			SIGNAL(SelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES &, HierarchyTreeController::eExpandControlType)),
 			this,
-			SLOT(OnSelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES &)));
+			SLOT(OnSelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES &,HierarchyTreeController::eExpandControlType)));
 
 	connect(ui->hierarchyDockWidget->widget(),
 			SIGNAL(CreateNewScreen()),
@@ -276,7 +284,7 @@ MainWindow::~MainWindow()
     }
 	
 	SaveMainWindowState();
-	
+	delete findField;
     delete ui;
 }
 
@@ -623,9 +631,10 @@ void MainWindow::OnSelectedScreenChanged()
 	screenChangeUpdate = false;
 	UpdateMenu();
 	UpdateScreenPosition();
+    OnUndoRedoAvailabilityChanged();
 }
 
-void MainWindow::OnSelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES& selectedNodes)
+void MainWindow::OnSelectedControlNodesChanged(const HierarchyTreeController::SELECTEDCONTROLNODES& selectedNodes, HierarchyTreeController::eExpandControlType expandType)
 {
     int nodesCount = selectedNodes.size();
 
@@ -803,7 +812,9 @@ void MainWindow::SetupViewMenu()
 
     ui->menuView->addSeparator();
     ui->menuView->addAction(ui->mainToolbar->toggleViewAction());
-
+    ui->menuView->addAction(ui->previewToolBar->toggleViewAction());
+    ui->menuView->addAction(ui->findToolBar->toggleViewAction());
+    
     // Setup the Background Color menu.
     QMenu* setBackgroundColorMenu = new QMenu("Background Color");
     ui->menuView->addSeparator();
@@ -1478,8 +1489,15 @@ void MainWindow::OnPixelizationStateChanged()
 void MainWindow::RepackAndReloadSprites()
 {
     ScreenWrapper::Instance()->SetApplicationCursor(Qt::WaitCursor);
-    HierarchyTreeController::Instance()->RepackAndReloadSprites();
+    const Set<String>& errorsSet = HierarchyTreeController::Instance()->RepackAndReloadSprites();
     ScreenWrapper::Instance()->RestoreApplicationCursor();
+
+    if (!errorsSet.empty())
+	{
+		ErrorsListDialog errorsDialog;
+		errorsDialog.InitializeErrorsList(errorsSet);
+		errorsDialog.exec();
+	}
 }
 
 void MainWindow::SetBackgroundColorMenuTriggered(QAction* action)
@@ -1784,3 +1802,74 @@ void MainWindow::UpdateSaveButtons()
     ui->actionSave_All->setEnabled(hasUnsavedChanges);
 }
 
+
+void MainWindow::OnSearchPressed()
+{
+    QString partOfName = findField->text();
+    if (partOfName.isEmpty())
+    	return;
+    
+    QList<HierarchyTreeControlNode*> foundNodes;
+    QList<HierarchyTreeScreenNode*> foundScreens;
+    HierarchyTreeScreenNode* activeScreen = HierarchyTreeController::Instance()->GetActiveScreen();
+    
+    HierarchyTreeController::Instance()->ResetSelectedControl();
+    
+    if (NULL == activeScreen)
+    {
+        HierarchyTreePlatformNode* activePlatform = HierarchyTreeController::Instance()->GetActivePlatform();
+        if (activePlatform)
+        {
+            foundScreens = SearchScreenByName(activePlatform->GetChildNodes(),partOfName,ui->actionIgnoreCase->isChecked());
+        }
+        
+        if (!foundScreens.empty())
+        {
+        	this->ui->hierarchyDockWidgetContents->ScrollTo(foundScreens.at(0));
+        }
+    }
+    else
+    {
+        SearchControlsByName(foundNodes,activeScreen->GetChildNodes(),partOfName,ui->actionIgnoreCase->isChecked());
+        if (!foundNodes.empty())
+        {
+        	// Multiple selection, or control selected
+        	HierarchyTreeController::Instance()->SynchronizeSelection(foundNodes);
+        	// Scroll to first one in the list
+        	this->ui->hierarchyDockWidgetContents->ScrollTo(foundNodes.at(0));
+        }
+    }
+}
+
+void MainWindow::SearchControlsByName(QList<HierarchyTreeControlNode*>& foundNodes,const HierarchyTreeNode::HIERARCHYTREENODESLIST nodes, const  QString partOfName,bool ignoreCase) const
+{
+    HierarchyTreeNode::HIERARCHYTREENODESCONSTITER it = nodes.begin();
+    for (; it!=nodes.end(); ++it)
+    {
+        HierarchyTreeControlNode * controlNode = static_cast<HierarchyTreeControlNode *>(*it);
+        const QString name = QString::fromStdString(controlNode->GetUIObject()->GetName());
+        Qt::CaseSensitivity cs = ignoreCase?Qt::CaseInsensitive:Qt::CaseSensitive;
+        if (name.contains(partOfName,cs))
+        {
+            foundNodes.push_back(controlNode);
+        }
+        SearchControlsByName(foundNodes,(*it)->GetChildNodes(),partOfName,ignoreCase);
+    }
+}
+
+QList<HierarchyTreeScreenNode*> MainWindow::SearchScreenByName(const HierarchyTreeNode::HIERARCHYTREENODESLIST nodes, const  QString partOfName,bool ignoreCase) const
+{
+    QList<HierarchyTreeScreenNode*> foundNodes;
+    HierarchyTreeNode::HIERARCHYTREENODESCONSTITER it = nodes.begin();
+    for (; it!=nodes.end(); ++it)
+    {
+        HierarchyTreeScreenNode * screenNode = static_cast<HierarchyTreeScreenNode *>(*it);
+        QString name = screenNode->GetName();
+        Qt::CaseSensitivity cs = ignoreCase?Qt::CaseInsensitive:Qt::CaseSensitive;
+        if (name.contains(partOfName,cs))
+        {
+            foundNodes.push_back(screenNode);
+        }
+    }
+    return foundNodes;
+}

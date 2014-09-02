@@ -421,7 +421,7 @@ bool FileSystem::SetCurrentWorkingDirectory(const FilePath & newWorkingDirectory
 bool FileSystem::IsFile(const FilePath & pathToCheck)
 {
 #if defined(__DAVAENGINE_ANDROID__)
-	const String& path = pathToCheck.GetAbsolutePathname();
+	const String& path = pathToCheck.GetAbsoluteAssetPathnameTruncated();
 	if (IsAPKPath(path))
 		return (fileSet.find(path) != fileSet.end());
 #endif
@@ -461,6 +461,11 @@ bool FileSystem::IsDirectory(const FilePath & pathToCheck)
 
 bool FileSystem::LockFile(const FilePath & filePath, bool isLock)
 {
+    if (!IsFile(filePath))
+    {
+        return false;
+    }
+
     if (IsFileLocked(filePath) == isLock)
     {
         return true;
@@ -470,7 +475,7 @@ bool FileSystem::LockFile(const FilePath & filePath, bool isLock)
 #if defined (__DAVAENGINE_WIN32__)
     if (isLock)
     {
-        HANDLE hFile = CreateFileA(path.c_str(), GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        HANDLE hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hFile != INVALID_HANDLE_VALUE)
         {
             lockedFileHandles[path] = hFile;
@@ -601,7 +606,7 @@ const FilePath FileSystem::GetPublicDocumentsPath()
 const FilePath FileSystem::GetUserDocumentsPath()
 {
     CorePlatformAndroid *core = (CorePlatformAndroid *)Core::Instance();
-    return core->GetExternalStoragePathname() + String("/");
+    return core->GetInternalStoragePathname() + String("/");
 }
 
 const FilePath FileSystem::GetPublicDocumentsPath()

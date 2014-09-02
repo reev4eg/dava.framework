@@ -38,6 +38,7 @@
 #include "Render/Highlevel/Light.h"
 #include "Scene3D/SceneFile/SerializationContext.h"
 #include "Scene3D/SceneFileV2.h"
+#include "Scene3D/SceneFile/VersionInfo.h"
 
 namespace DAVA
 {
@@ -78,6 +79,7 @@ class ActionUpdateSystem;
 class SkyboxSystem;
 class MaterialSystem;
 class StaticOcclusionSystem;
+class StaticOcclusionDebugDrawSystem;
 class SpeedTreeUpdateSystem;
 class FoliageSystem;
 class WindSystem;
@@ -123,16 +125,25 @@ public:
 	Scene(uint32 systemsMask = SCENE_SYSTEM_ALL_MASK);
 	
     /**
-        \brief Function to register node in scene. This function is called when you add node to the node that already in the scene. 
+        \brief Function to register entity in scene. This function is called when you add entity to scene.
      */
-    virtual void    RegisterNode(Entity * entity);
-    virtual void    UnregisterNode(Entity * entity);
+    void    RegisterEntity(Entity * entity);
+    /**
+        \brief Function to unregister entity from scene. This function is called when you remove entity from scene.
+     */
+    void    UnregisterEntity(Entity * entity);    
     
-    virtual void    AddComponent(Entity * entity, Component * component);
-    virtual void    RemoveComponent(Entity * entity, Component * component);
+    /**
+        \brief Function to register component in scene. This function is called when you add any component to any entity in scene.
+     */
+    void    RegisterComponent(Entity * entity, Component * component);
+    /**
+        \brief Function to unregister component from scene. This function is called when you remove any component from any entity in scene.
+     */
+    void    UnregisterComponent(Entity * entity, Component * component);
     
     virtual void    AddSystem(SceneSystem * sceneSystem, uint32 componentFlags, bool needProcess = false, SceneSystem * insertBeforeSceneForProcess = NULL);
-    virtual void    RemoveSystem(SceneSystem * sceneSystem);
+    virtual void    RemoveSystem(SceneSystem * sceneSystem);    
     
 	//virtual void ImmediateEvent(Entity * entity, uint32 componentType, uint32 event);
 
@@ -156,8 +167,10 @@ public:
     MaterialSystem *materialSystem;
     SpeedTreeUpdateSystem* speedTreeUpdateSystem;
     FoliageSystem* foliageSystem;
+    VersionInfo::SceneVersion version;
     WindSystem * windSystem;
     WaveSystem * waveSystem;
+    StaticOcclusionDebugDrawSystem *staticOcclusionDebugDrawSystem;
     
     /**
         \brief Overloaded GetScene returns this, instead of normal functionality.
@@ -251,9 +264,17 @@ public:
 
     DAVA::NMaterial* GetGlobalMaterial() const;
     void SetGlobalMaterial(DAVA::NMaterial* globalMaterial);
+    
+    void OnSceneReady(Entity * rootNode);
+
+    void SetClearBuffers(uint32 buffers);
+    uint32 GetClearBuffers() const;
 
 protected:
     void UpdateLights();
+
+    void RegisterEntitiesInSystemRecursively(SceneSystem *system, Entity * entity);
+    void UnregisterEntitiesInSystemRecursively(SceneSystem *system, Entity * entity);
 
 	uint64 updateTime;
 
@@ -261,6 +282,8 @@ protected:
     uint32 nodeCounter;
 
     uint32 systemsMask;
+
+    uint32 clearBuffers;
 
 	Vector<AnimatedMesh*> animatedMeshes;
 	Vector<Camera*> cameras;
@@ -274,6 +297,7 @@ protected:
     NMaterial* sceneGlobalMaterial;
     //TODO: think about data-driven initialization. Need to set default properties from outside and save/load per scene
     void InitGlobalMaterial();
+    void ImportShadowColor(Entity * rootNode);
     
 #if defined (USE_FILEPATH_IN_MAP)
     typedef Map<FilePath, ProxyNode*> ProxyNodeMap;
