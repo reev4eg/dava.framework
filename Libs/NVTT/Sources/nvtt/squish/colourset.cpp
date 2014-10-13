@@ -150,6 +150,15 @@ void ColourSet::RemapIndices( u8 const* source, u8* target ) const
 			target[i] = source[j];
 	}
 }
+#else
+void ColourSet::RemapIndices( u8 const* source, u8* target ) const
+{
+	// TODO !!! Implement it
+	_asm 
+	{
+		int 3;
+	};
+}
 #endif //#ifdef ANDROID
 
 } // namespace squish
