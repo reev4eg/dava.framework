@@ -48,6 +48,10 @@
 #define IS_NEGATIVE_FLOAT(x)	(IR(x)&SIGN_BITMASK)
 */
 
+// TODO wrap with extern for vs2012 compile
+extern "C"
+{
+
 inline double sqrt_assert(const double f)
 {
 	nvDebugCheck(f >= 0.0f);
@@ -83,6 +87,8 @@ inline float asinf_assert(const float f)
 	nvDebugCheck(f >= -1.0f && f <= 1.0f);
 	return asinf(f);
 }
+
+} // end extern "C"
 
 // Replace default functions with asserting ones.
 #define sqrt sqrt_assert

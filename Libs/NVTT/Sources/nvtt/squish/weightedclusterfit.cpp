@@ -32,6 +32,15 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace squish {
 
+	Vec3 ComputePrincipleComponent( Sym3x3 const& matrix )
+	{
+		// TODO !!! Implement 
+		_asm 
+		{
+			int 3;
+		};
+	}
+
 	WeightedClusterFit::WeightedClusterFit()
 	{
 	}

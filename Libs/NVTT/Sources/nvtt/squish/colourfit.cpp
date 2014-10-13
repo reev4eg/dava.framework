@@ -56,6 +56,15 @@ void ColourFit::Compress( void* block )
 		Compress4( block );
 	}
 }
+#else
+void ColourFit::Compress( void* block )
+{
+	// TODO !!! implement on windows?
+	__asm 
+	{ 
+		int 3; 
+	};
+}
 #endif //#ifdef ANDROID || IOS
 
 } // namespace squish
