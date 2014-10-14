@@ -29,6 +29,84 @@
 
 #include "DAVAEngine.h"
 
+#ifdef VS2012_UNIT_TESTS
+
+#include "CppUnitTest.h"
+
+#include "../Classes/HashMapTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+typedef Microsoft::VisualStudio::CppUnitTestFramework::Logger Log;
+
+namespace UnitTestsVS
+{		
+
+TEST_MODULE_INITIALIZE(ModuleInitialize)
+{
+	Log::WriteMessage("In Module Initialize\n");
+}
+
+TEST_CLASS(HashMapVSTest)
+{
+public:
+
+	HashMapVSTest()
+	{
+		Log::WriteMessage("In HashMapVSTest constructor\n");
+	}
+	~HashMapVSTest()
+	{
+		Log::WriteMessage("In ~HashMapVSTest destructor\n");
+	}
+
+	TEST_CLASS_INITIALIZE(HashMapVSTestInit)
+	{
+		Log::WriteMessage("In HashMapVSTest Initialize class\n");
+	}
+	TEST_CLASS_CLEANUP(HashMapVSTestClear)
+	{
+		Log::WriteMessage("In HashMapVSTest Cleanup class\n");
+	}
+
+	
+	BEGIN_TEST_METHOD_ATTRIBUTE(Method2)
+        TEST_OWNER(L"OwnerName")
+        TEST_PRIORITY(1)
+	END_TEST_METHOD_ATTRIBUTE()
+
+	TEST_METHOD_INITIALIZE(InitBeforeEveryTestMethod)
+	{
+		Log::WriteMessage("init before every method\n");
+	}
+
+	TEST_METHOD(Method1)
+	{   
+		Log::WriteMessage("In Method1\n");
+		Assert::AreEqual(0, 1);
+	}
+
+	TEST_METHOD(Method2)
+	{
+		Log::WriteMessage("In Method2\n");
+		Assert::Fail(L"Fail");
+	}
+
+	TEST_METHOD_CLEANUP(CleanupBeforeEveryTestMethod)
+	{
+		Log::WriteMessage("clear after every method\n");
+	}
+}; // end test_class
+
+TEST_MODULE_CLEANUP(ModuleCleanup)
+{
+	Logger::WriteMessage("In Module Cleanup\n");
+}
+
+} // end UnitTestsVS namespace
+
+#else
+
 int APIENTRY WinMain(HINSTANCE hInstance,
 					   HINSTANCE hPrevInstance,
 					   LPSTR    lpCmdLine,
@@ -39,6 +117,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	return DAVA::Core::Run(0, 0, hInstance);
 }
+
+#endif // VS2012_UNIT_TESTS
 
 
 /*int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR    lpCmdLine, int       nCmdShow)

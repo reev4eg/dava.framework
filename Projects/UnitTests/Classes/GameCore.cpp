@@ -100,61 +100,61 @@ void GameCore::OnAppStarted()
     CreateDocumentsFolder();
 
 	new MathTest();
-	new FunctionBindSignalTest();
-    new ThreadSyncTest();
-    new DLCDownloadTest();
+	//new FunctionBindSignalTest();
+ //   new ThreadSyncTest();
+ //   new DLCDownloadTest();
 
 
-	new ImageSizeTest();
-    new DeviceInfoTest();
+	//new ImageSizeTest();
+ //   new DeviceInfoTest();
 
-    new PVRTest();
- 	new DXTTest();
-    new JPEGTest();
+ //   new PVRTest();
+ //	new DXTTest();
+ //   new JPEGTest();
 
-    new ParseTextTest(Font::TYPE_FT);
-    new ParseTextTest(Font::TYPE_GRAPHICAL);
-    new OpenGLES30FormatTest();
-    new SaveImageTest();
-    
-    new OpenGLES30FormatTest();
-    new StringFormatTest();
-    new RectSpriteTest();
+ //   new ParseTextTest(Font::TYPE_FT);
+ //   new ParseTextTest(Font::TYPE_GRAPHICAL);
+ //   new OpenGLES30FormatTest();
+ //   new SaveImageTest();
+ //   
+ //   new OpenGLES30FormatTest();
+ //   new StringFormatTest();
+ //   new RectSpriteTest();
 
-	new ComponentsTest();
-    new FilePathTest();
-    new FileListTest();
-    new FileSystemTest();
-    
- 	new UIMovieTest();
- 	new InputTest();
-    new FormatsTest();
- 
- 	new DateTimeTest();
- 	new TransparentWebViewTest();
-    new LocalizationTest();
- 
- 	new SampleTest();
- 	new EntityTest(); 
- 	new MemoryAllocatorsTest();
- 	new HashMapTest();
- 	new SoundTest();
- 	new SplitTest();
- 	new AlignTest();
- 	new EMailTest();
- 	new DPITest();
- 	new MaterialCompilerTest();
- 	new CloneTest();
+	//new ComponentsTest();
+ //   new FilePathTest();
+ //   new FileListTest();
+ //   new FileSystemTest();
+ //   
+ //	new UIMovieTest();
+ //	new InputTest();
+ //   new FormatsTest();
+ //
+ //	new DateTimeTest();
+ //	new TransparentWebViewTest();
+ //   new LocalizationTest();
+ //
+ //	new SampleTest();
+ //	new EntityTest(); 
+ //	new MemoryAllocatorsTest();
+ //	new HashMapTest();
+ //	new SoundTest();
+ //	new SplitTest();
+ //	new AlignTest();
+ //	new EMailTest();
+ //	new DPITest();
+ //	new MaterialCompilerTest();
+ //	new CloneTest();
 
- 	new EntityTest();	
- 	new MemoryAllocatorsTest();
- 	new HashMapTest();
- 	new KeyedArchiveYamlTest();
- 	new UIListTest();
- 	new UIScrollViewTest();
- 
+ //	new EntityTest();	
+ //	new MemoryAllocatorsTest();
+ //	new HashMapTest();
+ //	new KeyedArchiveYamlTest();
+ //	new UIListTest();
+ //	new UIScrollViewTest();
+ //
 
-    new SceneSystemTest();
+ //   new SceneSystemTest();
     
     errors.reserve(TestCount());
 

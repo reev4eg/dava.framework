@@ -1,5 +1,6 @@
-﻿Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestsVS2010", "UnitTestsVS2010.vcxproj", "{A31689CE-A339-464E-8D7E-49EF2AF81AA4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6472D47-5050-406D-89E9-4725192E32F2} = {A6472D47-5050-406D-89E9-4725192E32F2}
@@ -11,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Win32Framework", "..\Win32F
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrameworkTools", "..\Win32Framework\FrameworkTools.vcxproj", "{8785B31F-E437-4FF7-B66E-5975F59E18D4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestsVS2012", "..\UnitTestsVS2012\UnitTestsVS2012.vcxproj", "{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +47,14 @@ Global
 		{8785B31F-E437-4FF7-B66E-5975F59E18D4}.Release|Win32.Build.0 = Release|Win32
 		{8785B31F-E437-4FF7-B66E-5975F59E18D4}.ReleaseQt|Win32.ActiveCfg = ReleaseQt|Win32
 		{8785B31F-E437-4FF7-B66E-5975F59E18D4}.ReleaseQt|Win32.Build.0 = ReleaseQt|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.Debug|Win32.Build.0 = Debug|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.DebugQt|Win32.ActiveCfg = Debug|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.DebugQt|Win32.Build.0 = Debug|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.Release|Win32.ActiveCfg = Release|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.Release|Win32.Build.0 = Release|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.ReleaseQt|Win32.ActiveCfg = Release|Win32
+		{FF2DC6E9-93A1-4B6D-804E-E5EE336B6116}.ReleaseQt|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
