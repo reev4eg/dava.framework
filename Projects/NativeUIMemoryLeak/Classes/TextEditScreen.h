@@ -45,6 +45,9 @@ public:
 	virtual void UnloadResources();
     virtual void DidAppear();
 
+    virtual void Update(float32 timeElapsed);
+    virtual void TextFieldShouldReturn(UITextField * textField);
+
 protected:
   
     void OnBack(BaseObject *caller, void *param, void *callerData);
@@ -54,6 +57,11 @@ protected:
     
     WideString loginText;
     WideString passwordText;
+    
+    UIStaticText *enteredText;
+    
+    uint32 testCounter;
+    float32 testTime;
 };
 
 #endif //__TEXT_EDIT_SCREEN_H__

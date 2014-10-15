@@ -44,6 +44,9 @@ public:
 	virtual void LoadResources();
     virtual void UnloadResources();
     virtual void DidAppear();
+    
+    virtual void Update(float32 timeElapsed);
+
 
 protected:
   

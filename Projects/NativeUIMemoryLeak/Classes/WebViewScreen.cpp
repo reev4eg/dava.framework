@@ -78,3 +78,9 @@ void WebViewScreen::OnBack(BaseObject *caller, void *param, void *callerData)
     UIScreenManager::Instance()->SetScreen(BaseScreen::FIRST_SCREEN);
 }
 
+void WebViewScreen::Update(float32 timeElapsed)
+{
+    BaseScreen::Update(timeElapsed);
+}
+
+

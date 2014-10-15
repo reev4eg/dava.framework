@@ -34,7 +34,8 @@
 SelectScreen::SelectScreen()
 : BaseScreen(L"Select Text Screen")
 {
-    dummyMemory = new uint8[100 * 1024 * 1024];
+    dummyMemorySize = 100 * 1024 * 1024;
+    dummyMemory = new uint8[dummyMemorySize];
 }
 
 SelectScreen::~SelectScreen()
@@ -49,34 +50,63 @@ void SelectScreen::LoadResources()
     const Rect screenRect = GetRect();
     Rect buttonRect(10.f, HEADER_HEIGHT + 10.f, screenRect.dx - 20.f, 30.f);
     
-    ScopedPtr<UIButton> webViewButton(CreateButton(buttonRect, L"Web Vew Screen"));
-    webViewButton->AddEvent(UIControl::EVENT_TOUCH_UP_INSIDE, Message(this, &SelectScreen::OnWebView));
-    AddControl(webViewButton);
-
-    buttonRect.y += (10.f + buttonRect.dy);
+    Map<WideString, Message> testSet;
+    testSet[L"WebView Loading Test"] = Message(this, &SelectScreen::OnWebViewLoading);
+    testSet[L"WebView AddRemve Test"] = Message(this, &SelectScreen::OnWebViewAddRemove);
+    testSet[L"Text Edit Two Test"] = Message(this, &SelectScreen::OnTextEditTwo);
+    testSet[L"Text Edit AddRemove Test"] = Message(this, &SelectScreen::OnTextEditAddRemove);
+    testSet[L"Text Edit SetText Test"] = Message(this, &SelectScreen::OnTextEditSetText);
+    testSet[L"Text Edit ChangeFocus Test"] = Message(this, &SelectScreen::OnTextEditChangeFocus);
     
-    ScopedPtr<UIButton> textEditButton(CreateButton(buttonRect, L"Text Edit Screen"));
-    textEditButton->AddEvent(UIControl::EVENT_TOUCH_UP_INSIDE, Message(this, &SelectScreen::OnTextEdit));
-    AddControl(textEditButton);
+    for(auto it = testSet.begin(), endIt = testSet.end(); it != endIt; ++it)
+    {
+        ScopedPtr<UIButton> button(CreateButton(buttonRect, it->first));
+        button->AddEvent(UIControl::EVENT_TOUCH_UP_INSIDE, it->second);
+        AddControl(button);
+        
+        buttonRect.y += (10.f + buttonRect.dy);
+    }
     
-    buttonRect.y += (10.f + buttonRect.dy);
-    
-    ScopedPtr<UIButton> noNativeButton(CreateButton(buttonRect, L"No Native Controls Screen"));
-    noNativeButton->AddEvent(UIControl::EVENT_TOUCH_UP_INSIDE, Message(this, &SelectScreen::OnNoNative));
-    AddControl(noNativeButton);
-    
-    Logger::Info("%d", sizeof(dummyMemory)/sizeof(uint8));
+    Memset(dummyMemory, GameCore::Instance()->GetTest(), dummyMemorySize);
 }
 
-void SelectScreen::OnWebView(BaseObject *caller, void *param, void *callerData)
+void SelectScreen::OnWebViewLoading(BaseObject *caller, void *param, void *callerData)
 {
+    GameCore::Instance()->SetTest(GameCore::TEST_WEBVIEW_LOADING);
     UIScreenManager::Instance()->SetScreen(1);
 }
 
-void SelectScreen::OnTextEdit(BaseObject *caller, void *param, void *callerData)
+void SelectScreen::OnWebViewAddRemove(BaseObject *caller, void *param, void *callerData)
 {
+    GameCore::Instance()->SetTest(GameCore::TEST_WEBVIEW_ADDREMOVE);
+    UIScreenManager::Instance()->SetScreen(1);
+}
+
+
+void SelectScreen::OnTextEditTwo(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_TWOTEXTFIELDS);
     UIScreenManager::Instance()->SetScreen(2);
 }
+
+void SelectScreen::OnTextEditAddRemove(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_ADDREMOVE);
+    UIScreenManager::Instance()->SetScreen(2);
+}
+
+void SelectScreen::OnTextEditSetText(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_SETTEXT);
+    UIScreenManager::Instance()->SetScreen(2);
+}
+
+void SelectScreen::OnTextEditChangeFocus(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_CHANGEFOCUS);
+    UIScreenManager::Instance()->SetScreen(2);
+}
+
 
 void SelectScreen::OnNoNative(BaseObject *caller, void *param, void *callerData)
 {

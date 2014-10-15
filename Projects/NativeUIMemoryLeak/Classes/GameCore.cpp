@@ -38,6 +38,7 @@ using namespace DAVA;
 
 GameCore::GameCore()
 {
+    testType = TEST_NONE;
 }
 
 GameCore::~GameCore()

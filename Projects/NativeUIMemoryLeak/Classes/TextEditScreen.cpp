@@ -36,11 +36,15 @@ TextEditScreen::TextEditScreen()
     , password(NULL)
     , loginText(L"")
     , passwordText(L"")
+    , enteredText(NULL)
+    , testCounter(0)
+    , testTime(0.f)
 {
 }
 
 TextEditScreen::~TextEditScreen()
 {
+    SafeRelease(enteredText);
     SafeRelease(login);
     SafeRelease(password);
 }
@@ -79,6 +83,20 @@ void TextEditScreen::LoadResources()
     password->SetTextColor(Color::White);
     password->SetDelegate(this);
     AddControl(password);
+    
+    textRect.y += (10.f + textRect.dy);
+    textRect.dy = screenRect.dy - textRect.dy - 10.f;
+    
+    
+    enteredText = new UIStaticText(textRect);
+    enteredText->SetFont(font);
+    enteredText->SetMultiline(true);
+    enteredText->SetTextColor(Color(0.2f, 0.2f, 0.f, 1.f));
+    enteredText->SetTextAlign(ALIGN_LEFT | ALIGN_TOP);
+    AddControl(enteredText);
+    
+    testCounter = 0;
+    testTime = 0.f;
 }
 
 void TextEditScreen::UnloadResources()
@@ -86,6 +104,7 @@ void TextEditScreen::UnloadResources()
     loginText = login->GetText();
     passwordText = password->GetText();
     
+    SafeRelease(enteredText);
     SafeRelease(login);
     SafeRelease(password);
     BaseScreen::UnloadResources();
@@ -98,5 +117,87 @@ void TextEditScreen::DidAppear()
 void TextEditScreen::OnBack(BaseObject *caller, void *param, void *callerData)
 {
     UIScreenManager::Instance()->SetScreen(BaseScreen::FIRST_SCREEN);
+}
+
+void TextEditScreen::TextFieldShouldReturn(UITextField * textField)
+{
+    enteredText->SetText(textField->GetText() + L"\n" + enteredText->GetText());
+    textField->SetText(L"");
+}
+
+void TextEditScreen::Update(float32 timeElapsed)
+{
+    BaseScreen::Update(timeElapsed);
+    
+    ++testCounter;
+    testTime += timeElapsed;
+
+    switch (GameCore::Instance()->GetTest())
+    {
+        case GameCore::TEST_TEXTFIELD_ADDREMOVE:
+        {
+            RemoveControl(login);
+            SafeRelease(login);
+            
+            RemoveControl(password);
+            SafeRelease(password);
+            
+            
+            const Rect screenRect = GetRect();
+            Rect textRect(10.f, HEADER_HEIGHT + 10.f, screenRect.dx - 20.f, 30.f);
+            
+            loginText = Format(L"Test counter is %d", testCounter);
+            login = new UITextField(textRect);
+            login->SetFont(font);
+            login->SetDebugDraw(true);
+            login->SetText(loginText);
+            login->SetTextAlign(ALIGN_LEFT | ALIGN_VCENTER);
+            login->SetTextColor(Color::White);
+            login->SetDelegate(this);
+            AddControl(login);
+            
+            textRect.y += (10.f + textRect.dy);
+            
+            passwordText = Format(L"Test time is %f", testTime);
+            password = new UITextField(textRect);
+            password->SetFont(font);
+            password->SetDebugDraw(true);
+            password->SetText(passwordText);
+            password->SetTextAlign(ALIGN_RIGHT | ALIGN_VCENTER);
+            password->SetTextColor(Color::White);
+            password->SetDelegate(this);
+            AddControl(password);
+        }
+        break;
+
+        case GameCore::TEST_TEXTFIELD_SETTEXT:
+        {
+            
+            login->SetText(Format(L"Test counter is %d", testCounter));
+            password->SetText(Format(L"Test time is %f", testTime));
+            
+            break;
+        }
+            
+        case GameCore::TEST_TEXTFIELD_TWOTEXTFIELDS:
+            break;
+
+        case GameCore::TEST_TEXTFIELD_CHANGEFOCUS:
+        {
+            if(UIControlSystem::Instance()->GetFocusedControl() == login)
+            {
+                password->SetFocused();
+            }
+            else
+            {
+                login->SetFocused();
+            }
+            
+        }
+            
+            
+        default:
+            break;
+    }
 }
 

@@ -45,12 +45,19 @@ public:
 
 protected:
     
-    void OnWebView(BaseObject *caller, void *param, void *callerData);
-    void OnTextEdit(BaseObject *caller, void *param, void *callerData);
+    void OnTextEditTwo(BaseObject *caller, void *param, void *callerData);
+    void OnTextEditAddRemove(BaseObject *caller, void *param, void *callerData);
+    void OnTextEditSetText(BaseObject *caller, void *param, void *callerData);
+    void OnTextEditChangeFocus(BaseObject *caller, void *param, void *callerData);
+    
+    void OnWebViewLoading(BaseObject *caller, void *param, void *callerData);
+    void OnWebViewAddRemove(BaseObject *caller, void *param, void *callerData);
+
     void OnNoNative(BaseObject *caller, void *param, void *callerData);
     
     
     uint8 *dummyMemory;
+    uint32 dummyMemorySize;
 };
 
 #endif //__SELECT_SCREEN_H__

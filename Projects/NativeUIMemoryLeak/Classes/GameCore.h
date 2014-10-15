@@ -38,6 +38,21 @@ class BaseScreen;
 class GameCore : public ApplicationCore
 {
     friend class BaseScreen;
+    
+public:
+    
+    enum eTestType
+    {
+        TEST_NONE = 0,
+        TEST_TEXTFIELD_TWOTEXTFIELDS,
+        TEST_TEXTFIELD_ADDREMOVE,
+        TEST_TEXTFIELD_SETTEXT,
+        TEST_TEXTFIELD_CHANGEFOCUS,
+        TEST_WEBVIEW_LOADING,
+        TEST_WEBVIEW_ADDREMOVE,
+    };
+    
+    
 protected:
 	virtual ~GameCore();
 public:	
@@ -62,11 +77,16 @@ public:
 
     virtual void BeginFrame();
 
+    void SetTest(eTestType test) { testType = test; };
+    eTestType GetTest() const { return testType; };
+    
 protected:
 
     void CreateDocumentsFolder();
 
     DAVA::List<BaseScreen *> screens;
+    
+    eTestType testType;
 };
 
 
