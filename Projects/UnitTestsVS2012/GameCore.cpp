@@ -26,6 +26,7 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =====================================================================================*/
 
+#include "stdafx.h"
 
 #include "GameCore.h"
 
@@ -34,50 +35,51 @@
 
 #include "Config.h"
 #include "BaseScreen.h"
-#include "SampleTest.h"
-#include "EntityTest.h"
-#include "MemoryAllocatorsTest.h"
-#include "HashMapTest.h"
-#include "SoundTest.h"
-#include "AlignTest.h"
-#include "SplitTest.h"
-#include "MaterialCompilerTest.h"
-#include "PVRTest.h"
-#include "DXTTest.h"
-#include "KeyedArchiveYamlTest.h"
-#include "CloneTest.h"
-#include "DPITest.h"
-#include "EMailTest.h"
-#include "InputTest.h"
-#include "FilePathTest.h"
-#include "FileListTest.h"
-#include "FileSystemTest.h"
-#include "DeviceInfoTest.h"
-#include "LocalizationTest.h"
-#include "UIListTest.h"
-#include "TransparentWebViewTest.h"
-#include "FormatsTest.h"
-#include "UIScrollViewTest.h"
-#include "ThreadSyncTest.h"
+//#include "SampleTest.h"
+//#include "EntityTest.h"
+//#include "MemoryAllocatorsTest.h"
+//#include "HashMapTest.h"
+//#include "SoundTest.h"
+//#include "AlignTest.h"
+//#include "SplitTest.h"
+//#include "MaterialCompilerTest.h"
+//#include "PVRTest.h"
+//#include "DXTTest.h"
+//#include "KeyedArchiveYamlTest.h"
+//#include "CloneTest.h"
+//#include "DPITest.h"
+//#include "EMailTest.h"
+//#include "InputTest.h"
+//#include "FilePathTest.h"
+//#include "FileListTest.h"
+//#include "FileSystemTest.h"
+//#include "DeviceInfoTest.h"
+//#include "LocalizationTest.h"
+//#include "UIListTest.h"
+//#include "TransparentWebViewTest.h"
+//#include "FormatsTest.h"
+//#include "UIScrollViewTest.h"
+//#include "ThreadSyncTest.h"
 #include "UIMovieTest.h"
-#include "DFFontTest.h"
-#include "ComponentsTest.h"
-#include "RectSpriteTest.h"
-#include "OpenGLES30FormatTest.h"
-#include "StringFormatTest.h"
-#include "SaveImageTest.h"
-#include "JPEGTest.h"
-#include "DateTimeTest.h"
-#include "SceneSystemTest.h"
-#include "ParseTextTest.h"
-#include "ImageSizeTest.h"
-#include "DLCDownloadTest.h"
-#include "FunctionBindSingalTest.h"
-#include "MathTest.h"
+//#include "DFFontTest.h"
+//#include "ComponentsTest.h"
+//#include "RectSpriteTest.h"
+//#include "OpenGLES30FormatTest.h"
+//#include "StringFormatTest.h"
+//#include "SaveImageTest.h"
+//#include "JPEGTest.h"
+//#include "DateTimeTest.h"
+//#include "SceneSystemTest.h"
+//#include "ParseTextTest.h"
+//#include "ImageSizeTest.h"
+//#include "DLCDownloadTest.h"
+//#include "FunctionBindSingalTest.h"
+//#include "MathTest.h" // not need in new test framework
 
 using namespace DAVA;
 
-GameCore::GameCore()
+GameCore::GameCore(const String& testNameToStart):
+	testNameToRun(testNameToStart)
 {
     logFile = NULL;
     
@@ -125,8 +127,15 @@ void GameCore::OnAppStarted()
  //   new FilePathTest();
  //   new FileListTest();
  //   new FileSystemTest();
- //   
- //	new UIMovieTest();
+ //
+	if ("UIMovieTest" == testNameToRun)
+	{
+ 		new UIMovieTest();
+	} else
+	{
+		DVASSERT(false);
+		// TODO add #include "catch.hpp" and REQUIRE("add you new test name here like above" == testNameToRun)
+	}
  //	new InputTest();
  //   new FormatsTest();
  //
@@ -351,6 +360,10 @@ void GameCore::ProcessTests()
 
 void GameCore::FlushTestResults()
 {
+#define VS2012TESTS
+#ifdef VS2012TESTS
+	return; // TEST Code
+#else
     bool connected = ConnectToDB();
     if(!connected)
     {
@@ -402,6 +415,7 @@ void GameCore::FlushTestResults()
 
     dbClient->Disconnect();
     SafeRelease(dbClient);
+#endif // VS2012TESTS
 }
 
 
