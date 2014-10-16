@@ -57,6 +57,7 @@ void SelectScreen::LoadResources()
     testSet[L"Text Edit AddRemove Test"] = Message(this, &SelectScreen::OnTextEditAddRemove);
     testSet[L"Text Edit SetText Test"] = Message(this, &SelectScreen::OnTextEditSetText);
     testSet[L"Text Edit ChangeFocus Test"] = Message(this, &SelectScreen::OnTextEditChangeFocus);
+    testSet[L"Text Edit ChangeVisibility Test"] = Message(this, &SelectScreen::OnTextEditChangeVisibility);
     
     for(auto it = testSet.begin(), endIt = testSet.end(); it != endIt; ++it)
     {
@@ -107,6 +108,11 @@ void SelectScreen::OnTextEditChangeFocus(BaseObject *caller, void *param, void *
     UIScreenManager::Instance()->SetScreen(2);
 }
 
+void SelectScreen::OnTextEditChangeVisibility(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_CHANGEVISIBILITY);
+    UIScreenManager::Instance()->SetScreen(2);
+}
 
 void SelectScreen::OnNoNative(BaseObject *caller, void *param, void *callerData)
 {

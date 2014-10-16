@@ -192,7 +192,21 @@ void TextEditScreen::Update(float32 timeElapsed)
             {
                 login->SetFocused();
             }
+            break;
+        }
             
+        case GameCore::TEST_TEXTFIELD_CHANGEVISIBILITY:
+        {
+            if((testCounter % 10) == 0)
+            {
+                login->SetVisible(!login->GetVisible());
+                password->SetVisible(!password->GetVisible());
+            }
+
+            login->SetText(Format(L"Test counter is %d", testCounter));
+            password->SetText(Format(L"Test time is %f", testTime));
+            
+            break;
         }
             
             
