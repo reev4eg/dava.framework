@@ -31,7 +31,7 @@
 #include "UIMovieTest.h"
 #include "FrameworkMain.h"
 
-#include "catch.hpp"
+#include "IdeUnitTestsSupport.h"
 
 static const float MOVIE_TEST_AUTO_CLOSE_TIME = 10.0f;
 
@@ -203,19 +203,24 @@ void UIMovieTest::ButtonPressed(DAVA::BaseObject *obj, void *data, void *callerD
 	{
 		testFinished = true;
 		// TEST code
-		REQUIRE(false);
+		IDE_REQUIRE(false);
 	}
 }
 
-namespace UIMovieTestNamespace
+IDE_TEST_CASE_START(UIMovieTestCase, "[ui]")
 {
-	TEST_CASE("UIMovieTest", "[ui]")
-	{
-		g_nameOfUiTestToStart = "UIMovieTest";
-		// TODO test
-		HINSTANCE hInstance = GetModuleHandle(NULL);
-		SetCurrentDirectoryA("./../");
-		//SetCurrentDirectoryA("c:\\Users\\l_chayka\\job\\dava.framework\\Projects\\UnitTests");
-		DAVA::Core::Run(0, 0, hInstance/*0*/);
-	}
+	g_nameOfUiTestToStart = "UIMovieTest";
+	// TODO test
+	HINSTANCE hInstance = GetModuleHandle(NULL);
+	SetCurrentDirectoryA("./../");
+	//SetCurrentDirectoryA("c:\\Users\\l_chayka\\job\\dava.framework\\Projects\\UnitTests");
+	DAVA::Core::Run(0, 0, hInstance/*0*/);
 }
+IDE_TEST_CASE_END
+
+IDE_TEST_CASE_START(SecondTestCase, "[tag]")
+{
+	int i = 1;
+	IDE_REQUIRE(1 == i);
+}
+IDE_TEST_CASE_END

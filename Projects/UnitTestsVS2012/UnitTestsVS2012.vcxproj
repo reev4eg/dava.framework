@@ -57,6 +57,7 @@
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;DAVA_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -91,6 +92,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="FrameworkMain.h" />
     <ClInclude Include="GameCore.h" />
+    <ClInclude Include="IdeUnitTestsSupport.h" />
     <ClInclude Include="IncludeVS2012\catch.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DAVAEngine.h"
 
-#include "catch.hpp"
+#include "IdeUnitTestsSupport.h"
 
 namespace
 {
@@ -29,20 +29,25 @@ namespace
 }
 
 
-namespace MathTest
+IDE_TEST_CASE_START(MathTestCase, "[math]")
 {
-	TEST_CASE("MathTest", "[math]")
-	{
-		REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeTranslation(DAVA::Vector3(10.0f, 0.0f, 0.0f))) < 0.0001f);
-		REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeRotation(DAVA::Vector3(1.0f, 0.0f, 0.0f), DAVA::PI_05)) < 0.0001f);
-		REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeScale(DAVA::Vector3(3.0f, 3.0f, 3.0f))) < 0.0001f);
+	IDE_REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeTranslation(DAVA::Vector3(10.0f, 0.0f, 0.0f))) < 0.0001f);
+	IDE_REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeRotation(DAVA::Vector3(1.0f, 0.0f, 0.0f), DAVA::PI_05)) < 0.0001f);
+	IDE_REQUIRE(TestMatrixDecomposition(DAVA::Matrix4::MakeScale(DAVA::Vector3(3.0f, 3.0f, 3.0f))) < 0.0001f);
 
-		DAVA::Vector3 axis(0.0f, 1.0f, 1.0f);
-		axis.Normalize();
-		REQUIRE(
-			TestMatrixDecomposition(
-			DAVA::Matrix4::MakeTranslation(DAVA::Vector3(10.0f, 0.0f, 0.0f)) *
-			DAVA::Matrix4::MakeRotation(axis, DAVA::PI_05 * 0.25f) *
-			DAVA::Matrix4::MakeScale(DAVA::Vector3(3.0f, 3.0f, 3.0f))) < 0.0001f);
+	DAVA::Vector3 axis(0.0f, 1.0f, 1.0f);
+	axis.Normalize();
+	IDE_REQUIRE(
+		TestMatrixDecomposition(
+		DAVA::Matrix4::MakeTranslation(DAVA::Vector3(10.0f, 0.0f, 0.0f)) *
+		DAVA::Matrix4::MakeRotation(axis, DAVA::PI_05 * 0.25f) *
+		DAVA::Matrix4::MakeScale(DAVA::Vector3(3.0f, 3.0f, 3.0f))) < 0.0001f);
+
+	IDE_SECTION("test section")
+	{
+		int i = 0;
+		i++;
+		IDE_REQUIRE(1 == i);
 	}
 }
+IDE_TEST_CASE_END
