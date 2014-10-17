@@ -146,7 +146,6 @@ void TextEditScreen::Update(float32 timeElapsed)
             const Rect screenRect = GetRect();
             Rect textRect(10.f, HEADER_HEIGHT + 10.f, screenRect.dx - 20.f, 30.f);
             
-            loginText = Format(L"Test counter is %d", testCounter);
             login = new UITextField(textRect);
             login->SetFont(font);
             login->SetDebugDraw(true);
@@ -158,7 +157,6 @@ void TextEditScreen::Update(float32 timeElapsed)
             
             textRect.y += (10.f + textRect.dy);
             
-            passwordText = Format(L"Test time is %f", testTime);
             password = new UITextField(textRect);
             password->SetFont(font);
             password->SetDebugDraw(true);
@@ -172,10 +170,6 @@ void TextEditScreen::Update(float32 timeElapsed)
 
         case GameCore::TEST_TEXTFIELD_SETTEXT:
         {
-            
-            login->SetText(Format(L"Test counter is %d", testCounter));
-            password->SetText(Format(L"Test time is %f", testTime));
-            
             break;
         }
             
@@ -202,16 +196,33 @@ void TextEditScreen::Update(float32 timeElapsed)
                 login->SetVisible(!login->GetVisible());
                 password->SetVisible(!password->GetVisible());
             }
-
-            login->SetText(Format(L"Test counter is %d", testCounter));
-            password->SetText(Format(L"Test time is %f", testTime));
-            
             break;
         }
-            
+
+        case GameCore::TEST_TEXTFIELD_SHOWHIDE:
+        {
+            if((testCounter % 2) == 0)
+            {
+                login->DidAppear();
+                password->DidAppear();
+            }
+            else
+            {
+                login->WillDisappear();
+                password->WillDisappear();
+            }
+            break;
+        }
+
             
         default:
             break;
+    }
+
+    if(GameCore::Instance()->GetTest() != GameCore::TEST_TEXTFIELD_TWOTEXTFIELDS)
+    {
+        login->SetText(Format(L"Test counter is %d", testCounter));
+        password->SetText(Format(L"Test time is %f", testTime));
     }
 }
 

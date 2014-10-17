@@ -46,8 +46,23 @@ SelectScreen::~SelectScreen()
 void SelectScreen::LoadResources()
 {
     BaseScreen::LoadResources();
-    
+
     const Rect screenRect = GetRect();
+
+    const uint32 count = 20;
+    for(uint32 i = 0; i < count; ++i)
+    {
+        UIControl * c = new UIControl(screenRect);
+        c->GetBackground()->SetDrawType(UIControlBackground::DRAW_FILL);
+        
+        float32 color = (float32)i / (float32)count;
+        c->GetBackground()->SetColor(Color(color, color, color, 1.f));
+        
+        AddControl(c);
+        c->Release();
+    }
+
+    
     Rect buttonRect(10.f, HEADER_HEIGHT + 10.f, screenRect.dx - 20.f, 30.f);
     
     Map<WideString, Message> testSet;
@@ -58,6 +73,7 @@ void SelectScreen::LoadResources()
     testSet[L"Text Edit SetText Test"] = Message(this, &SelectScreen::OnTextEditSetText);
     testSet[L"Text Edit ChangeFocus Test"] = Message(this, &SelectScreen::OnTextEditChangeFocus);
     testSet[L"Text Edit ChangeVisibility Test"] = Message(this, &SelectScreen::OnTextEditChangeVisibility);
+    testSet[L"Text Edit ShowHide Test"] = Message(this, &SelectScreen::OnTextEditShowHide);
     
     for(auto it = testSet.begin(), endIt = testSet.end(); it != endIt; ++it)
     {
@@ -69,6 +85,11 @@ void SelectScreen::LoadResources()
     }
     
     Memset(dummyMemory, GameCore::Instance()->GetTest(), dummyMemorySize);
+}
+
+void SelectScreen::UnloadResources()
+{
+    BaseScreen::UnloadResources();
 }
 
 void SelectScreen::OnWebViewLoading(BaseObject *caller, void *param, void *callerData)
@@ -111,6 +132,12 @@ void SelectScreen::OnTextEditChangeFocus(BaseObject *caller, void *param, void *
 void SelectScreen::OnTextEditChangeVisibility(BaseObject *caller, void *param, void *callerData)
 {
     GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_CHANGEVISIBILITY);
+    UIScreenManager::Instance()->SetScreen(2);
+}
+
+void SelectScreen::OnTextEditShowHide(BaseObject *caller, void *param, void *callerData)
+{
+    GameCore::Instance()->SetTest(GameCore::TEST_TEXTFIELD_SHOWHIDE);
     UIScreenManager::Instance()->SetScreen(2);
 }
 

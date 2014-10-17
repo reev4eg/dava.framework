@@ -42,6 +42,7 @@ public:
 	SelectScreen();
 
 	virtual void LoadResources();
+    virtual void UnloadResources();
 
 protected:
     
@@ -50,6 +51,7 @@ protected:
     void OnTextEditSetText(BaseObject *caller, void *param, void *callerData);
     void OnTextEditChangeFocus(BaseObject *caller, void *param, void *callerData);
     void OnTextEditChangeVisibility(BaseObject *caller, void *param, void *callerData);
+    void OnTextEditShowHide(BaseObject *caller, void *param, void *callerData);
     
     void OnWebViewLoading(BaseObject *caller, void *param, void *callerData);
     void OnWebViewAddRemove(BaseObject *caller, void *param, void *callerData);
