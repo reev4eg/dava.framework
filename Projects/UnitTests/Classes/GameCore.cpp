@@ -126,7 +126,7 @@ void GameCore::OnAppStarted()
  //   new FileListTest();
  //   new FileSystemTest();
  //   
- //	new UIMovieTest();
+ 	new UIMovieTest();
  //	new InputTest();
  //   new FormatsTest();
  //

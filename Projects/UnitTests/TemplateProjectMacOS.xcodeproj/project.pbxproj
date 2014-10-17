@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00FD88A419F139F200738421 /* NewMathTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FD88A319F139F200738421 /* NewMathTest.cpp */; };
+		00FD88AF19F13C9E00738421 /* TemplateProjectMacOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00FD88AE19F13C9E00738421 /* TemplateProjectMacOSTests.m */; };
+		00FD88B619F142EF00738421 /* NewNewMathTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FD88B519F142EF00738421 /* NewNewMathTest.cpp */; };
+		00FD88B819F148F000738421 /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE98931811638F3C00500198 /* libFramework.a */; };
+		00FD88BB19F1491B00738421 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1767A194183D1B4A000DE581 /* AVFoundation.framework */; };
+		00FD88BC19F1493500738421 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74AF6340188530CD00070C35 /* Security.framework */; };
+		00FD88BD19F1494900738421 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1767A19A183D227A000DE581 /* CoreMedia.framework */; };
+		00FD88BE19F14A4B00738421 /* libfmodevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E9E45C173A43A900C501BC /* libfmodevent.dylib */; };
+		00FD88BF19F14AD100738421 /* libfmodex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02E9E45D173A43A900C501BC /* libfmodex.dylib */; };
+		00FD88C019F14AEA00738421 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C151B18E16D37E2700E09BAF /* WebKit.framework */; };
+		00FD88C119F14BA600738421 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CDC2500156CC93300742348 /* libz.dylib */; };
+		00FD88C319F14BCB00738421 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FD88C219F14BCB00738421 /* Cocoa.framework */; };
+		00FD88C519F14C3800738421 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FD88C419F14C3800738421 /* OpenGL.framework */; };
 		020AB209174639C60082F336 /* libfmodevent.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 02E9E45C173A43A900C501BC /* libfmodevent.dylib */; };
 		020AB20A174639C60082F336 /* libfmodex.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 02E9E45D173A43A900C501BC /* libfmodex.dylib */; };
 		029E4D8A15D403BA004A4167 /* SplitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 029E4D8915D403BA004A4167 /* SplitTest.cpp */; };
@@ -73,6 +86,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		00FD88CA19F150C200738421 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = TemplateProjectMacOS;
+		};
 		1770DF5517DF6CAE00000391 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FE98930B11638F3C00500198 /* Framework.xcodeproj */;
@@ -118,6 +138,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00FD88A319F139F200738421 /* NewMathTest.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = NewMathTest.cpp; sourceTree = "<group>"; };
+		00FD88A519F13A9200738421 /* IdeUnitTestsSupport.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = IdeUnitTestsSupport.h; sourceTree = "<group>"; };
+		00FD88AA19F13C9D00738421 /* TemplateProjectMacOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TemplateProjectMacOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00FD88AD19F13C9E00738421 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00FD88AE19F13C9E00738421 /* TemplateProjectMacOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TemplateProjectMacOSTests.m; sourceTree = "<group>"; };
+		00FD88B519F142EF00738421 /* NewNewMathTest.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = NewNewMathTest.cpp; sourceTree = "<group>"; };
+		00FD88B919F1491000738421 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
+		00FD88C219F14BCB00738421 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		00FD88C419F14C3800738421 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		00FD88C619F14F5000738421 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		029E4D8915D403BA004A4167 /* SplitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SplitTest.cpp; path = Classes/SplitTest.cpp; sourceTree = "<group>"; };
 		029E4D8B15D403F6004A4167 /* SplitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SplitTest.h; path = Classes/SplitTest.h; sourceTree = "<group>"; };
 		02E9E45C173A43A900C501BC /* libfmodevent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodevent.dylib; path = ../../Libs/fmod/lib/macos/libfmodevent.dylib; sourceTree = "<group>"; };
@@ -242,6 +272,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		00FD88A719F13C9D00738421 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FD88BC19F1493500738421 /* Security.framework in Frameworks */,
+				00FD88BD19F1494900738421 /* CoreMedia.framework in Frameworks */,
+				00FD88BB19F1491B00738421 /* AVFoundation.framework in Frameworks */,
+				00FD88BE19F14A4B00738421 /* libfmodevent.dylib in Frameworks */,
+				00FD88BF19F14AD100738421 /* libfmodex.dylib in Frameworks */,
+				00FD88C019F14AEA00738421 /* WebKit.framework in Frameworks */,
+				00FD88C119F14BA600738421 /* libz.dylib in Frameworks */,
+				00FD88B819F148F000738421 /* libFramework.a in Frameworks */,
+				00FD88C319F14BCB00738421 /* Cocoa.framework in Frameworks */,
+				00FD88C519F14C3800738421 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -262,6 +309,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00FD88AB19F13C9D00738421 /* TemplateProjectMacOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				00FD88B519F142EF00738421 /* NewNewMathTest.cpp */,
+				00FD88A319F139F200738421 /* NewMathTest.cpp */,
+				00FD88A519F13A9200738421 /* IdeUnitTestsSupport.h */,
+				00FD88AE19F13C9E00738421 /* TemplateProjectMacOSTests.m */,
+				00FD88AC19F13C9E00738421 /* Supporting Files */,
+			);
+			path = TemplateProjectMacOSTests;
+			sourceTree = "<group>";
+		};
+		00FD88AC19F13C9E00738421 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00FD88AD19F13C9E00738421 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		029E4D8815D40386004A4167 /* SplitTest */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +407,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* UnitTests.app */,
+				00FD88AA19F13C9D00738421 /* TemplateProjectMacOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -357,6 +425,7 @@
 				FEA30C211231362D00E691CC /* MacOSSpecific */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				00FD88AB19F13C9D00738421 /* TemplateProjectMacOSTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -384,6 +453,10 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00FD88C619F14F5000738421 /* libc++.dylib */,
+				00FD88C419F14C3800738421 /* OpenGL.framework */,
+				00FD88C219F14BCB00738421 /* Cocoa.framework */,
+				00FD88B919F1491000738421 /* SecurityFoundation.framework */,
 				74AF6340188530CD00070C35 /* Security.framework */,
 				1767A19A183D227A000DE581 /* CoreMedia.framework */,
 				1767A198183D1E7F000DE581 /* AVKit.framework */,
@@ -779,6 +852,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		00FD88A919F13C9D00738421 /* TemplateProjectMacOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00FD88B219F13C9E00738421 /* Build configuration list for PBXNativeTarget "TemplateProjectMacOSTests" */;
+			buildPhases = (
+				00FD88A619F13C9D00738421 /* Sources */,
+				00FD88A719F13C9D00738421 /* Frameworks */,
+				00FD88A819F13C9D00738421 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00FD88CB19F150C200738421 /* PBXTargetDependency */,
+			);
+			name = TemplateProjectMacOSTests;
+			productName = TemplateProjectMacOSTests;
+			productReference = 00FD88AA19F13C9D00738421 /* TemplateProjectMacOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8D1107260486CEB800E47090 /* TemplateProjectMacOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS" */;
@@ -807,6 +898,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
+				TargetAttributes = {
+					00FD88A919F13C9D00738421 = {
+						CreatedOnToolsVersion = 6.0.1;
+						TestTargetID = 8D1107260486CEB800E47090;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TemplateProjectMacOS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -830,6 +927,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* TemplateProjectMacOS */,
+				00FD88A919F13C9D00738421 /* TemplateProjectMacOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -859,6 +957,13 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		00FD88A819F13C9D00738421 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -890,6 +995,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		00FD88A619F13C9D00738421 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FD88AF19F13C9E00738421 /* TemplateProjectMacOSTests.m in Sources */,
+				00FD88B619F142EF00738421 /* NewNewMathTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -937,6 +1051,7 @@
 				C172EC1918C9F412004309CF /* DFFontTest.cpp in Sources */,
 				840CB02418EE08C600B722D0 /* JPEGTest.cpp in Sources */,
 				02F8B01417CF994300D5A334 /* ThreadSyncTest.cpp in Sources */,
+				00FD88A419F139F200738421 /* NewMathTest.cpp in Sources */,
 				E8490AA8192386B600C07E36 /* ParseTextTest.cpp in Sources */,
 				1770DF5917DF6CC200000391 /* UIMovieTest.cpp in Sources */,
 				D7E6C5BD1982562C00B96D1A /* DLCDownloadTest.cpp in Sources */,
@@ -946,6 +1061,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		00FD88CB19F150C200738421 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* TemplateProjectMacOS */;
+			targetProxy = 00FD88CA19F150C200738421 /* PBXContainerItemProxy */;
+		};
 		FE93072B12C28C1100A33E69 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Framework;
@@ -973,6 +1093,102 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		00FD88B319F13C9E00738421 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = TemplateProjectMacOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user123/job/dava.framework/Libs/fmod/lib/macos,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UnitTests.app/Contents/MacOS/UnitTests";
+			};
+			name = Debug;
+		};
+		00FD88B419F13C9E00738421 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = TemplateProjectMacOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user123/job/dava.framework/Libs/fmod/lib/macos,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/UnitTests.app/Contents/MacOS/UnitTests";
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1083,6 +1299,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		00FD88B219F13C9E00738421 /* Build configuration list for PBXNativeTarget "TemplateProjectMacOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FD88B319F13C9E00738421 /* Debug */,
+				00FD88B419F13C9E00738421 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
