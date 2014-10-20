@@ -16,12 +16,12 @@
 #define TEST_OBJECTIVEC_METHOD_NAME_GEN( name ) test##name
 
 #define IDE_TEST_CASE(name, tags) \
-	@interface name : XCTestCase \
-	@end \
-	@implementation name \
-	-(void) TEST_OBJECTIVEC_METHOD_NAME_GEN( name )
+@interface name : XCTestCase \
+@end \
+@implementation name \
+ - (void) TEST_OBJECTIVEC_METHOD_NAME_GEN( name )
 
-#define IDE_REQUIRE( expr ) XCTAssert( (expr), @Pass);
+#define IDE_REQUIRE( expr ) XCTAssert( (expr), @"Pass");
 #define IDE_SECTION( expr ) // Do I need gen some try catch here?
 #define IDE_TEST_CASE_END @end
 
