@@ -1,0 +1,688 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00D330E519F4DF7F0046F4D2 /* MinimalTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */; };
+		020AB2031746397D0082F336 /* libfmodevent.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; };
+		020AB2041746397D0082F336 /* libfmodex.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47207017450A0E0040A308 /* libfmodex.dylib */; };
+		4F47207117450A0E0040A308 /* libfmodevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; };
+		4F47207217450A0E0040A308 /* libfmodex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F47207017450A0E0040A308 /* libfmodex.dylib */; };
+		4F53EDA819A4D92B00D3869D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F53EDA719A4D92B00D3869D /* Security.framework */; };
+		5C383CBF15F6083400C5906B /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C383CBC15F6070900C5906B /* libFramework.a */; };
+		5C9676601520C0BF00EF0237 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C96765F1520C0BF00EF0237 /* libz.dylib */; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CCE2CA1B197950D900D8086F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1A197950D900D8086F /* AVFoundation.framework */; };
+		CCE2CA1D1979510600D8086F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1C1979510600D8086F /* CoreMedia.framework */; };
+		CCE2CA1F1979511B00D8086F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1E1979511B00D8086F /* WebKit.framework */; };
+		FE444EEB1153A1D500F5EFD6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE444EEA1153A1D500F5EFD6 /* OpenGL.framework */; };
+		FE9892E511638EF700500198 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FE9892E111638EF700500198 /* InfoPlist.strings */; };
+		FE9892E611638EF700500198 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9892E311638EF700500198 /* MainMenu.xib */; };
+		FEA30C331231362D00E691CC /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FEA30C291231362D00E691CC /* main.mm */; };
+		FEA30C361231362D00E691CC /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = FEA30C2E1231362D00E691CC /* version.plist */; };
+		FEC3CA811283557F00541220 /* FrameworkMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEC3CA6F1283557F00541220 /* FrameworkMain.cpp */; };
+		FEC3CA821283557F00541220 /* GameCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEC3CA711283557F00541220 /* GameCore.cpp */; };
+		FEC3CA871283557F00541220 /* TestScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEC3CA7B1283557F00541220 /* TestScreen.cpp */; };
+		FEFCD5EE12AE50860060A1A1 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD5E712AE50860060A1A1 /* Data */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		00D330DA19F4DE3E0046F4D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = TemplateProjectMacOS;
+		};
+		5C383CBB15F6070900C5906B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE408F951541C9650001D712 /* Framework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = Framework;
+		};
+		5C383CBD15F6075A00C5906B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE408F951541C9650001D712 /* Framework.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = Framework;
+		};
+		CCE2CA1419794F4F00D8086F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE408F951541C9650001D712 /* Framework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E898A2C416BD265400732C04;
+			remoteInfo = FrameworkQt;
+		};
+		CCE2CA1619794F4F00D8086F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE408F951541C9650001D712 /* Framework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 176DEB77174B5561007A983B;
+			remoteInfo = FrameworkNPAPI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		020AB202174639740082F336 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				020AB2031746397D0082F336 /* libfmodevent.dylib in CopyFiles */,
+				020AB2041746397D0082F336 /* libfmodex.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		00D330D419F4DE3E0046F4D2 /* TemplateProjectMacOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TemplateProjectMacOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00D330D719F4DE3E0046F4D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00D330E119F4DEE50046F4D2 /* IdeUnitTestsSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IdeUnitTestsSupport.h; path = ../../dava.framework/Projects/UnitTestsVS2012/IdeUnitTestsSupport.h; sourceTree = "<group>"; };
+		00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = MinimalTest.cpp; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* TemplateProjectMacOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateProjectMacOS_Prefix.pch; sourceTree = "<group>"; };
+		4F47206F17450A0E0040A308 /* libfmodevent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodevent.dylib; path = ../dava.framework/Libs/fmod/lib/macos/libfmodevent.dylib; sourceTree = "<group>"; };
+		4F47207017450A0E0040A308 /* libfmodex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodex.dylib; path = ../dava.framework/Libs/fmod/lib/macos/libfmodex.dylib; sourceTree = SOURCE_ROOT; };
+		4F53EDA719A4D92B00D3869D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		5C96765F1520C0BF00EF0237 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		8D1107320486CEB800E47090 /* TemplateProjectMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateProjectMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCE2CA1A197950D900D8086F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		CCE2CA1C1979510600D8086F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		CCE2CA1E1979511B00D8086F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		FE408F951541C9650001D712 /* Framework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Framework.xcodeproj; path = ../dava.framework/Projects/MacOSFramework/Framework.xcodeproj; sourceTree = "<group>"; };
+		FE444EEA1153A1D500F5EFD6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		FE5288A4132FA5EB000FE4F0 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		FE9892E211638EF700500198 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = MacOSSpecific/English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FE9892E411638EF700500198 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = MacOSSpecific/English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		FEA30C291231362D00E691CC /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		FEA30C2E1231362D00E691CC /* version.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = version.plist; sourceTree = "<group>"; };
+		FEC3CA6C1283557F00541220 /* AppScreens.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppScreens.h; path = Classes/AppScreens.h; sourceTree = "<group>"; };
+		FEC3CA6F1283557F00541220 /* FrameworkMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrameworkMain.cpp; path = Classes/FrameworkMain.cpp; sourceTree = "<group>"; };
+		FEC3CA701283557F00541220 /* FrameworkMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrameworkMain.h; path = Classes/FrameworkMain.h; sourceTree = "<group>"; };
+		FEC3CA711283557F00541220 /* GameCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameCore.cpp; path = Classes/GameCore.cpp; sourceTree = "<group>"; };
+		FEC3CA721283557F00541220 /* GameCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCore.h; path = Classes/GameCore.h; sourceTree = "<group>"; };
+		FEC3CA7B1283557F00541220 /* TestScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestScreen.cpp; path = Classes/TestScreen.cpp; sourceTree = "<group>"; };
+		FEC3CA7C1283557F00541220 /* TestScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestScreen.h; path = Classes/TestScreen.h; sourceTree = "<group>"; };
+		FEC9202713BA2EAA006F347F /* TemplateProjectMacOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TemplateProjectMacOS-Info.plist"; sourceTree = "<group>"; };
+		FEFCD5E712AE50860060A1A1 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00D330D119F4DE3E0046F4D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F53EDA819A4D92B00D3869D /* Security.framework in Frameworks */,
+				CCE2CA1F1979511B00D8086F /* WebKit.framework in Frameworks */,
+				CCE2CA1D1979510600D8086F /* CoreMedia.framework in Frameworks */,
+				CCE2CA1B197950D900D8086F /* AVFoundation.framework in Frameworks */,
+				4F47207117450A0E0040A308 /* libfmodevent.dylib in Frameworks */,
+				4F47207217450A0E0040A308 /* libfmodex.dylib in Frameworks */,
+				5C383CBF15F6083400C5906B /* libFramework.a in Frameworks */,
+				5C9676601520C0BF00EF0237 /* libz.dylib in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				FE444EEB1153A1D500F5EFD6 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00D330D519F4DE3E0046F4D2 /* TemplateProjectMacOS Tests */ = {
+			isa = PBXGroup;
+			children = (
+				00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */,
+				00D330E119F4DEE50046F4D2 /* IdeUnitTestsSupport.h */,
+				00D330D619F4DE3E0046F4D2 /* Supporting Files */,
+			);
+			path = "TemplateProjectMacOS Tests";
+			sourceTree = "<group>";
+		};
+		00D330D619F4DE3E0046F4D2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00D330D719F4DE3E0046F4D2 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE444EEA1153A1D500F5EFD6 /* OpenGL.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				FE5288A4132FA5EB000FE4F0 /* OpenAL.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* TemplateProjectMacOS.app */,
+				00D330D419F4DE3E0046F4D2 /* TemplateProjectMacOS Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* TemplateProjectMacOS */ = {
+			isa = PBXGroup;
+			children = (
+				4F47206F17450A0E0040A308 /* libfmodevent.dylib */,
+				4F47207017450A0E0040A308 /* libfmodex.dylib */,
+				5C96765F1520C0BF00EF0237 /* libz.dylib */,
+				FE408F951541C9650001D712 /* Framework.xcodeproj */,
+				FEFCD5E712AE50860060A1A1 /* Data */,
+				FE445A961153C27800F5EFD6 /* Classes */,
+				FEA30C211231362D00E691CC /* MacOSSpecific */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				00D330D519F4DE3E0046F4D2 /* TemplateProjectMacOS Tests */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = TemplateProjectMacOS;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* TemplateProjectMacOS_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FEC9202713BA2EAA006F347F /* TemplateProjectMacOS-Info.plist */,
+				FE9892E111638EF700500198 /* InfoPlist.strings */,
+				FE9892E311638EF700500198 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4F53EDA719A4D92B00D3869D /* Security.framework */,
+				CCE2CA1E1979511B00D8086F /* WebKit.framework */,
+				CCE2CA1C1979510600D8086F /* CoreMedia.framework */,
+				CCE2CA1A197950D900D8086F /* AVFoundation.framework */,
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5C383CB815F6070900C5906B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5C383CBC15F6070900C5906B /* libFramework.a */,
+				CCE2CA1519794F4F00D8086F /* libFrameworkQt.a */,
+				CCE2CA1719794F4F00D8086F /* libFrameworkNPAPI.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FE445A961153C27800F5EFD6 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FEC3CA6F1283557F00541220 /* FrameworkMain.cpp */,
+				FEC3CA701283557F00541220 /* FrameworkMain.h */,
+				FEC3CA711283557F00541220 /* GameCore.cpp */,
+				FEC3CA721283557F00541220 /* GameCore.h */,
+				FEC3CA6C1283557F00541220 /* AppScreens.h */,
+				FEC3CA7B1283557F00541220 /* TestScreen.cpp */,
+				FEC3CA7C1283557F00541220 /* TestScreen.h */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		FEA30C211231362D00E691CC /* MacOSSpecific */ = {
+			isa = PBXGroup;
+			children = (
+				FEA30C291231362D00E691CC /* main.mm */,
+				FEA30C2E1231362D00E691CC /* version.plist */,
+			);
+			path = MacOSSpecific;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00D330D319F4DE3E0046F4D2 /* TemplateProjectMacOS Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00D330E019F4DE3E0046F4D2 /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS Tests" */;
+			buildPhases = (
+				00D330D019F4DE3E0046F4D2 /* Sources */,
+				00D330D119F4DE3E0046F4D2 /* Frameworks */,
+				00D330D219F4DE3E0046F4D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00D330DB19F4DE3E0046F4D2 /* PBXTargetDependency */,
+			);
+			name = "TemplateProjectMacOS Tests";
+			productName = "TemplateProjectMacOS Tests";
+			productReference = 00D330D419F4DE3E0046F4D2 /* TemplateProjectMacOS Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8D1107260486CEB800E47090 /* TemplateProjectMacOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+				020AB202174639740082F336 /* CopyFiles */,
+				FE0D6CE9128AE7DE00ECAE3B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5C383CBE15F6075A00C5906B /* PBXTargetDependency */,
+			);
+			name = TemplateProjectMacOS;
+			productInstallPath = "$(HOME)/Applications";
+			productName = TemplateProjectMacOS;
+			productReference = 8D1107320486CEB800E47090 /* TemplateProjectMacOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				TargetAttributes = {
+					00D330D319F4DE3E0046F4D2 = {
+						CreatedOnToolsVersion = 6.0.1;
+						TestTargetID = 8D1107260486CEB800E47090;
+					};
+				};
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TemplateProjectMacOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* TemplateProjectMacOS */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 5C383CB815F6070900C5906B /* Products */;
+					ProjectRef = FE408F951541C9650001D712 /* Framework.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* TemplateProjectMacOS */,
+				00D330D319F4DE3E0046F4D2 /* TemplateProjectMacOS Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		5C383CBC15F6070900C5906B /* libFramework.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFramework.a;
+			remoteRef = 5C383CBB15F6070900C5906B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CCE2CA1519794F4F00D8086F /* libFrameworkQt.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFrameworkQt.a;
+			remoteRef = CCE2CA1419794F4F00D8086F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CCE2CA1719794F4F00D8086F /* libFrameworkNPAPI.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFrameworkNPAPI.a;
+			remoteRef = CCE2CA1619794F4F00D8086F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00D330D219F4DE3E0046F4D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE9892E511638EF700500198 /* InfoPlist.strings in Resources */,
+				FE9892E611638EF700500198 /* MainMenu.xib in Resources */,
+				FEA30C361231362D00E691CC /* version.plist in Resources */,
+				FEFCD5EE12AE50860060A1A1 /* Data in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FE0D6CE9128AE7DE00ECAE3B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change ./libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change ./libfmodevent.dylib @executable_path/../Frameworks/libfmodevent.dylib $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\ninstall_name_tool -id @executable_path/../Frameworks/libfmodex.dylib $BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodex.dylib\ninstall_name_tool -id @executable_path/../Frameworks/libfmodevent.dylib $BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodevent.dylib\ninstall_name_tool -change ./libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib $BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodevent.dylib\ntouch -cm ${SRCROOT}/Data/\ntouch -cm ${SRCROOT}/Data/XGfx/\ntouch -cm ${SRCROOT}/Data/Configs/\ntouch -cm ${SRCROOT}/Data/Audio/";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00D330D019F4DE3E0046F4D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00D330E519F4DF7F0046F4D2 /* MinimalTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEA30C331231362D00E691CC /* main.mm in Sources */,
+				FEC3CA811283557F00541220 /* FrameworkMain.cpp in Sources */,
+				FEC3CA821283557F00541220 /* GameCore.cpp in Sources */,
+				FEC3CA871283557F00541220 /* TestScreen.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00D330DB19F4DE3E0046F4D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* TemplateProjectMacOS */;
+			targetProxy = 00D330DA19F4DE3E0046F4D2 /* PBXContainerItemProxy */;
+		};
+		5C383CBE15F6075A00C5906B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Framework;
+			targetProxy = 5C383CBD15F6075A00C5906B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FE9892E111638EF700500198 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE9892E211638EF700500198 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FE9892E311638EF700500198 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE9892E411638EF700500198 /* English */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		00D330DC19F4DE3E0046F4D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "TemplateProjectMacOS Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TemplateProjectMacOS.app/Contents/MacOS/TemplateProjectMacOS";
+			};
+			name = Debug;
+		};
+		00D330DD19F4DE3E0046F4D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "TemplateProjectMacOS Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TemplateProjectMacOS.app/Contents/MacOS/TemplateProjectMacOS";
+			};
+			name = Release;
+		};
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = TemplateProjectMacOS_Prefix.pch;
+				INFOPLIST_FILE = "TemplateProjectMacOS-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../dava.framework/Libs/fmod/lib/macos\"",
+				);
+				PRODUCT_NAME = TemplateProjectMacOS;
+				VALID_ARCHS = x86_64;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = TemplateProjectMacOS_Prefix.pch;
+				INFOPLIST_FILE = "TemplateProjectMacOS-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../dava.framework/Libs/fmod/lib/macos\"",
+				);
+				PRODUCT_NAME = TemplateProjectMacOS;
+				VALID_ARCHS = x86_64;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DAVA_DEBUG;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					./../dava.framework/Sources/Internal,
+					./../dava.framework/Sources/External,
+					/opt/local/include/,
+					./../dava.framework/Libs/include,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fvisibility=hidden",
+				);
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					./../dava.framework/Sources/Internal,
+					./../dava.framework/Sources/External,
+					/opt/local/include/,
+					./../dava.framework/Libs/include,
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fvisibility=hidden",
+				);
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00D330E019F4DE3E0046F4D2 /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00D330DC19F4DE3E0046F4D2 /* Debug */,
+				00D330DD19F4DE3E0046F4D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TemplateProjectMacOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
