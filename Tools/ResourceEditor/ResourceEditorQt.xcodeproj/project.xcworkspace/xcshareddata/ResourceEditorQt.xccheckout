@@ -5,16 +5,20 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>4BD3A93C-F709-49C4-A491-C2B3E1B71230</string>
+	<string>B20DE8F7-2EEA-4894-B6D8-FFFFDB91AC0B</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ResourceEditorQt</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>62289F3C472C02540432B448FB463096A6264DBD</key>
 		<string>github.com:dava/dava.framework.git</string>
 	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Tools/ResourceEditor/ResourceEditorQt.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>62289F3C472C02540432B448FB463096A6264DBD</key>
-		<string>dava.framework</string>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:dava/dava.framework.git</string>

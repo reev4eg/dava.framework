@@ -7,7 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		001CB9B319F5051200D8E85C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E79C5119F4FAB0006E9A5C /* Cocoa.framework */; };
+		001CB9B619F505B000D8E85C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1C1979510600D8086F /* CoreMedia.framework */; };
+		001CB9B719F50C3700D8E85C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F53EDA719A4D92B00D3869D /* Security.framework */; };
+		001CB9B819F50CD200D8E85C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1A197950D900D8086F /* AVFoundation.framework */; };
+		001CB9B919F50D7D00D8E85C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C96765F1520C0BF00EF0237 /* libz.dylib */; };
+		001CB9BC19F5117E00D8E85C /* MathTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001CB9BB19F5117E00D8E85C /* MathTest.cpp */; };
+		001CB9BD19F5120B00D8E85C /* libfmodex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F47207017450A0E0040A308 /* libfmodex.dylib */; };
+		001CB9BE19F5122000D8E85C /* libfmodevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; };
+		001CB9C719F52C1C00D8E85C /* libfmodevent.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		001CB9C819F52C1D00D8E85C /* libfmodex.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47207017450A0E0040A308 /* libfmodex.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		00D330E519F4DF7F0046F4D2 /* MinimalTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */; };
+		00E79C5A19F500CA006E9A5C /* Data in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD5E712AE50860060A1A1 /* Data */; };
+		00E79C5B19F5015E006E9A5C /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C383CBC15F6070900C5906B /* libFramework.a */; };
+		00E79C5C19F50187006E9A5C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE2CA1E1979511B00D8086F /* WebKit.framework */; };
+		00E79C5D19F50265006E9A5C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E79C4F19F4FA9C006E9A5C /* OpenGL.framework */; };
 		020AB2031746397D0082F336 /* libfmodevent.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; };
 		020AB2041746397D0082F336 /* libfmodex.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4F47207017450A0E0040A308 /* libfmodex.dylib */; };
 		4F47207117450A0E0040A308 /* libfmodevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F47206F17450A0E0040A308 /* libfmodevent.dylib */; };
@@ -69,6 +83,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		001CB9C619F52C0200D8E85C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				001CB9C719F52C1C00D8E85C /* libfmodevent.dylib in CopyFiles */,
+				001CB9C819F52C1D00D8E85C /* libfmodex.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		020AB202174639740082F336 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -83,10 +108,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		001CB9BB19F5117E00D8E85C /* MathTest.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = MathTest.cpp; path = ../../dava.framework/Projects/UnitTestsVS2012/MathTest.cpp; sourceTree = "<group>"; };
 		00D330D419F4DE3E0046F4D2 /* TemplateProjectMacOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TemplateProjectMacOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D330D719F4DE3E0046F4D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00D330E119F4DEE50046F4D2 /* IdeUnitTestsSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IdeUnitTestsSupport.h; path = ../../dava.framework/Projects/UnitTestsVS2012/IdeUnitTestsSupport.h; sourceTree = "<group>"; };
 		00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = MinimalTest.cpp; sourceTree = "<group>"; };
+		00E79C4F19F4FA9C006E9A5C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		00E79C5119F4FAB0006E9A5C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -123,6 +151,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				001CB9BE19F5122000D8E85C /* libfmodevent.dylib in Frameworks */,
+				001CB9BD19F5120B00D8E85C /* libfmodex.dylib in Frameworks */,
+				001CB9B919F50D7D00D8E85C /* libz.dylib in Frameworks */,
+				001CB9B819F50CD200D8E85C /* AVFoundation.framework in Frameworks */,
+				001CB9B719F50C3700D8E85C /* Security.framework in Frameworks */,
+				001CB9B619F505B000D8E85C /* CoreMedia.framework in Frameworks */,
+				001CB9B319F5051200D8E85C /* Cocoa.framework in Frameworks */,
+				00E79C5D19F50265006E9A5C /* OpenGL.framework in Frameworks */,
+				00E79C5C19F50187006E9A5C /* WebKit.framework in Frameworks */,
+				00E79C5B19F5015E006E9A5C /* libFramework.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +187,7 @@
 		00D330D519F4DE3E0046F4D2 /* TemplateProjectMacOS Tests */ = {
 			isa = PBXGroup;
 			children = (
+				001CB9BB19F5117E00D8E85C /* MathTest.cpp */,
 				00D330E419F4DF7F0046F4D2 /* MinimalTest.cpp */,
 				00D330E119F4DEE50046F4D2 /* IdeUnitTestsSupport.h */,
 				00D330D619F4DE3E0046F4D2 /* Supporting Files */,
@@ -233,6 +272,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00E79C5119F4FAB0006E9A5C /* Cocoa.framework */,
+				00E79C4F19F4FA9C006E9A5C /* OpenGL.framework */,
 				4F53EDA719A4D92B00D3869D /* Security.framework */,
 				CCE2CA1E1979511B00D8086F /* WebKit.framework */,
 				CCE2CA1C1979510600D8086F /* CoreMedia.framework */,
@@ -286,6 +327,8 @@
 				00D330D019F4DE3E0046F4D2 /* Sources */,
 				00D330D119F4DE3E0046F4D2 /* Frameworks */,
 				00D330D219F4DE3E0046F4D2 /* Resources */,
+				001CB9C619F52C0200D8E85C /* CopyFiles */,
+				001CB9C219F52AAB00D8E85C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -387,6 +430,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E79C5A19F500CA006E9A5C /* Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +448,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		001CB9C219F52AAB00D8E85C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change ./libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\ninstall_name_tool -change ./libfmodevent.dylib @executable_path/../Frameworks/libfmodevent.dylib \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH\"\ninstall_name_tool -id @executable_path/../Frameworks/libfmodex.dylib \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodex.dylib\"\ninstall_name_tool -id @executable_path/../Frameworks/libfmodevent.dylib \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodevent.dylib\"\ninstall_name_tool -change ./libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib \"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/libfmodevent.dylib\"";
+		};
 		FE0D6CE9128AE7DE00ECAE3B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,6 +482,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00D330E519F4DF7F0046F4D2 /* MinimalTest.cpp in Sources */,
+				001CB9BC19F5117E00D8E85C /* MathTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,8 +536,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -495,8 +553,9 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(SDKROOT/Developer/Library/Frameworks)",
 					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -512,6 +571,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "TemplateProjectMacOS Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user123/job/dava.framework/Libs/fmod/lib/macos,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -523,8 +586,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -542,8 +605,9 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(SDKROOT/Developer/Library/Frameworks)",
 					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -553,6 +617,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "TemplateProjectMacOS Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/user123/job/dava.framework/Libs/fmod/lib/macos,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -663,6 +731,7 @@
 				00D330DD19F4DE3E0046F4D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "TemplateProjectMacOS" */ = {
 			isa = XCConfigurationList;
