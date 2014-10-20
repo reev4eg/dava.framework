@@ -33,6 +33,8 @@ using namespace DAVA;
 
 DAVA::String g_nameOfUiTestToStart = "";
 
+void FrameworkDidLaunched();
+void FrameworkWillTerminate();
 
 void FrameworkDidLaunched()
 {

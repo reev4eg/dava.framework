@@ -58,9 +58,9 @@ void UIMovieTest::LoadResources()
 	AddControl(movieView);
 	
 	// Create the "player" buttons.
-	const int buf_size = 260;
-	TCHAR buf[buf_size] = {0};
-	GetCurrentDirectory(buf_size, buf);
+//	const int buf_size = 260;
+//	TCHAR buf[buf_size] = {0};
+//	GetCurrentDirectory(buf_size, buf);
 	DAVA::Font *font = DAVA::FTFont::Create("~res:/Fonts/korinna.ttf"); // "~res:/Fonts/korinna.ttf"
     DVASSERT(font);
 	font->SetSize(14);
@@ -142,7 +142,7 @@ void UIMovieTest::Update(DAVA::float32 timeElapsed)
     if(onScreenTime > MOVIE_TEST_AUTO_CLOSE_TIME)
     {
         testFinished = true;
-		REQUIRE(true);
+		//IDE_REQUIRE(true);
     }
  
 	UpdatePlayerStateText();
@@ -201,7 +201,7 @@ void UIMovieTest::ButtonPressed(DAVA::BaseObject *obj, void *data, void *callerD
 	{
 		testFinished = true;
 		// TEST code
-		IDE_REQUIRE(false);
+//		IDE_REQUIRE(false);
 	}
 }
 
@@ -209,10 +209,15 @@ IDE_TEST_CASE_START(UIMovieTestCase, "[ui]")
 {
 	g_nameOfUiTestToStart = "UIMovieTest";
 	// TODO test
-	HINSTANCE hInstance = GetModuleHandle(NULL);
-	SetCurrentDirectoryA("./../");
-	//SetCurrentDirectoryA("c:\\Users\\l_chayka\\job\\dava.framework\\Projects\\UnitTests");
-	DAVA::Core::Run(0, 0, hInstance/*0*/);
+//	HINSTANCE hInstance = GetModuleHandle(NULL);
+//	SetCurrentDirectoryA("./../");
+	
+    //SetCurrentDirectoryA("c:\\Users\\l_chayka\\job\\dava.framework\\Projects\\UnitTests");
+    {
+        DAVA::Core::Run(0, 0, 0);
+    }
+    int i = 1;
+    ++i;
 }
 IDE_TEST_CASE_END
 
