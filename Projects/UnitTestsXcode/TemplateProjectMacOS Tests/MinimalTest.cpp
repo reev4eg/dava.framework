@@ -1,6 +1,6 @@
 #include "IdeUnitTestsSupport.h"
 
-IDE_TEST_CASE(MinimalTestCase, "test")
+IDE_TEST_CASE_START(MinimalTestCase, "test")
 {
     int i = 1;
     IDE_REQUIRE(1 == i);

@@ -15,7 +15,7 @@
 
 #define TEST_OBJECTIVEC_METHOD_NAME_GEN( name ) test##name
 
-#define IDE_TEST_CASE(name, tags) \
+#define IDE_TEST_CASE_START(name, tags) \
 @interface name : XCTestCase \
 @end \
 @implementation name \
