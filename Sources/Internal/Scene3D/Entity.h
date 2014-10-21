@@ -53,7 +53,8 @@ class SceneFileV2;
 class DataNode;
 class RenderComponent;
 class TransformComponent;
-
+class ComponentIndices;
+    
 /**
     \brief Base class of 3D scene hierarchy. All nodes in our scene graph is inherited from this node.
  */
@@ -77,6 +78,7 @@ public:
      */
     virtual Scene * GetScene();
     
+    void RefreshIndices();
     void AddComponent(Component * component);
     void RemoveComponent(Component * component);
     void RemoveComponent(uint32 componentType, uint32 index = 0);
@@ -391,23 +393,11 @@ protected:
     uint32 flags;
     
 private:
-        
+    
+    ComponentIndices *componentIndices;
 	Vector<Component *> components;
     uint32 componentFlags;
     uint32 componentUpdateMarks;
-    
-#if defined(COMPONENT_STORAGE_STDMAP)
-
-    typedef Map<uint32, Vector<Component*>* > ComponentsMap;
-    ComponentsMap componentsMap;
-
-#else
-    
-    typedef HashMap<uint32, Vector<Component*>* > ComponentsMap;
-    ComponentsMap componentsMap;
-    
-#endif
-
     Matrix4 defaultLocalTransform;
    	friend class Scene;
     
