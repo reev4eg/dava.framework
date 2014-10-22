@@ -207,6 +207,13 @@ void UIMovieTest::ButtonPressed(DAVA::BaseObject *obj, void *data, void *callerD
 
 IDE_TEST_CASE_START(UIMovieTestCase, "[ui]")
 {
+    NSLog(@"Main Bundle Path: %@", [[NSBundle mainBundle] bundlePath]);
+    
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSString *finalPath = [path stringByAppendingPathComponent:@"Info.plist"];
+    NSDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:finalPath];
+
+    plistData = nil;
 	g_nameOfUiTestToStart = "UIMovieTest";
 	// TODO test
 //	HINSTANCE hInstance = GetModuleHandle(NULL);

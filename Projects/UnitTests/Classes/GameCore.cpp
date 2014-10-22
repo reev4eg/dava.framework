@@ -77,6 +77,16 @@
 
 using namespace DAVA;
 
+void GlobalHackTestFunction()
+{
+    DAVA::ApplicationCore* appCoreTmp = 0;
+    appCoreTmp = DAVA::Core::GetApplicationCore();
+    appCoreTmp = DAVA::Core::GetApplicationCore();
+    appCoreTmp = DAVA::Core::GetApplicationCore();
+    GameCore* gameCore = dynamic_cast<GameCore*>(appCoreTmp);
+    gameCore->RunTestScreen(new UIMovieTest());
+}
+
 GameCore::GameCore()
 {
     logFile = NULL;
@@ -87,10 +97,12 @@ GameCore::GameCore()
     
     currentScreenIndex = 0;
     currentTestIndex = 0;
+    testDummyScreen = new TestScreen(); // auto destroy
 }
 
 GameCore::~GameCore()
 {
+    assert(false);
 }
 
 void GameCore::OnAppStarted()
@@ -126,7 +138,7 @@ void GameCore::OnAppStarted()
  //   new FileListTest();
  //   new FileSystemTest();
  //   
- 	new UIMovieTest();
+// 	new UIMovieTest();
  //	new InputTest();
  //   new FormatsTest();
  //
@@ -156,9 +168,13 @@ void GameCore::OnAppStarted()
 
  //   new SceneSystemTest();
     
-    errors.reserve(TestCount());
+//    errors.reserve(TestCount());
+    errors.reserve(256);
+    
+    UIScreenManager::Instance()->RegisterScreen(256, testDummyScreen);
+    UIScreenManager::Instance()->SetFirst(256);
 
-    RunTests();
+//    RunTests();
 }
 
 void GameCore::RegisterScreen(BaseScreen *screen)
@@ -322,8 +338,29 @@ int32 GameCore::TestCount()
     return count;
 }
 
+void GameCore::RunTestScreen(BaseScreen* test)
+{
+    if (currentScreen)
+    {
+        // TODO destroy screen
+        assert(false);
+    }
+    RegisterScreen(test);
+    RunTests();
+}
+
 void GameCore::ProcessTests()
 {
+//    if (currentScreen && currentScreen->ReadyForTests())
+//    {
+//        bool ret = currentScreen->RunTest(currentTestIndex);
+//        if (ret)
+//        {
+//            currentScreen = screens[currentScreenIndex];
+//            //                    currentTestIndex = 0;
+//            //                    
+//        }
+//    }
     if(currentScreen && currentScreen->ReadyForTests())
     {
         bool ret = currentScreen->RunTest(currentTestIndex);
@@ -335,7 +372,7 @@ void GameCore::ProcessTests()
                 ++currentScreenIndex;
                 if(currentScreenIndex == screens.size())
                 {
-                    FinishTests();
+//                   TODO May be wait some time test injected into GameCore?  FinishTests();
                 }
                 else 
                 {
@@ -351,7 +388,7 @@ void GameCore::ProcessTests()
 
 void GameCore::FlushTestResults()
 {
-    bool connected = ConnectToDB();
+    bool connected = false; // TODO  ConnectToDB();
     if(!connected)
     {
         LogMessage(String("Can't connect to DB"));

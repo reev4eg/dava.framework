@@ -31,6 +31,7 @@
 #define __GAMECORE_H__
 
 #include "DAVAEngine.h"
+#include "TestScreen.h"
 #include "Database/MongodbClient.h"
 
 using namespace DAVA;
@@ -80,6 +81,8 @@ public:
 
     void LogMessage(const String &message);
     
+    void RunTestScreen(BaseScreen* test);
+    
     
 protected:
     
@@ -114,8 +117,11 @@ protected:
     int32 currentTestIndex;
     
     Vector<ErrorData *> errors;
+    
+    TestScreen* testDummyScreen;
 };
 
+void GlobalHackTestFunction();
 
 
 #endif // __GAMECORE_H__

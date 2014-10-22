@@ -612,6 +612,7 @@ void Core::SetApplicationCore(ApplicationCore * _core)
 
 ApplicationCore * Core::GetApplicationCore()
 {
+    Logger::Info("%p", core);
 	return core;
 }
 	
