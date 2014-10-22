@@ -37,7 +37,8 @@ namespace
 
 IDE_TEST_CASE_START(MathTestCase, "[math]")
 {
-    GlobalHackTestFunction();
+    //GlobalHackTestFunction();
+    DAVA::Core::Run(0, 0);
 //    DAVA::ApplicationCore* appCoreTmp = 0;
 //    appCoreTmp = DAVA::Core::GetApplicationCore();
 //    appCoreTmp = DAVA::Core::GetApplicationCore();

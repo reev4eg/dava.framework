@@ -67,7 +67,7 @@ public:
 
 		return;
 	}
-private:
+public:
 	static T * instance;
 };
 template <typename T> 

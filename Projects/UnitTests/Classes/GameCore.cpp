@@ -79,6 +79,10 @@ using namespace DAVA;
 
 void GlobalHackTestFunction()
 {
+    DAVA::Core * c = 0;
+    DAVA::Core * d = 0;
+    c = DAVA::Core::Instance();
+    d = DAVA::Core::instance;
     DAVA::ApplicationCore* appCoreTmp = 0;
     appCoreTmp = DAVA::Core::GetApplicationCore();
     appCoreTmp = DAVA::Core::GetApplicationCore();
@@ -138,7 +142,7 @@ void GameCore::OnAppStarted()
  //   new FileListTest();
  //   new FileSystemTest();
  //   
-// 	new UIMovieTest();
+ 	new UIMovieTest();
  //	new InputTest();
  //   new FormatsTest();
  //
@@ -171,10 +175,10 @@ void GameCore::OnAppStarted()
 //    errors.reserve(TestCount());
     errors.reserve(256);
     
-    UIScreenManager::Instance()->RegisterScreen(256, testDummyScreen);
-    UIScreenManager::Instance()->SetFirst(256);
+    //UIScreenManager::Instance()->RegisterScreen(256, testDummyScreen);
+    //UIScreenManager::Instance()->SetFirst(256);
 
-//    RunTests();
+    RunTests();
 }
 
 void GameCore::RegisterScreen(BaseScreen *screen)

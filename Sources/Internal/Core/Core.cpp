@@ -127,7 +127,7 @@ void Core::CreateSingletons()
 	FileSystem::Instance()->SetDefaultDocumentsDirectory();
     FileSystem::Instance()->CreateDirectory(FileSystem::Instance()->GetCurrentDocumentsDirectory(), true);
 	
-    new SoundSystem();
+    //new SoundSystem();
 
 	if (isConsoleMode)
 	{

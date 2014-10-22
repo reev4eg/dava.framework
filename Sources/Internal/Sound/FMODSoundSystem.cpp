@@ -346,6 +346,7 @@ void SoundSystem::UnloadFMODProjects()
 
 void SoundSystem::Update(float32 timeElapsed)
 {
+return;
 	TIME_PROFILE("SoundSystem::Update");
 
 	fmodEventSystem->update();
