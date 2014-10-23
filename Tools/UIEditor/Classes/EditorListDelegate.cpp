@@ -46,6 +46,7 @@ namespace DAVA
 		cellsCount(CELL_COUNT),
 		isElementsCountNeedUpdate(false)
 	{
+    	DVASSERT(list);
         currentList = list;
         
         const Rect& rect = list->GetRect();
@@ -62,6 +63,7 @@ namespace DAVA
 	
 	EditorListDelegate::~EditorListDelegate()
 	{
+    	DVASSERT(currentList);
         currentList->SetDelegate(NULL);
 	}
 	

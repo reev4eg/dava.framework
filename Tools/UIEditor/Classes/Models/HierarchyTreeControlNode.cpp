@@ -134,7 +134,8 @@ void HierarchyTreeControlNode::AddControlToParent()
 HierarchyTreeControlNode::~HierarchyTreeControlNode()
 {
 	Cleanup();
-	
+	SafeRelease(listDelegate);
+    
 	UIControl* parent = uiObject->GetParent();
 	if (parent)
 		parent->RemoveControl(uiObject);
