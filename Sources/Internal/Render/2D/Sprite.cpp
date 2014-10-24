@@ -1168,7 +1168,7 @@ void Sprite::Draw(DrawState * state)
 	if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::SPRITE_DRAW) ||
 		(spriteClipping && !IsSpriteOnScreen(state)))
 	{
-		return;
+		//return;
 	}
     
     RENDERER_UPDATE_STATS(spriteDrawCount++);
