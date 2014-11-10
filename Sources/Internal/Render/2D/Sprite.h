@@ -132,6 +132,8 @@ public:
 		,	X_OFFSET_TO_ACTIVE
 		,	Y_OFFSET_TO_ACTIVE
 	};
+    
+    const static int32 INVALID_FRAME_INDEX = -1; //Use it when we try to get sprite frame using invalid frameName
 
 	/**
 	 \brief Function to create sprite. This is convinience function and it return sprite in any case.
@@ -187,19 +189,14 @@ public:
     static Sprite* CreateFromSourceFile(const FilePath& path, bool contentScaleIncluded = false, bool inVirtualSpace = false);
     static Sprite* CreateFromSourceData(const uint8* data, uint32 size, bool contentScaleIncluded = false, bool inVirtualSpace = false);
 
-	/*
-	 \brief Function to prepare sprite tiling. Shifts texture coordinates by approximately 1 pixel to the center. Tiled sprites can be drawn using scale and there will be no empty pixels between them.
-	 */
-	void PrepareForTiling();
+    static String GetPathString( const Sprite *sprite);
 
 	void SetOffsetsForFrame(int frame, float32 xOff, float32 yOff);
 
+	Texture* GetTexture() const;
+	Texture* GetTexture(int32 frameNumber) const;
 
-	virtual int32 Release();
-	Texture* GetTexture();
-	Texture* GetTexture(int32 frameNumber);
-
-	UniqueHandle GetTextureHandle(int32 frameNumber);
+	UniqueHandle GetTextureHandle(int32 frameNumber) const;
 
 	int32 GetFrameCount() const;
 
@@ -211,38 +208,16 @@ public:
 
 	//void SetFrame(int32 frm);
     
-    int32 GetFrameByName(const String& frameName);
+    int32 GetFrameByName(const FastName& frameName) const;
 
 	void SetDefaultPivotPoint(float32 x, float32 y);
 	void SetDefaultPivotPoint(const Vector2 &newPivotPoint);
 
-	//void SetPivotPoint(float32 x, float32 y);
-	//void SetPivotPoint(const Vector2 &newPivotPoint);
-
-	//void SetPosition(float32 x, float32 y);
-	//void SetPosition(const Vector2 &drawPos);
-
-	//void SetAngle(float32 angleInRadians);
-
-	//void SetScale(float32 xScale, float32 yScale);
-	//void SetScale(const Vector2 &newScale);
-
-	//void SetScaleSize(float32 width, float32 height);//scale size overrides standart scale
-	//void SetScaleSize(const Vector2 &drawSize);
-
 	void SetModification(int32 modif);
 
-	//void ResetPivotPoint();
-
-	//void ResetAngle();
 	void ResetModification();
-	//void ResetScale();
 	void Reset();//Reset do not resets the pivot point
 
-	void BeginBatching();
-	void EndBatching();
-
-	//void Draw();
 	void Draw(DrawState * state);
 	/**
 	 \brief	Draw sprite by the 4 verticies.
@@ -289,7 +264,7 @@ public:
 	 \brief Returns multiplyer to convert sprite to the physical coordinates.
 	 */
 	inline float32 GetResourceToPhysicalFactor() const;
-	
+
 	/**
 	 \brief Returns multiplyer to convert sprite to the virtual coordinates.
 	 */
@@ -321,13 +296,16 @@ public:
 	 \brief Reloads the sprite.
 	 */
 	void Reload();
-	
+
 	static void SetSpriteClipping(bool clipping);
 
     /**
 	 \brief Reloads all sprites.
 	 */
 	static void ReloadSprites();
+
+	static void CreateRenderObject();
+	static void ReleaseRenderObject();
 
 protected:
 	Sprite();
@@ -384,7 +362,7 @@ protected:
 	int32	frame;
 
 	Vector2	defaultPivotPoint;
-    Vector<String> frameNames;
+    Vector<FastName> frameNames;
 	//Vector2	pivotPoint;
 
 	//Vector2	drawCoord;

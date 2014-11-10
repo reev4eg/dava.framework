@@ -138,7 +138,7 @@ public class JNIWebView {
 				webView.getSettings().setUseWideViewPort(true);
 				if (android.os.Build.VERSION.SDK_INT >= 11)
 				{
-					webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+				webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 				}
 				webView.setWebChromeClient(new InternalWebClient(id));
 				webView.setOnTouchListener(new View.OnTouchListener()
@@ -159,7 +159,7 @@ public class JNIWebView {
 				        return false;
 				    }
 				});
-
+				
 				activity.addContentView(webView, params);
 				views.put(id, webView);
 				
@@ -233,8 +233,9 @@ public class JNIWebView {
 					Log.d(TAG, String.format("Unknown view id %d", id));
 					return;
 				}
+				
 				WebView webView = views.get(id);
-				webView.loadDataWithBaseURL(baseUrl, data, "text/html", "utf-8", null);
+                webView.loadDataWithBaseURL(baseUrl, data, "text/html", "utf-8", null);
 			}
 		});
 	}

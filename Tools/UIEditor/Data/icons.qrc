@@ -30,6 +30,7 @@
         <file>Icons/uiswitch.png</file>
         <file>Icons/uijoypad.png</file>
         <file>Icons/ui3dview.png</file>
+        <file>Icons/uilistcell.png</file>
         <file>Icons/help.png</file>
         <file>Icons/align_bottom.png</file>
         <file>Icons/align_hcenter.png</file>
@@ -56,5 +57,13 @@
         <file>Icons/search-icon.png</file>
         <file>Icons/ignore-case.png</file>
         <file>Icons/custom_icon.png</file>
+    </qresource>
+    <qresource prefix="/Cursors">
+        <file>Cursors/arrow.png</file>
+        <file>Cursors/left_corner.png</file>
+        <file>Cursors/left_right.png</file>
+        <file>Cursors/right_corner.png</file>
+        <file>Cursors/up_down.png</file>
+        <file>Cursors/size_all.png</file>
     </qresource>
 </RCC>

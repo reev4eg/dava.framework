@@ -34,7 +34,7 @@
 namespace DAVA 
 {
 
-Animation::Animation(AnimatedObject * _owner, float32 _animationTimeLength, Interpolation::FuncType _interpolationFunc, int _defaultState)
+Animation::Animation(AnimatedObject * _owner, float32 _animationTimeLength, Interpolation::FuncType _interpolationFunc, int32 _defaultState)
 {
     tagId = 0;
 	owner = _owner;
@@ -59,7 +59,7 @@ void Animation::Reset()
 	next = 0;
 }
 
-void Animation::Start(int _groupId)
+void Animation::Start(int32 _groupId)
 {
 //#ifdef ANIMATIONS_DEBUG
 //	if(AnimationManager::Instance()->IsAnimationLoggerEnabled())
@@ -120,7 +120,8 @@ void Animation::Update(float32 timeElapsed)
 			if (time <= halfTimeLength)
 			{	// normal interpolation
 				normalizedTime = interpolationFunc(time / halfTimeLength);
-			}else
+			}
+			else
 			{	// reverse interpolation
 				normalizedTime = interpolationFunc(2.0f - (time / halfTimeLength));/*1.0f - ((time - halfTimeLength) / halfTimeLength)*/
 			}
@@ -132,7 +133,8 @@ void Animation::Update(float32 timeElapsed)
 					time = timeLength;
 					normalizedTime = 0.0f;
 					state |= STATE_FINISHED;
-				}else
+				}
+				else
 				{
 					time -= timeLength;
 					// Do not decrement repeat counter for loop
@@ -142,7 +144,8 @@ void Animation::Update(float32 timeElapsed)
 					}
 				}
 			}
-		}else // 
+		}
+		else // 
 		{
 			time += timeElapsed*timeMultiplier;
 			normalizedTime = interpolationFunc(time / timeLength);
@@ -153,7 +156,8 @@ void Animation::Update(float32 timeElapsed)
 					time = timeLength;
 					normalizedTime = 1.0f;
 					state |= STATE_FINISHED;
-				}else 
+				}
+				else 
 				{
 					time -= timeLength;
 					// Do not decrement repeat counter for loop

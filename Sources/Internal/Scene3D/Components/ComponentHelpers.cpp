@@ -36,6 +36,7 @@
 #include "Scene3D/Components/LodComponent.h"
 #include "Scene3D/Components/RenderComponent.h"
 #include "Scene3D/Components/ParticleEffectComponent.h"
+#include "Scene3D/Components/AnimationComponent.h"
 #include "Scene3D/Components/QualitySettingsComponent.h"
 #include "Scene3D/Components/CustomPropertiesComponent.h"
 #include "Scene3D/Components/TransformComponent.h"
@@ -57,12 +58,18 @@ namespace DAVA
 
 RenderComponent * GetRenderComponent(const Entity *fromEntity)
 {
-	return static_cast<RenderComponent*>(fromEntity->GetComponent(Component::RENDER_COMPONENT));
+    if(fromEntity)
+	    return static_cast<RenderComponent*>(fromEntity->GetComponent(Component::RENDER_COMPONENT));
+    else
+        return NULL;
 }
 
 TransformComponent * GetTransformComponent(Entity * fromEntity)
 {
-	return static_cast<TransformComponent*>(fromEntity->GetComponent(Component::TRANSFORM_COMPONENT));
+    if(fromEntity)
+	    return static_cast<TransformComponent*>(fromEntity->GetComponent(Component::TRANSFORM_COMPONENT));
+    else
+        return NULL;
 }
 
 RenderObject * GetRenderObject(const Entity * fromEntity)
@@ -112,6 +119,16 @@ ParticleEffectComponent * GetEffectComponent(Entity *fromEntity)
 
 	return NULL;
 }
+
+AnimationComponent * GetAnimationComponent(Entity *fromEntity)
+{
+    if(fromEntity)
+    {
+        return static_cast<AnimationComponent*>(fromEntity->GetComponent(Component::ANIMATION_COMPONENT));
+    }
+    return NULL;
+}
+
 
 LightComponent *GetLightComponent(Entity * fromEntity)
 {

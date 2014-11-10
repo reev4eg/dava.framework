@@ -42,7 +42,6 @@
 namespace DAVA
 {
     
-REGISTER_CLASS(ParticleEffectComponent)
 
 ParticleEffectComponent::ParticleEffectComponent()
 {
@@ -519,15 +518,5 @@ void ParticleEffectComponent::SetRefractionVisible(bool visible)
 {
     effectRenderObject->SetRefractionVisible(visible);
 }
-
-void ParticleEffectComponent::SetInheritPosition(bool inheritPosition)
-{
-	for (List<ParticleGroup>::iterator it = effectData.groups.begin(), e = effectData.groups.end(); it!=e; ++it)
-    {
-        ParticleLayer *layer = it->layer;
-        layer->inheritPosition = inheritPosition;
-    }
-}
-
 
 }

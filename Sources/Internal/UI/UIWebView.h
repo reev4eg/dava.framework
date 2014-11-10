@@ -56,6 +56,7 @@ public:
 	UIWebView(const Rect &rect = Rect(), bool rectInAbsoluteCoordinates = false);
 		
 	// Open the URL.
+    void OpenFile(const FilePath &path);
 	void OpenURL(const String& urlToOpen);
 	// Load html page
 	void LoadHtmlString(const WideString& htmlString);
@@ -65,19 +66,15 @@ public:
 	String GetCookie(const String& targetUrl, const String& name) const;
 	// Get the list of cookies for specific domain
 	Map<String, String> GetCookies(const String& targetUrl) const;
-	// Perfrom Java script, return script id
-	int32_t ExecuteJScript(const String& scriptString);
-	
+	// Perform Java script, return script id
+	int32 ExecuteJScript(const String& scriptString);
+    
     void OpenFromBuffer(const String& string, const FilePath& basePath);
     
 	// Overloaded virtual methods.
-	virtual void WillAppear();
-	virtual void WillDisappear();
-
 	virtual void SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates = false);
 	virtual void SetSize(const Vector2 &newSize);
-	virtual void SetVisible(bool isVisible, bool hierarchic = true);
-	
+
 	// Page scale property change
 	void SetScalesPageToFit(bool isScalesToFit);
 
@@ -87,6 +84,11 @@ public:
     virtual UIControl* Clone();
     virtual void CopyDataFrom(UIControl *srcControl);
 
+protected:
+    virtual void WillBecomeVisible();
+    virtual void WillBecomeInvisible();
+
+public:
     void SetNativeControlVisible(bool isVisible);
     bool GetNativeControlVisible() const;
 
@@ -105,7 +107,7 @@ public:
 protected:
 
     // Set the visibility of native control.
-    void UpdateNativeControlVisible(bool value, bool hierarchic);
+    void UpdateNativeControlVisible(bool value);
 
     // Update the rect of the web view control.
     void UpdateControlRect();

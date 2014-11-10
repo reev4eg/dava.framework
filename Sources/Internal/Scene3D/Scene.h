@@ -38,6 +38,7 @@
 #include "Render/Highlevel/Light.h"
 #include "Scene3D/SceneFile/SerializationContext.h"
 #include "Scene3D/SceneFileV2.h"
+#include "Scene3D/SceneFile/VersionInfo.h"
 
 namespace DAVA
 {
@@ -78,10 +79,12 @@ class ActionUpdateSystem;
 class SkyboxSystem;
 class MaterialSystem;
 class StaticOcclusionSystem;
+class StaticOcclusionDebugDrawSystem;
 class SpeedTreeUpdateSystem;
 class FoliageSystem;
 class WindSystem;
 class WaveSystem;
+class AnimationSystem;
     
 /**
     \ingroup scene3d
@@ -116,6 +119,7 @@ public:
         SCENE_SYSTEM_SPEEDTREE_UPDATE_FLAG  = 1 << 14,
         SCENE_SYSTEM_WIND_UPDATE_FLAG       = 1 << 15,
         SCENE_SYSTEM_WAVE_UPDATE_FLAG       = 1 << 16,
+        SCENE_SYSTEM_ANIMATION_FLAG         = 1 << 17,
 
         SCENE_SYSTEM_ALL_MASK               = 0xFFFFFFFF
     };
@@ -129,7 +133,7 @@ public:
     /**
         \brief Function to unregister entity from scene. This function is called when you remove entity from scene.
      */
-    void    UnregisterEntity(Entity * entity);
+    void    UnregisterEntity(Entity * entity);    
     
     /**
         \brief Function to register component in scene. This function is called when you add any component to any entity in scene.
@@ -165,8 +169,11 @@ public:
     MaterialSystem *materialSystem;
     SpeedTreeUpdateSystem* speedTreeUpdateSystem;
     FoliageSystem* foliageSystem;
+    VersionInfo::SceneVersion version;
     WindSystem * windSystem;
     WaveSystem * waveSystem;
+    AnimationSystem * animationSystem;
+    StaticOcclusionDebugDrawSystem *staticOcclusionDebugDrawSystem;
     
     /**
         \brief Overloaded GetScene returns this, instead of normal functionality.
@@ -177,11 +184,7 @@ public:
 	void RemoveAnimatedMesh(AnimatedMesh * mesh);
 	AnimatedMesh * GetAnimatedMesh(int32 index);
 	inline int32	GetAnimatedMeshCount();
-	
-	void AddAnimation(SceneNodeAnimationList * animation);
-	SceneNodeAnimationList * GetAnimation(int32 index);
-	SceneNodeAnimationList * GetAnimation(const FastName & name);
-	inline int32 GetAnimationCount();
+
     
     
     /**
@@ -253,7 +256,8 @@ public:
 	EventSystem * GetEventSystem() const;
 	RenderSystem * GetRenderSystem() const;
     MaterialSystem * GetMaterialSystem() const;
-    
+    AnimationSystem * GetAnimationSystem() const;
+
 	virtual SceneFileV2::eError Save(const DAVA::FilePath & pathname, bool saveForGame = false);
 
     virtual void OptimizeBeforeExport();
@@ -269,6 +273,9 @@ public:
 protected:
     void UpdateLights();
 
+    void RegisterEntitiesInSystemRecursively(SceneSystem *system, Entity * entity);
+    void UnregisterEntitiesInSystemRecursively(SceneSystem *system, Entity * entity);
+
 	uint64 updateTime;
 
     uint64 drawTime;
@@ -280,7 +287,6 @@ protected:
 
 	Vector<AnimatedMesh*> animatedMeshes;
 	Vector<Camera*> cameras;
-	Vector<SceneNodeAnimationList*> animations;
     
     static Texture* stubTexture2d;
     static Texture* stubTextureCube;
@@ -311,11 +317,6 @@ protected:
     friend class Entity;
 };
 
-	
-int32 Scene::GetAnimationCount()
-{
-    return (int32)animations.size();
-}
 
 int32 Scene::GetAnimatedMeshCount()
 {

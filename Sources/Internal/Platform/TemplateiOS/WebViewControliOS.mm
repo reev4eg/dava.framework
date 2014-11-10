@@ -152,7 +152,7 @@ namespace DAVA
 	//Use unqualified UIWebView and UIScreen from global namespace, i.e. from UIKit
 	using ::UIWebView;
 	using ::UIScreen;
-    
+
 int WebViewControl::runScriptID = 0;
 
     static const struct
@@ -232,7 +232,7 @@ void WebViewControl::OpenURL(const String& urlToOpen)
 void WebViewControl::OpenFromBuffer(const String& string, const FilePath& basePath)
 {
 	NSString* dataToOpen = [NSString stringWithUTF8String:string.c_str()];
-    NSString* baseUrl = [NSString stringWithUTF8String:basePath.GetAbsolutePathname().c_str()];
+    NSString* baseUrl = [NSString stringWithUTF8String:basePath.AsURL().c_str()];
     
     UIWebView* innerWebView = (UIWebView*)webViewPtr;
     [innerWebView stopLoading];
@@ -294,7 +294,7 @@ Map<String, String> WebViewControl::GetCookies(const String& targetUrl) const
 	return resultMap;
 }
 
-int32_t WebViewControl::ExecuteJScript(const String& scriptString)
+int32 WebViewControl::ExecuteJScript(const String& scriptString)
 {
     int requestID = runScriptID++;
 	NSString *jScriptString = [NSString stringWithUTF8String:scriptString.c_str()];

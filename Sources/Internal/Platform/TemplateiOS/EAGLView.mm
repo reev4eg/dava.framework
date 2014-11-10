@@ -156,8 +156,8 @@
 		DAVA::RenderManager::Instance()->SetRenderContextId(DAVA::EglGetCurrentContext());
         DAVA::RenderManager::Instance()->Init(DAVA::Core::Instance()->GetPhysicalScreenWidth(), DAVA::Core::Instance()->GetPhysicalScreenHeight());
         DAVA::RenderManager::Instance()->DetectRenderingCapabilities();
-        // Disable multitouch for the whole project
-		self.multipleTouchEnabled = NO;
+        
+		self.multipleTouchEnabled = (DAVA::InputSystem::Instance()->IsMultitouchEnabled()) ? YES : NO;
 		animating = FALSE;
 		displayLinkSupported = FALSE;
 		animationFrameInterval = 1;
@@ -305,7 +305,7 @@ void MoveTouchsToVector(void *inTouches, DAVA::Vector<DAVA::UIEvent> *outTouches
 	for(UITouch *curTouch in ar)
 	{
 		DAVA::UIEvent newTouch;
-		newTouch.tid = (DAVA::int32)curTouch;
+		newTouch.tid = (DAVA::int32)(DAVA::pointer_size)curTouch;
 //		newTouch.buttonId = DAVA::UIEvent::BUTTON_1;
 		CGPoint p = [curTouch locationInView: curTouch.view ];
 		newTouch.physPoint.x = p.x;

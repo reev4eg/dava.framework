@@ -149,10 +149,10 @@ using namespace DAVA;
 
 @end
 
-int32_t WebViewControl::runScriptID = 0;
+int32 WebViewControl::runScriptID = 0;
 
 WebViewControl::WebViewControl() :
-	isWebViewVisible(true)
+    isWebViewVisible(true)
 {
 	NSRect emptyRect = NSMakeRect(0.0f, 0.0f, 0.0f, 0.0f);	
 	webViewPtr = [[WebView alloc] initWithFrame:emptyRect frameName:nil groupName:nil];
@@ -237,7 +237,7 @@ void WebViewControl::DeleteCookies(const String& targetUrl)
 void WebViewControl::OpenFromBuffer(const String& string, const FilePath& basePath)
 {
     NSString* dataToOpen = [NSString stringWithUTF8String:string.c_str()];
-    NSString* baseUrl = [NSString stringWithUTF8String:basePath.GetAbsolutePathname().c_str()];
+    NSString* baseUrl = [NSString stringWithUTF8String:basePath.AsURL().c_str()];
     [[(WebView*)webViewPtr mainFrame] loadHTMLString:dataToOpen baseURL:[NSURL fileURLWithPath:baseUrl]];
 }
 
@@ -278,7 +278,7 @@ void WebViewControl::SetBackgroundTransparency(bool enabled)
 	[webView setDrawsBackground:(enabled ? NO : YES)];
 }
 
-int32_t WebViewControl::ExecuteJScript(const String& scriptString)
+int32 WebViewControl::ExecuteJScript(const String& scriptString)
 {
     int requestID = runScriptID++;
     NSString *jScriptString = [NSString stringWithUTF8String:scriptString.c_str()];

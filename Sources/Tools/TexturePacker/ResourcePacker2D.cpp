@@ -77,7 +77,7 @@ void ResourcePacker2D::PackResources(eGPUFamily forGPU)
                   outputGfxDirectory.GetAbsolutePathname().c_str(),
                   excludeDirectory.GetAbsolutePathname().c_str());
 
-    Logger::FrameworkDebug("For GPU: %s", (GPU_UNKNOWN != forGPU) ? GPUFamilyDescriptor::GetGPUName(forGPU).c_str() : "Unknown");
+    Logger::FrameworkDebug("For GPU: %s", (GPU_INVALID != forGPU) ? GPUFamilyDescriptor::GetGPUName(forGPU).c_str() : "Unknown");
 
     
 	requestedGPUFamily = forGPU;
@@ -238,7 +238,16 @@ DefinitionFile * ResourcePacker2D::ProcessPSD(const FilePath & processDirectoryP
 			FilePath outputFile = FramePathHelper::GetFramePathRelative(psdNameWithoutExtension, k - 1);
 
 			Magick::Image & currentLayer = layers[k];
-			currentLayer.crop(Magick::Geometry(width,height, 0, 0));
+
+			const Magick::Geometry bbox = currentLayer.page();
+			const Magick::Geometry croppedGeometry(width,height, 0, 0);
+			currentLayer.crop(croppedGeometry);
+//TODO: disabled for future investigation of correct cropping in different situations
+// 			if(bbox.width() > (size_t)width || bbox.height() > (size_t)height)
+// 			{
+// 				currentLayer.page(croppedGeometry);
+// 			}
+
 			currentLayer.magick("PNG");
 			currentLayer.write(outputFile.GetAbsolutePathname());
 		}
@@ -262,8 +271,19 @@ DefinitionFile * ResourcePacker2D::ProcessPSD(const FilePath & processDirectoryP
 				yOff = -yOff;
             
 			// Get and save layer name
-            defFile->frameNames.push_back(currentLayer.label());
-            
+            String layerName = currentLayer.label();
+            if (layerName.empty())
+            {
+            	Logger::Warning("* WARNING * - %s layer %d has empty name!!!", psdName.c_str(), k - 1);
+            }
+            // Check if layer name is unique
+            Vector<String>::iterator it = find(defFile->frameNames.begin(), defFile->frameNames.end(), layerName);
+			if (it != defFile->frameNames.end())
+            {
+            	Logger::Warning("* WARNING * - %s layer %d name %s is not unique!!!", psdName.c_str(), k - 1, layerName.c_str());
+            }
+
+            defFile->frameNames.push_back(layerName);
 			defFile->frameRects[k - 1] = Rect2i(xOff, yOff, (int32)bbox.width(), (int32)bbox.height());
 			
 			//printf("Percent: %d Aspect: %d Greater: %d Less: %d\n", (int)bbox.percent(), (int)bbox.aspect(), (int)bbox.greater(), (int)bbox.less());

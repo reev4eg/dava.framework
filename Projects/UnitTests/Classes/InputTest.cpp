@@ -1,4 +1,4 @@
-﻿/*==================================================================================
+/*==================================================================================
     Copyright (c) 2008, binaryzebra
     All rights reserved.
 
@@ -46,8 +46,8 @@ static const float INPUT_TEST_AUTO_CLOSE_TIME = 30.0f;
 class UIWebViewDelegate: public IUIWebViewDelegate
 {
 	virtual eAction URLChanged(UIWebView* webview, const String& newURL, bool isRedirectedByMouseClick);
-    
-    void OnExecuteJScript(DAVA::UIWebView* webview, int32_t requestId, const String& result);
+
+    void OnExecuteJScript(DAVA::UIWebView* webview, int32 requestId, const String& result);
 
 	virtual void PageLoaded(UIWebView* webview);
 };
@@ -107,7 +107,7 @@ IUIWebViewDelegate::eAction UIWebViewDelegate::URLChanged(UIWebView* webview, co
 	return IUIWebViewDelegate::PROCESS_IN_WEBVIEW;
 }
 
-void UIWebViewDelegate::OnExecuteJScript(DAVA::UIWebView* webview, int32_t requestId, const String& result)
+void UIWebViewDelegate::OnExecuteJScript(DAVA::UIWebView* webview, int32 requestId, const String& result)
 {
     Logger::Debug("OnExecuteJScript result:%s", result.c_str());
 }
@@ -194,9 +194,10 @@ void InputTest::LoadResources()
     
     textField->SetTextColor(Color::White);
 
-	textField->SetText(L"textField");
+	textField->SetText(L"Length lim 12");
 	textField->SetDebugDraw(true);
 	textField->SetDelegate(new UITextFieldDelegate());
+    textField->SetMaxLength(12);
 	AddControl(textField);
 
 	removeFromParentButton = new UIButton(Rect(320, 300, 300, 30));
@@ -243,7 +244,7 @@ void InputTest::LoadResources()
 	webView1->SetDelegate((UIWebViewDelegate*)delegate);
 	webView1->OpenURL("http://www.google.com");
 	AddControl(webView1);
-	
+
 	webView2 = new UIWebView(Rect(305, 300, 440, 190));
     webView2->SetVisible(false);
     webView2->SetDelegate((UIWebViewDelegate*)delegate);

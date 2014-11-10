@@ -37,8 +37,8 @@
 namespace DAVA
 {
 
-int32_t WebViewControl::webViewIdCount = 0;
-int32_t WebViewControl::requestId = 0;
+int32 WebViewControl::webViewIdCount = 0;
+int32 WebViewControl::requestId = 0;
 
 jclass JniWebView::gJavaClass = NULL;
 const char* JniWebView::gJavaClassName = NULL;
@@ -127,7 +127,7 @@ String JniWebView::GetCookie(const String& targetUrl, const String& cookieName)
 		jstring jName = GetEnvironment()->NewStringUTF(cookieName.c_str());
 		jobject item = GetEnvironment()->CallStaticObjectMethod(GetJavaClass(), mid, jTargetURL, jName);
 
-		CreateStringFromJni(env, jstring(item), returnStr);
+		CreateStringFromJni(GetEnvironment(), jstring(item), returnStr);
 
 		GetEnvironment()->DeleteLocalRef(jTargetURL);
 		GetEnvironment()->DeleteLocalRef(jName);
@@ -153,7 +153,7 @@ Map<String, String> JniWebView::GetCookies(const String& targetUrl)
 			{
 				jobject item = GetEnvironment()->GetObjectArrayElement(jArray, i);
 				String cookiesString = "";
-				CreateStringFromJni(env, jstring(item), cookiesString);
+				CreateStringFromJni(GetEnvironment(), jstring(item), cookiesString);
 
 				Vector<String> cookieEntry;
 				Split(cookiesString, "=", cookieEntry);
@@ -309,7 +309,7 @@ Map<String, String> WebViewControl::GetCookies(const String& url) const
 	return jniWebView.GetCookies(url);
 }
 
-int32_t WebViewControl::ExecuteJScript(const String& scriptString)
+int32 WebViewControl::ExecuteJScript(const String& scriptString)
 {
 	requestId++;
 	JniWebView jniWebView;
@@ -320,7 +320,7 @@ int32_t WebViewControl::ExecuteJScript(const String& scriptString)
 void WebViewControl::OpenFromBuffer(const String& data, const FilePath& urlToOpen)
 {
 	JniWebView jniWebView;
-	jniWebView.OpenFromBuffer(webViewId, data, urlToOpen.GetAbsolutePathname());
+	jniWebView.OpenFromBuffer(webViewId, data, urlToOpen.AsURL());
 }
 
 void WebViewControl::SetRect(const Rect& rect)

@@ -59,15 +59,15 @@ public:
      */
     enum eDrawType
     {
-        DRAW_ALIGNED = 0,			//!<Align sprite inside ronctrol rect.
-        DRAW_SCALE_TO_RECT,			//!<Scale sprite along the all control rect.
-        DRAW_SCALE_PROPORTIONAL,	//!<Scale sprite to fit both width and height into the control rect but with keeping sprite proportions.
+        DRAW_ALIGNED = 0,           //!<Align sprite inside ronctrol rect.
+        DRAW_SCALE_TO_RECT,         //!<Scale sprite along the all control rect.
+        DRAW_SCALE_PROPORTIONAL,    //!<Scale sprite to fit both width and height into the control rect but with keeping sprite proportions.
         DRAW_SCALE_PROPORTIONAL_ONE,//!<Scale sprite to fit width or height into control rect but with keeping sprite proportions.
-        DRAW_FILL,					//!<Fill control rect with the control color.
-        DRAW_STRETCH_HORIZONTAL,	//!<Stretch sprite horizontally along the control rect.
-        DRAW_STRETCH_VERTICAL,		//!<Stretch sprite vertically along the control rect.
-        DRAW_STRETCH_BOTH,			//!<Stretch sprite along the all control rect.
-        DRAW_TILED 					//!<Fill control with sprite tiles
+        DRAW_FILL,                  //!<Fill control rect with the control color.
+        DRAW_STRETCH_HORIZONTAL,    //!<Stretch sprite horizontally along the control rect.
+        DRAW_STRETCH_VERTICAL,      //!<Stretch sprite vertically along the control rect.
+        DRAW_STRETCH_BOTH,          //!<Stretch sprite along the all control rect.
+        DRAW_TILED                  //!<Fill control with sprite tiles
     };
 
     /**
@@ -75,14 +75,13 @@ public:
      */
     enum eColorInheritType
     {
-        COLOR_MULTIPLY_ON_PARENT = 0	//!<Draw color = control color * parent color.
-        ,	COLOR_ADD_TO_PARENT			//!<Draw color = Min(control color + parent color, 1.0f).
-        ,	COLOR_REPLACE_TO_PARENT		//!<Draw color = parent color.
-        ,	COLOR_IGNORE_PARENT			//!<Draw color = control color.
-        ,	COLOR_MULTIPLY_ALPHA_ONLY	//!<Draw color = control color. Draw alpha = control alpha * parent alpha.
-        ,	COLOR_REPLACE_ALPHA_ONLY	//!<Draw color = control color. Draw alpha = parent alpha.
-
-        ,	COLOR_INHERIT_TYPES_COUNT
+        COLOR_MULTIPLY_ON_PARENT = 0,   //!<Draw color = control color * parent color.
+        COLOR_ADD_TO_PARENT,            //!<Draw color = Min(control color + parent color, 1.0f).
+        COLOR_REPLACE_TO_PARENT,        //!<Draw color = parent color.
+        COLOR_IGNORE_PARENT,            //!<Draw color = control color.
+        COLOR_MULTIPLY_ALPHA_ONLY,      //!<Draw color = control color. Draw alpha = control alpha * parent alpha.
+        COLOR_REPLACE_ALPHA_ONLY,       //!<Draw color = control color. Draw alpha = parent alpha.
+        COLOR_INHERIT_TYPES_COUNT
     };
 
     enum ePerPixelAccuracyType
@@ -99,11 +98,13 @@ public:
      */
     UIControlBackground();
 
+    virtual bool IsEqualTo(const UIControlBackground *back) const;
+
     /**
      \brief Returns Sprite used for draw.
      \returns Sprite used for draw.
      */
-    virtual Sprite*	GetSprite();
+    virtual Sprite*	GetSprite() const;
     /**
      \brief Returns Sprite frame used for draw.
      \returns Sprite frame used for draw.
@@ -162,7 +163,7 @@ public:
      \brief Sets Sprite frame you want to use.
      \param[in] frameName Sprite frame name.
      */
-	virtual void SetFrameByName(const String& frameName);
+	virtual void SetFrame(const FastName& frameName);
     /**
      \brief Sets size of the left and right unscalable sprite part.
         Middle sprite part would be scaled along a full control width.
@@ -264,6 +265,13 @@ public:
 
 
     void SetShader(Shader *shader);
+    
+    void SetRenderState(UniqueHandle renderState);
+    UniqueHandle GetRenderState() const;
+
+	static void CreateRenderObject();
+	static void ReleaseRenderObject();
+
 
 protected:
     void DrawStretched(const Rect &drawRect, UniqueHandle renderState);
@@ -272,40 +280,40 @@ protected:
 
     Sprite *spr;
     int32 align;
-    int32 type;
+    eDrawType type;
     int32 spriteModification;
     float32 leftStretchCap;
     float32 topStretchCap;
     int colorInheritType;
     int32 frame;
-	
-	Vector2 lastDrawPos;
+
+    Vector2 lastDrawPos;
 	static RenderDataObject * rdoObject;
-    static RenderDataStream * vertexStream;
-    static RenderDataStream * texCoordStream;
-    
+	static RenderDataStream * vertexStream;
+	static RenderDataStream * texCoordStream;
+
     ePerPixelAccuracyType perPixelAccuracyType;//!<Is sprite should be drawn with per pixel accuracy. Used for texts, for example.
 
 private:
-	struct TiledDrawData
-	{
-		Vector< Vector2 > vertices;
-		Vector< Vector2 > texCoords;
+    struct TiledDrawData
+    {
+        Vector< Vector2 > vertices;
+        Vector< Vector2 > texCoords;
         Vector< uint16  > indeces;
-		void GenerateTileData();
-		void GenerateAxisData( float32 size, float32 spriteSize, float32 textureSize, float32 stretchCap, Vector< Vector3 > &axisData );
+        void GenerateTileData();
+        void GenerateAxisData( float32 size, float32 spriteSize, float32 textureSize, float32 stretchCap, Vector< Vector3 > &axisData );
 
-		Vector< Vector2 > transformedVertices;
-		void GenerateTransformData();
+        Vector< Vector2 > transformedVertices;
+        void GenerateTransformData();
 
-		Sprite *sprite;
-		int32 frame;
-		Vector2 size;
-		Vector2 stretchCap;
-		Matrix3 transformMatr;
-	};
+        Sprite *sprite;
+        int32 frame;
+        Vector2 size;
+        Vector2 stretchCap;
+        Matrix3 transformMatr;
+    };
 
-	TiledDrawData *tiledData;
+    TiledDrawData *tiledData;
 public:
     void ReleaseDrawData(); // Delete all spec draw data
 
@@ -314,6 +322,8 @@ protected:
     Color drawColor;
 
     Shader *shader;
+    
+    UniqueHandle renderState;
 };
 
 // Implementation
@@ -325,6 +335,16 @@ inline void UIControlBackground::SetColor(const Color & _color)
 inline const Color &UIControlBackground::GetColor() const
 {
     return color;
+}
+    
+inline void UIControlBackground::SetRenderState(UniqueHandle _renderState)
+{
+    renderState = _renderState;
+}
+    
+inline UniqueHandle UIControlBackground::GetRenderState() const
+{
+    return renderState;
 }
 
 };

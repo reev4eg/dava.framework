@@ -30,6 +30,7 @@
 #include "Animation/AnimationManager.h"
 #include "FileSystem/Logger.h"
 #include "Render/RenderManager.h"
+#include "Debug/Stats.h"
 
 #include <typeinfo>
 
@@ -55,7 +56,9 @@ void AnimationManager::RemoveAnimation(Animation * animation)
 void AnimationManager::RemoveAnimationInternal(BaseObject * caller, void * param, void *callerData)
 {
     Animation * animation = (Animation*)param;
-	for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
 	{
 		if (*t == animation)
 		{
@@ -69,7 +72,8 @@ void AnimationManager::StopAnimations()
 {
     DVASSERT(Thread::IsMainThread());
     
-    for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
 	{
 		Animation * animation = *t;
 		
@@ -93,7 +97,8 @@ void AnimationManager::DeleteAnimationInternal(BaseObject * caller, void * param
 {
     DeleteAnimationsData * data = (DeleteAnimationsData*)param;
 
-	for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
 	{
 		Animation * animation = *t;
 		if ((data->track != -1) && (animation->groupId != data->track))
@@ -117,7 +122,8 @@ Animation * AnimationManager::FindLastAnimation(AnimatedObject * _owner, int32 _
 {
     DVASSERT(Thread::IsMainThread());
     
-	for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
 	{
 		Animation * animation = *t;
 
@@ -137,7 +143,8 @@ bool AnimationManager::IsAnimating(const AnimatedObject * owner, int32 track) co
 {
     DVASSERT(Thread::IsMainThread());
 
-	for (Vector<Animation*>::const_iterator t = animations.begin(); t != animations.end(); ++t)
+	Vector<Animation*>::const_iterator endIt = animations.end();
+	for (Vector<Animation*>::const_iterator t = animations.begin(); t != endIt; ++t)
 	{
 		Animation * animation = *t;
 
@@ -159,7 +166,8 @@ Animation * AnimationManager::FindPlayingAnimation(AnimatedObject * owner, int32
 {
     DVASSERT(Thread::IsMainThread());
 
-	for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
 	{
 		Animation * animation = *t;
 
@@ -179,9 +187,12 @@ Animation * AnimationManager::FindPlayingAnimation(AnimatedObject * owner, int32
 
 bool AnimationManager::HasActiveAnimations(AnimatedObject * owner)
 {
-	for (Vector<Animation*>::iterator t = animations.begin(); t != animations.end(); ++t)
+	DVASSERT(Thread::IsMainThread());
+
+	Vector<Animation*>::const_iterator endIt = animations.end();
+	for (Vector<Animation*>::const_iterator t = animations.begin(); t != endIt; ++t)
 	{
-		Animation * animation = *t;
+		const Animation * animation = *t;
 
 		if ((animation->owner == owner) && !(animation->state & Animation::STATE_FINISHED))
 		{
@@ -193,6 +204,8 @@ bool AnimationManager::HasActiveAnimations(AnimatedObject * owner)
 
 void AnimationManager::Update(float32 timeElapsed)
 {
+	TIME_PROFILE("AnimationManager::Update");
+
     DVASSERT(Thread::IsMainThread());
 
 	if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::UPDATE_ANIMATIONS))
@@ -277,9 +290,10 @@ void AnimationManager::PauseAnimations(bool isPaused, int tag)
 {
     DVASSERT(Thread::IsMainThread());
 
-	for(Vector<Animation*>::iterator i = animations.begin(); i != animations.end(); ++i)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
     {
-        Animation * &a = *i;
+        Animation * &a = *t;
         
         if (a->GetTagId() == tag)
         {
@@ -292,9 +306,10 @@ void AnimationManager::SetAnimationsMultiplier(float32 f, int tag)
 {
     DVASSERT(Thread::IsMainThread());
     
-    for(Vector<Animation*>::iterator i = animations.begin(); i != animations.end(); ++i)
+	Vector<Animation*>::iterator endIt = animations.end();
+	for (Vector<Animation*>::iterator t = animations.begin(); t != endIt; ++t)
     {
-        Animation * &a = *i;
+        Animation * &a = *t;
         
         if (a->GetTagId() == tag)
         {

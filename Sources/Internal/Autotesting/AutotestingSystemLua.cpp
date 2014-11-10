@@ -57,8 +57,9 @@ void AutotestingSystemLua::InitFromFile(const String &luaFilePath)
     Logger::Debug("AutotestingSystemLua::InitFromFile luaFilePath=%s", luaFilePath.c_str());
     if(!luaState)
     {
+    	autotestingLocalizationSystem->SetDirectory("~res:/Autotesting/Strings/");
         autotestingLocalizationSystem->SetCurrentLocale(LocalizationSystem::Instance()->GetCurrentLocale());
-        autotestingLocalizationSystem->InitWithDirectory("~res:/Autotesting/Strings/");
+        autotestingLocalizationSystem->Init();
         
         bool isOk = true;
         luaState = lua_open();
@@ -394,7 +395,7 @@ UIControl* AutotestingSystemLua::FindControl(UIControl* srcControl, int32 index)
 
 	if(srcControl)
 	{
-		const List<UIControl*> children = srcControl->GetChildren();
+		const List<UIControl*> &children = srcControl->GetChildren();
 		int32 childIndex = 0;
 		for(List<UIControl*>::const_iterator it = children.begin(); it != children.end(); ++it, ++childIndex)
 		{

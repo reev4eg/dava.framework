@@ -192,8 +192,7 @@ void UIScreen::UnloadGroup()
 		
 		UnloadResources();
 		isLoaded = false;
-	}
-	else
+	}else
 	{
         int32 screenGroupId = groupId;
 		for (List<UIScreen*>::iterator t = appScreens.begin(); t != appScreens.end(); ++t)

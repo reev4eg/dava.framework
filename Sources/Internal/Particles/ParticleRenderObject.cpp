@@ -100,7 +100,16 @@ ParticleRenderObject::~ParticleRenderObject()
 
 void ParticleRenderObject::PrepareToRender(Camera *camera)
 {
+    if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::PARTICLES_PREPARE_BUFFERS))
+		return;
+    
 	PrepareRenderData(camera);
+    
+    if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::PARTICLES_DRAW))
+    {
+        activeRenderBatchArray.clear();
+		return;
+    }
 }
 
 void ParticleRenderObject::SetEffectMatrix(Matrix4 *matrix)
@@ -241,7 +250,7 @@ void ParticleRenderObject::AppendParticleGroup(const ParticleGroup &group, Parti
 	//prepare basis indexes
 	int32 basisCount = 0;
 	int32 basises[4]; //4 basises max per particle
-	bool worldAlign = (bool)(group.layer->particleOrientation&ParticleLayer::PARTICLE_ORIENTATION_WORLD_ALIGN);
+	bool worldAlign = (group.layer->particleOrientation&ParticleLayer::PARTICLE_ORIENTATION_WORLD_ALIGN) != 0;
 	if (group.layer->particleOrientation&ParticleLayer::PARTICLE_ORIENTATION_CAMERA_FACING)
 		basises[basisCount++] = 0;
 	if (group.layer->particleOrientation&ParticleLayer::PARTICLE_ORIENTATION_X_FACING)

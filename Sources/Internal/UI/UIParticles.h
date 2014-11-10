@@ -73,15 +73,13 @@ public:
     void Reload();
     
     const FilePath& GetEffectPath() const;
-
+    
     void SetAutostart(bool value);
     bool IsAutostart() const;
     
     // Start delay, in seconds.
     float32 GetStartDelay() const;
     void SetStartDelay(float32 value);
-    // Set inherit position for particle layers
-    void SetInheritPosition(bool inheritPosition);
 
 protected:
     // Start the playback in case Autostart flag is set.

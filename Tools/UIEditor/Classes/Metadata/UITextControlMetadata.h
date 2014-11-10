@@ -56,6 +56,11 @@ class UITextControlMetadata : public UIControlMetadata
 	Q_PROPERTY(int TextAlign READ GetTextAlign WRITE SetTextAlign);
     Q_PROPERTY(int FittingType READ GetFittingType WRITE SetFittingType);
 
+    // Font color/shadow color inherit types.
+    Q_PROPERTY(int TextColorInheritType READ GetTextColorInheritType WRITE SetTextColorInheritType);
+    // Font/Shadow per pixel accuracy types
+    Q_PROPERTY(int TextPerPixelAccuracyType READ GetTextPerPixelAccuracyType WRITE SetTextPerPixelAccuracyType);
+
 public:
     UITextControlMetadata(QObject* parent = 0);
     QString GetLocalizedTextValue();
@@ -90,19 +95,22 @@ protected:
 	Vector2 GetOffsetY(const Vector2& currentOffset, float offsetY);
 
     // These methods should not be overriden for the UITextField, that's why not pure virtual.
+    virtual int GetTextColorInheritType() const;
+    virtual void SetTextColorInheritType(int value);
+    
+    virtual int GetTextPerPixelAccuracyType() const;
+    virtual void SetTextPerPixelAccuracyType(int value);
+
     virtual int GetFittingType() const;
     virtual void SetFittingType(int value);
 
     // Get the localized text for particular control state.
-    QString GetLocalizedTextKeyForState(UIControl::eControlState controlState) const;
+    virtual QString GetLocalizedTextKeyForState(UIControl::eControlState controlState) const;
     
     // Update the static text extra data based on update style.
     void UpdateStaticTextExtraData(UIStaticText* staticText, UIControl::eControlState state,
                                    HierarchyTreeNodeExtraData& extraData,
                                    eExtraDataUpdateStyle updateStyle);
-    
-    // Clone the font of the Static Text.
-    void CloneFont(UIStaticText* staticText);
 };
 
 };

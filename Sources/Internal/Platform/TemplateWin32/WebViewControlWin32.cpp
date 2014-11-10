@@ -32,7 +32,10 @@
 #include "CorePlatformWin32.h"
 using namespace DAVA;
 
+#pragma warning(push)
+#pragma warning(disable: 4717) //'ATL::CCRTAllocator::free' : recursive on all control paths, function will cause runtime stack overflow
 #include <atlbase.h>
+#pragma warning(pop)
 #include <atlcom.h>
 #include <ExDisp.h>
 #include <ExDispid.h>
@@ -731,7 +734,7 @@ bool WebBrowserContainer::GetNextCacheEntry(HANDLE cacheEnumHandle, LPINTERNET_C
 	return bResult ? true : false;
 }
 
-int32_t WebBrowserContainer::ExecuteJScript(const String& targetScript)
+int32 WebBrowserContainer::ExecuteJScript(const String& targetScript)
 {
 	IDispatch *m_pDisp = NULL; 
     webBrowser->get_Document(&m_pDisp);
@@ -768,7 +771,7 @@ bool WebBrowserContainer::DoOpenBuffer()
 
     ScopedComPtr<HtmlMoniker> moniker(new HtmlMoniker());
     moniker->SetHtml(bufferToOpen);
-    moniker->SetBaseUrl(StringToWString(bufferToOpenPath.GetAbsolutePathname()));
+    moniker->SetBaseUrl(StringToWString(bufferToOpenPath.AsURL()));
 
     ScopedComPtr<IDispatch> docDispatch;
     HRESULT hr = webBrowser->get_Document(&docDispatch);
@@ -924,7 +927,7 @@ Map<String, String> WebViewControl::GetCookies(const String& targetUrl) const
 	return Map<String, String>();
 }
 
-int32_t WebViewControl::ExecuteJScript(const String& targetScript)
+int32 WebViewControl::ExecuteJScript(const String& targetScript)
 {
 	if (browserContainer)
 	{

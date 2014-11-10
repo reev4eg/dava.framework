@@ -40,9 +40,9 @@
 #include "Base/BaseMath.h"
 #include "Utils/StringFormat.h"
 
-#include "DLC/DLCSystem.h"
-#include "DLC/DLCUnpacker.h"
-#include "DLC/FileDownloader.h"
+#include "DLC/DLC.h"
+#include "DLC/Patcher/PatchFile.h"
+#include "DLC/Downloader/DownloadManager.h"
 
 #include "FileSystem/Logger.h"
 #include "Platform/SystemTimer.h"
@@ -59,6 +59,7 @@
 #include "UI/ScrollHelper.h"
 #include "Debug/Replay.h"
 #include "Utils/Random.h"
+#include "Utils/VirtualToPhysicalHelper.h"
 
 #include "Base/ObjectFactory.h"
 #include "Base/FixedSizePoolAllocator.h"
@@ -99,7 +100,9 @@
 #include "FileSystem/KeyedArchive.h"
 
 #include "FileSystem/XMLParser.h"
+#include "FileSystem/YamlNode.h"
 #include "FileSystem/YamlParser.h"
+#include "FileSystem/YamlEmitter.h"
 #include "FileSystem/Parser.h"
 #include "FileSystem/FilePath.h"
 
@@ -139,6 +142,7 @@
 #include "Render/2D/FTFont.h"
 #include "Render/2D/FontManager.h"
 #include "Render/2D/TextBlock.h"
+#include "Render/2D/DFFont.h"
 
 // UI
 #include "UI/UIControl.h"
@@ -234,6 +238,7 @@
 #include "Render/Highlevel/Vegetation/TextureSheet.h"
 #include "Render/Highlevel/Vegetation/VegetationRenderObject.h"
 
+#include "Scene3D/AnimationData.h"
 #include "Scene3D/ShadowVolumeNode.h"
 #include "Scene3D/LodNode.h"
 #include "Scene3D/ImposterNode.h"
@@ -254,6 +259,7 @@
 
 //Components
 #include "Scene3D/Components/ComponentHelpers.h"
+#include "Scene3D/Components/AnimationComponent.h"
 #include "Scene3D/Components/BulletComponent.h"
 #include "Scene3D/Components/CameraComponent.h"
 #include "Scene3D/Components/DebugRenderComponent.h"

@@ -104,18 +104,6 @@ Sprite::Sprite()
 	resourceToVirtualFactor = 1.0f;
 	resourceToPhysicalFactor = 1.0f;
 
-	if(spriteRenderObject == NULL)
-	{
-		spriteRenderObject = new RenderDataObject();
-		vertexStream = spriteRenderObject->SetStream(EVF_VERTEX, TYPE_FLOAT, 2, 0, 0);
-		texCoordStream  = spriteRenderObject->SetStream(EVF_TEXCOORD0, TYPE_FLOAT, 2, 0, 0);
-	}
-	else
-	{
-		spriteRenderObject->Retain();
-	}
-
-
 	//pivotPoint = Vector2(0.0f, 0.0f);
 	defaultPivotPoint = Vector2(0.0f, 0.0f);
 }
@@ -178,18 +166,19 @@ Sprite* Sprite::GetSpriteFromMap(const FilePath &pathname)
 
 FilePath Sprite::GetScaledName(const FilePath &spriteName)
 {
-	String::size_type pos = spriteName.GetAbsolutePathname().find(Core::Instance()->GetResourceFolder(Core::Instance()->GetBaseResourceIndex()));
+    String pathname;
+    if(FilePath::PATH_IN_RESOURCES == spriteName.GetType())
+        pathname = spriteName.GetFrameworkPath();//as we can have several res folders we should work with 'FrameworkPath' instead of 'AbsolutePathname'
+    else
+        pathname = spriteName.GetAbsolutePathname();
+
+    const String &baseGfxFolderName = Core::Instance()->GetResourceFolder(Core::Instance()->GetBaseResourceIndex());
+	String::size_type pos = pathname.find(baseGfxFolderName);
 	if(String::npos != pos)
 	{
-		String pathname = spriteName.GetAbsolutePathname();
-
-		String subStrPath = pathname.substr(0, pos);
-		String resFolder = Core::Instance()->GetResourceFolder(Core::Instance()->GetDesirableResourceIndex());
-		String footer = pathname.substr(pos + Core::Instance()->GetResourceFolder(Core::Instance()->GetBaseResourceIndex()).length());
-
-		return pathname.substr(0, pos)
-						+ Core::Instance()->GetResourceFolder(Core::Instance()->GetDesirableResourceIndex())
-						+ pathname.substr(pos + Core::Instance()->GetResourceFolder(Core::Instance()->GetBaseResourceIndex()).length());
+        const String &desirableGfxFolderName = Core::Instance()->GetResourceFolder(Core::Instance()->GetDesirableResourceIndex());
+        pathname.replace(pos, baseGfxFolderName.length(), desirableGfxFolderName);
+		return pathname;
 	}
 
 	return spriteName;
@@ -272,19 +261,21 @@ void Sprite::InitFromFile(File *file)
 	rectsAndOffsets = new float32*[frameCount];
 	frameTextureIndex = new int32[frameCount];
 
-
+	frameNames.resize(frameCount);
 	for (int32 i = 0; i < frameCount; i++)
 	{
 		frameVertices[i] = new GLfloat[8];
 //		originalVertices[i] = new float32[4];
 		texCoords[i] = new GLfloat[8];
 		rectsAndOffsets[i] = new GLfloat[6];
-
+    	char frameName[128] = {0};
+    	
 		int32 x, y, dx,dy, xOff, yOff;
 
 		file->ReadLine(tempBuf, 1024);
-		sscanf(tempBuf, "%d %d %d %d %d %d %d", &x, &y, &dx, &dy, &xOff, &yOff, &frameTextureIndex[i]);
-
+		sscanf(tempBuf, "%d %d %d %d %d %d %d %s", &x, &y, &dx, &dy, &xOff, &yOff, &frameTextureIndex[i], frameName);
+		frameNames[i] = (*frameName == '\0') ? FastName() : FastName(frameName);
+        
 		rectsAndOffsets[i][0] = (float32)x;
 		rectsAndOffsets[i][1] = (float32)y;
 //		rectsAndOffsets[i][2] = (float32)dx;
@@ -348,28 +339,6 @@ void Sprite::InitFromFile(File *file)
 		frameVertices[i][6] *= resourceToVirtualFactor;
 		frameVertices[i][7] *= resourceToVirtualFactor;
 	}
-    
-    char frameName[128];
-    frameNames.clear();
-
-	for (int32 i = 0; i < frameCount; i++)
-	{
-    	String actualFrameName;
-        
-		if (file->ReadLine(tempBuf, 1024) == 0)
-        {
-        	actualFrameName = "";
-        }
-        else
-        {
-			sscanf(tempBuf, "%s", frameName);
-            actualFrameName = String(frameName);
-        }
-        
-		frameNames.push_back(actualFrameName);
-       // Logger::FrameworkDebug("Sprite::InitFromFile - Loaded frame name: %s", String(actualFrameName).c_str());
-    }
-
 //	Logger::FrameworkDebug("Frames created: %d", spr->frameCount);
 	//	center.x = width / 2;
 	//	center.y = height / 2;
@@ -519,6 +488,24 @@ Sprite* Sprite::CreateFromSourceData(const uint8* data, uint32 size, bool conten
     return sprite;
 }
 
+String Sprite::GetPathString( const Sprite *sprite )
+{
+    if (!sprite)
+    {
+        return "";
+    }
+
+    FilePath path(sprite->GetRelativePathname());
+    String pathName = "";
+    if (!path.IsEmpty())
+    {
+        path.TruncateExtension();
+        pathName = path.GetFrameworkPath();
+    }
+
+    return pathName;
+}
+
 Sprite* Sprite::CreateFromSourceFile(const FilePath& path, bool contentScaleIncluded /* = false*/, bool inVirtualSpace /* = false */)
 {
     Vector<Image*> images;
@@ -636,7 +623,8 @@ void Sprite::InitFromTexture(Texture *fromTexture, int32 xOffset, int32 yOffset,
 	}
 
 	// DF-1984 - Set available sprite relative path name here. Use FBO sprite name only if sprite name is empty.
-	this->relativePathname = spriteName.IsEmpty() ? Format("FBO sprite %d", fboCounter) : spriteName;
+    if (this->relativePathname.IsEmpty())
+        this->relativePathname = spriteName.IsEmpty() ? Format("FBO sprite %d", fboCounter) : spriteName;
 
     spriteMapMutex.Lock();
 	spriteMap[FILEPATH_MAP_KEY(this->relativePathname)] = this;
@@ -646,25 +634,6 @@ void Sprite::InitFromTexture(Texture *fromTexture, int32 xOffset, int32 yOffset,
 	this->Reset();
 	
 	RegisterTextureStates();
-}
-
-void Sprite::PrepareForTiling()
-{
-	if(!isPreparedForTiling)
-	{
-		for (int i = 0;	i < this->frameCount; i++)
-		{
-			this->texCoords[i][0] += (1.0f/this->textures[this->frameTextureIndex[i]]->width); // x
-			this->texCoords[i][1] += (1.0f/this->textures[this->frameTextureIndex[i]]->height); // y
-			this->texCoords[i][2] -= (2.0f/this->textures[this->frameTextureIndex[i]]->width); // x+dx
-			this->texCoords[i][3] += (1.0f/this->textures[this->frameTextureIndex[i]]->height); // y
-			this->texCoords[i][4] += (1.0f/this->textures[this->frameTextureIndex[i]]->width); // x
-			this->texCoords[i][5] -= (2.0f/this->textures[this->frameTextureIndex[i]]->height); // y+dy
-			this->texCoords[i][6] -= (2.0f/this->textures[this->frameTextureIndex[i]]->width); // x+dx
-			this->texCoords[i][7] -= (2.0f/this->textures[this->frameTextureIndex[i]]->height); // y+dy
-		}
-		isPreparedForTiling = true;
-	}
 }
 
 void Sprite::SetOffsetsForFrame(int frame, float32 xOff, float32 yOff)
@@ -685,19 +654,6 @@ void Sprite::SetOffsetsForFrame(int frame, float32 xOff, float32 yOff)
 	frameVertices[frame][5] = yOff + rectsAndOffsets[frame][3];
 	frameVertices[frame][6] = xOff + rectsAndOffsets[frame][2];
 	frameVertices[frame][7] = yOff + rectsAndOffsets[frame][3];
-}
-
-int32 Sprite::Release()
-{
-	if(GetRetainCount() == 1)
-	{
-        spriteMapMutex.Lock();
-		//SafeRelease(spriteRenderObject);
-		spriteMap.erase(FILEPATH_MAP_KEY(relativePathname));
-        spriteMapMutex.Unlock();
-	}
-
-	return BaseObject::Release();
 }
 
 void Sprite::Clear()
@@ -738,44 +694,34 @@ void Sprite::Clear()
 
 Sprite::~Sprite()
 {
-//	Logger::FrameworkDebug("Removing sprite");
+    spriteMapMutex.Lock();
+    spriteMap.erase(FILEPATH_MAP_KEY(relativePathname));
+    spriteMapMutex.Unlock();
 	Clear();
-
-	if(spriteRenderObject)
-	{
-		if(spriteRenderObject->GetRetainCount() == 1)
-		{
-		    SafeRelease(spriteRenderObject);
-		}
-		else
-		{
-		    spriteRenderObject->Release();
-		}
-	}
 }
 
-Texture* Sprite::GetTexture()
+Texture* Sprite::GetTexture() const
 {
 	return textures[0];
 }
 
-Texture* Sprite::GetTexture(int32 frameNumber)
+Texture* Sprite::GetTexture(int32 frameNumber) const
 {
 //	DVASSERT(frameNumber > -1 && frameNumber < frameCount);
-	frame = Clamp(frameNumber, 0, frameCount - 1);
-	return textures[frameTextureIndex[frame]];
+	frameNumber = Clamp(frameNumber, 0, frameCount - 1);
+	return textures[frameTextureIndex[frameNumber]];
 }
 	
-UniqueHandle Sprite::GetTextureHandle(int32 frameNumber)
+UniqueHandle Sprite::GetTextureHandle(int32 frameNumber) const
 {
-	frame = Clamp(frameNumber, 0, frameCount - 1);
-	return textureHandles[frameTextureIndex[frame]];
+	frameNumber = Clamp(frameNumber, 0, frameCount - 1);
+	return textureHandles[frameTextureIndex[frameNumber]];
 }
 
-float32 *Sprite::GetTextureVerts(int32 frame)
+float32 *Sprite::GetTextureVerts(int32 frameNumber)
 {
 //	DVASSERT(frame > -1 && frame < frameCount);
-	uint32 frameNumber = Clamp(frame, 0, frameCount - 1);
+	frameNumber = Clamp(frameNumber, 0, frameCount - 1);
 	return texCoords[frameNumber];
 }
 
@@ -817,103 +763,24 @@ void Sprite::SetDefaultPivotPoint(const Vector2 &newPivotPoint)
 
 void Sprite::SetFrame(int32 frm)
 {
-	frame = Max(0, Min(frm, frameCount - 1));
+	frame = Clamp(frm, 0, frameCount - 1);
 }
 
-int32 Sprite::GetFrameByName(const String& frameName)
+int32 Sprite::GetFrameByName(const FastName& frameName) const
 {
+	if (!frameName.IsValid())
+    {
+		return INVALID_FRAME_INDEX;
+    }
+    
     for (int32 i = 0; i < frameCount; i++)
 	{
-    	if (frameNames[i].compare(frameName) == 0)
+    	if (frameNames[i] == frameName)
         	return i;
     }
     
-    return 0;
+    return INVALID_FRAME_INDEX;
 }
-
-/*void Sprite::SetPivotPoint(float32 x, float32 y)
-{
-	pivotPoint.x = x;
-	pivotPoint.y = y;
-}
-
-void Sprite::SetPivotPoint(const Vector2 &newPivotPoint)
-{
-	pivotPoint = newPivotPoint;
-}
-
-void Sprite::SetPosition(float32 x, float32 y)
-{
-	drawCoord.x = x;
-	drawCoord.y = y;
-}
-
-void Sprite::SetPosition(const Vector2 &drawPos)
-{
-	drawCoord = drawPos;
-}
-
-
-void Sprite::SetAngle(float32 angleInRadians)
-{
-	rotateAngle = angleInRadians;
-	if(angleInRadians != 0)
-	{
-		flags = flags | EST_ROTATE;
-	}
-	else
-	{
-		ResetAngle();
-	}
-}
-
-void Sprite::SetScale(float32 xScale, float32 yScale)
-{
-	if(xScale != 1.f || yScale != 1.f)
-	{
-		scale.x = xScale;
-		scale.y = yScale;
-
-		flags = flags | EST_SCALE;
-	}
-	else
-	{
-		ResetScale();
-	}
-}
-
-void Sprite::SetScale(const Vector2 &newScale)
-{
-	if(newScale.x != 1.f || newScale.y != 1.f)
-	{
-		scale = newScale;
-		flags = flags | EST_SCALE;
-	}
-	else
-	{
-		ResetScale();
-	}
-}
-
-void Sprite::SetScaleSize(float32 width, float32 height)
-{
-	if(width != size.dx || height != size.dy)
-	{
-		scale.x = width / size.dx;
-		scale.y = height / size.dy;
-		flags = flags | EST_SCALE;
-	}
-	else
-	{
-		ResetScale();
-	}
-}
-
-void Sprite::SetScaleSize(const Vector2 &drawSize)
-{
-	SetScaleSize(drawSize.x, drawSize.y);
-}
-*/
 
 void Sprite::SetModification(int32 modif)
 {
@@ -946,26 +813,6 @@ void Sprite::ResetModification()
     flags = flags & ~EST_MODIFICATION;
 }
 
-
-/*void Sprite::ResetPivotPoint()
-{
-	pivotPoint = defaultPivotPoint;
-}
-
-void Sprite::ResetAngle()
-{
-	flags = flags & ~EST_ROTATE;
-}
-
-
-void Sprite::ResetScale()
-{
-	scale.x = 1.f;
-	scale.y = 1.f;
-	flags = flags & ~EST_SCALE;
-}
-*/
-
 inline void Sprite::PrepareSpriteRenderData(Sprite::DrawState * state)
 {
     DVASSERT(state);
@@ -989,7 +836,7 @@ inline void Sprite::PrepareSpriteRenderData(Sprite::DrawState * state)
     
     if(state->angle != 0.f) flags |= EST_ROTATE;
     
-    frame = Max(0, Min(state->frame, frameCount - 1));
+    frame = Clamp(state->frame, 0, frameCount - 1);
     
     x = state->position.x - state->pivotPoint.x * state->scale.x;
     y = state->position.y - state->pivotPoint.y * state->scale.y;
@@ -1315,64 +1162,13 @@ inline void Sprite::PrepareSpriteRenderData(Sprite::DrawState * state)
 	DVASSERT(texCoordStream->pointer != 0);
 }
 
-/*void Sprite::Draw()
-{
-	if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::SPRITE_DRAW))
-	{
-		return;
-	}
-    
-    RENDERER_UPDATE_STATS(spriteDrawCount++);
-
-    PrepareSpriteRenderData(0);
-
-    if( clipPolygon )
-    {
-        RenderManager::Instance()->ClipPush();
-        Rect clipRect;
-        if( flags & EST_SCALE )
-        {
-            float32 x = drawCoord.x - pivotPoint.x * scale.x;
-            float32 y = drawCoord.y - pivotPoint.y * scale.y;
-            clipRect = Rect( GetRectOffsetValueForFrame( frame, X_OFFSET_TO_ACTIVE ) * scale.x + x
-                           , GetRectOffsetValueForFrame( frame, Y_OFFSET_TO_ACTIVE ) * scale.y + y
-                           , GetRectOffsetValueForFrame( frame, ACTIVE_WIDTH  ) * scale.x
-                           , GetRectOffsetValueForFrame( frame, ACTIVE_HEIGHT ) * scale.y );
-        }
-        else
-        {
-            float32 x = drawCoord.x - pivotPoint.x;
-            float32 y = drawCoord.y - pivotPoint.y;
-            clipRect = Rect( GetRectOffsetValueForFrame( frame, X_OFFSET_TO_ACTIVE ) + x
-                           , GetRectOffsetValueForFrame( frame, Y_OFFSET_TO_ACTIVE ) + y
-                           , GetRectOffsetValueForFrame( frame, ACTIVE_WIDTH )
-                           , GetRectOffsetValueForFrame( frame, ACTIVE_HEIGHT ) );
-        }
-
-        RenderManager::Instance()->ClipRect( clipRect );
-    }
-
-	RenderManager::Instance()->SetTextureState(textureHandles[frameTextureIndex[frame]]);
-    RenderManager::Instance()->SetRenderData(spriteRenderObject);
-    RenderManager::Instance()->SetRenderEffect(RenderManager::TEXTURE_MUL_FLAT_COLOR);
-    RenderManager::Instance()->DrawArrays(primitiveToDraw, 0, vertexCount);
-
-    if( clipPolygon )
-    {
-        RenderManager::Instance()->ClipPop();
-    }
-
-	Reset();
-}
-*/
-
 void Sprite::Draw(DrawState * state)
 {
 	// DF-2897 - Do not draw sprite if its position is beyond screen
 	if(!RenderManager::Instance()->GetOptions()->IsOptionEnabled(RenderOptions::SPRITE_DRAW) ||
-		(!IsSpriteOnScreen(state) && spriteClipping))
+		(spriteClipping && !IsSpriteOnScreen(state)))
 	{
-		return;
+		//return;
 	}
     
     RENDERER_UPDATE_STATS(spriteDrawCount++);
@@ -1427,19 +1223,6 @@ void Sprite::Draw(DrawState * state)
 #endif
 
 }
-
-void Sprite::BeginBatching()
-{
-
-
-}
-
-void Sprite::EndBatching()
-{
-
-
-}
-
 
 void Sprite::DrawPoints(Vector2 *verticies, Vector2 *textureCoordinates, DrawState* drawState)
 {
@@ -1933,24 +1716,39 @@ void Sprite::SetSpriteClipping(bool clipping)
 
 bool Sprite::IsSpriteOnScreen(DrawState * state)
 {
+	Rect clipRect = RenderManager::Instance()->currentClip;
+	if(clipRect.dx == -1)
+	{
+		clipRect.dx = Core::Instance()->GetVirtualScreenWidth();
+	}
+	if(clipRect.dy == -1)
+	{
+		clipRect.dy = Core::Instance()->GetVirtualScreenHeight();
+	}
+
 	// DF-2897 - Calculate real size of texture and it's position
 	float32 realWidth = GetWidth() * state->scale.x;
 	float32 realHeight = GetHeight() * state->scale.y;
 	float32 xPosition = state->position.x - (state->pivotPoint.x * state->scale.x);
 	float32 yPosition = state->position.y - (state->pivotPoint.y * state->scale.y);
 
-	float32 screenWidth = Core::Instance()->GetVirtualScreenWidth();
- 	float32 screenHeight = Core::Instance()->GetVirtualScreenHeight();
+	const Rect spriteRect(xPosition, yPosition, realWidth, realHeight);
 
-	// If texuture has negative coordinates - do not draw it
-	// If texture is outside the screen - do not draw it
-	if ((xPosition + realWidth) < 0 || (yPosition + realHeight) < 0 ||
-			xPosition >=  screenWidth || yPosition >= screenHeight)
-	{
-		return false;
-	}
-	
-	return true;
+	return clipRect.RectIntersects(spriteRect);
+}
+
+void Sprite::CreateRenderObject()
+{
+	DVASSERT(spriteRenderObject == NULL && "Need be not initalized");
+	spriteRenderObject = new RenderDataObject();
+	vertexStream = spriteRenderObject->SetStream(EVF_VERTEX, TYPE_FLOAT, 2, 0, 0);
+	texCoordStream  = spriteRenderObject->SetStream(EVF_TEXCOORD0, TYPE_FLOAT, 2, 0, 0);
+}
+
+void Sprite::ReleaseRenderObject()
+{
+	vertexStream = texCoordStream = NULL;
+	SafeRelease(spriteRenderObject);
 }
 
 };

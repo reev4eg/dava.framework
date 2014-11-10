@@ -52,7 +52,7 @@ public:
 	// Delete all cookies associated with target URL
 	virtual void DeleteCookies(const String& targetUrl);
     // Execute javascript command, return request ID
-	virtual int32_t ExecuteJScript(const String& scriptString);
+	virtual int32 ExecuteJScript(const String& scriptString);
     
     virtual void OpenFromBuffer(const String& string, const FilePath& basePath);
 
@@ -66,14 +66,14 @@ public:
 protected:
 	//A pointer to MacOS WebView.
 	void* webViewPtr;
-	bool isWebViewVisible;
+    bool isWebViewVisible;
 	
 	// A pointer to the WebView delegate.
 	void* webViewDelegatePtr;
 
 	void* webViewPolicyDelegatePtr;
     
-    static int32_t runScriptID;
+    static int32 runScriptID;
 };
 
 };

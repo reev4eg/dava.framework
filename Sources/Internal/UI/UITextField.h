@@ -202,7 +202,11 @@ public:
 	 \brief Sets contol input processing ability.
 	 */
 	virtual void SetInputEnabled(bool isEnabled, bool hierarchic = true);
+protected:
+    virtual void WillBecomeVisible();
+    virtual void WillBecomeInvisible();
 
+public:
 	/**
 	 \brief Returns the font of control
 	 \returns Font font of the control
@@ -263,7 +267,7 @@ public:
 
 	void SetTextAlign(int32 align);
 
-    virtual void SetVisible(bool isVisible, bool hierarchic = true);
+    virtual void SetVisible(bool isVisible);
 
     virtual void SetSize(const DAVA::Vector2 &newSize);
 
@@ -332,6 +336,13 @@ public:
     uint32 GetCursorPos();
     void SetCursorPos(uint32 pos);
 
+    /**
+      \brief Set maximum text length in text edit
+      maxLength - >=0 - max count, -1 - unlimited count
+     */
+    void SetMaxLength(int32 maxLength);
+    int32 GetMaxLength() const;
+
 protected:
 	WideString text;
 	UITextFieldDelegate * delegate;
@@ -345,13 +356,11 @@ protected:
 	eKeyboardType keyboardType;
 	eReturnKeyType returnKeyType;
 
-
 	// All Boolean variables are grouped together because of DF-2149.
 	bool needRedraw : 1;
 	bool isPassword : 1;
 	bool enableReturnKeyAutomatically : 1;
 	bool showCursor : 1;
-    bool showNativeControl : 1;
 
     void RenderText();
 private:
@@ -366,6 +375,7 @@ private:
     Font * textFont;
 #endif
     float32 cursorTime;
+    int32 maxLength;
 };
 
 };

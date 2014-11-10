@@ -73,6 +73,7 @@ class UIControlMetadata : public BaseMetadata
     
     Q_PROPERTY(int DrawType READ GetDrawType WRITE SetDrawType);
     Q_PROPERTY(int ColorInheritType READ GetColorInheritType WRITE SetColorInheritType);
+    Q_PROPERTY(int PerPixelAccuracyType READ GetPerPixelAccuracyType WRITE SetPerPixelAccuracyType);
     Q_PROPERTY(int Align READ GetAlign WRITE SetAlign);
     
 	Q_PROPERTY(float LeftRightStretchCap READ GetLeftRightStretchCap WRITE SetLeftRightStretchCap);
@@ -80,7 +81,6 @@ class UIControlMetadata : public BaseMetadata
 
     // Flag Properties
     Q_PROPERTY(bool Visible READ GetVisible WRITE SetVisible);
-    Q_PROPERTY(bool RecursiveVisible READ GetRecursiveVisible WRITE SetRecursiveVisible);
     Q_PROPERTY(bool Input READ GetInput WRITE SetInput);
     Q_PROPERTY(bool ClipContents READ GetClipContents WRITE SetClipContents);
 	
@@ -110,7 +110,7 @@ public:
     UIControlMetadata(QObject* parent = 0);
     
     // Apply move/resize for all controls.
-    virtual void ApplyMove(const Vector2& moveDelta);
+    virtual void ApplyMove(const Vector2& moveDelta, bool alignControlsToIntegerPos);
     virtual void ApplyResize(const Rect& originalRect, const Rect& newRect);
 
 protected:
@@ -162,6 +162,9 @@ protected:
     virtual int GetColorInheritType();
     virtual void SetColorInheritType(int value);
     
+    virtual int GetPerPixelAccuracyType();
+    virtual void SetPerPixelAccuracyType(int value);
+    
     virtual int GetAlign();
     virtual void SetAlign(int value);
 
@@ -178,7 +181,7 @@ protected:
     // Sprite getter/setter. Also virtual one - its implementation is different
     // for different control types.
     virtual void SetSprite(const QString& value);
-    virtual QString GetSprite();
+    virtual QString GetSprite() const;
 
     virtual void SetSpriteFrame(int value);
     virtual int GetSpriteFrame();
@@ -189,9 +192,6 @@ protected:
     //Boolean gettes/setters
     bool GetVisible() const;
     virtual void SetVisible(const bool value);
-
-    bool GetRecursiveVisible() const;
-    virtual void SetRecursiveVisible(const bool value);
 
     bool GetInput() const;
     void SetInput(const bool value);
@@ -244,16 +244,13 @@ protected:
 	int GetInitialState() const;
 	void SetInitialState(int value);
 
-	virtual void SetActiveControlRect(const Rect& rect, bool restoreAlign);
+	virtual void SetActiveControlRect(const Rect& rect, bool restoreAlign, bool alignToIntegerPos = false);
 
 	// Refresh the align params.
 	void RefreshAlign();
 
     // Refresh the thumb size for UISlider.
     void UpdateThumbSizeForUIControlThumb();
-
-    // Verify whether UIControl exists and set its visible flag.
-    void SetUIControlVisible(const bool isVisible, bool hierarchic);
 
 private:
 	void ResizeScrollViewContent(UIControl *control);

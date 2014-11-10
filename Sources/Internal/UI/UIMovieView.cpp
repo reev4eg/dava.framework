@@ -39,6 +39,8 @@
 #define DRAW_PLACEHOLDER_FOR_STUB_UIMOVIEVIEW
 #include "../Platform/MovieViewControlStub.h"
 #endif
+#include "Render/RenderManager.h"
+#include "Render/RenderHelper.h"
 
 namespace DAVA {
 
@@ -59,9 +61,9 @@ void UIMovieView::OpenMovie(const FilePath& moviePath, const OpenMovieParams& pa
 	movieViewControl->OpenMovie(moviePath, params);
 }
 	
-void UIMovieView::SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates)
+void UIMovieView::SetPosition(const Vector2 &position)
 {
-	UIControl::SetPosition(position, positionInAbsoluteCoordinates);
+	UIControl::SetPosition(position);
 	
 	Rect newRect = GetRect();
 	movieViewControl->SetRect(newRect);
@@ -73,12 +75,6 @@ void UIMovieView::SetSize(const Vector2 &newSize)
 
 	Rect newRect = GetRect();
 	movieViewControl->SetRect(newRect);
-}
-	
-void UIMovieView::SetVisible(bool isVisible, bool hierarchic)
-{
-	UIControl::SetVisible(isVisible, hierarchic);
-	movieViewControl->SetVisible(isVisible);
 }
 
 void UIMovieView::Play()
@@ -128,15 +124,15 @@ void UIMovieView::SystemDraw(const UIGeometricData &geometricData)
 #endif
 }
 
-void UIMovieView::WillAppear()
+void UIMovieView::WillBecomeVisible()
 {
-    UIControl::WillAppear();
-    movieViewControl->SetVisible(GetVisible());
+    UIControl::WillBecomeVisible();
+    movieViewControl->SetVisible(true);
 }
 
-void UIMovieView::WillDisappear()
+void UIMovieView::WillBecomeInvisible()
 {
-    UIControl::WillDisappear();
+    UIControl::WillBecomeInvisible();
     movieViewControl->SetVisible(false);
 }
 

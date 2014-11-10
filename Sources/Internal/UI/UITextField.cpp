@@ -35,6 +35,7 @@
 #include "UI/UIYamlLoader.h"
 #include "UI/UIControlSystem.h"
 #include "Render/2D/FontManager.h"
+#include "FileSystem/YamlNode.h"
 #ifdef __DAVAENGINE_ANDROID__
 #include "UITextFieldAndroid.h"
 #endif
@@ -99,14 +100,17 @@ UITextField::UITextField(const Rect &rect, bool rectInAbsoluteCoordinates/*= fal
 ,	keyboardType(KEYBOARD_TYPE_DEFAULT)
 ,	returnKeyType(RETURN_KEY_DEFAULT)
 ,	enableReturnKeyAutomatically(false)
-,   showNativeControl(false)
+,   maxLength(-1)
 {
 #if defined(__DAVAENGINE_ANDROID__)
 	textFieldAndroid = new UITextFieldAndroid(this);
+    textFieldAndroid->SetVisible(true);
 #elif defined(__DAVAENGINE_IPHONE__)
 	textFieldiPhone = new UITextFieldiPhone(this);
+    textFieldiPhone->SetVisible(true);
 #else
     staticText = new UIStaticText(Rect(0,0,GetRect().dx, GetRect().dy));
+    staticText->SetVisible(false);
     AddControl(staticText);
     
     staticText->SetSpriteAlign(ALIGN_LEFT | ALIGN_BOTTOM);
@@ -131,13 +135,17 @@ UITextField::UITextField()
 ,	keyboardType(KEYBOARD_TYPE_DEFAULT)
 ,	returnKeyType(RETURN_KEY_DEFAULT)
 ,	enableReturnKeyAutomatically(false)
+,   maxLength(-1)
 {
 #if defined (__DAVAENGINE_ANDROID__)
 	textFieldAndroid = new UITextFieldAndroid(this);
+    textFieldAndroid->SetVisible(false);
 #elif defined(__DAVAENGINE_IPHONE__)
 	textFieldiPhone = new UITextFieldiPhone(this);
+    textFieldiPhone->SetVisible(false);
 #else
     staticText = new UIStaticText(Rect(0,0,GetRect().dx, GetRect().dy));
+    staticText->SetVisible(false);
     AddControl(staticText);
     
     staticText->SetSpriteAlign(ALIGN_LEFT | ALIGN_BOTTOM);
@@ -198,16 +206,6 @@ void UITextField::CloseKeyboard()
 	
 void UITextField::Update(float32 timeElapsed)
 {
-    if (showNativeControl)
-    {
-#ifdef __DAVAENGINE_IPHONE__
-        textFieldiPhone->ShowField();
-#elif defined(__DAVAENGINE_ANDROID__)
-        textFieldAndroid->ShowField();
-#endif
-        showNativeControl = false;
-    }
-    
 #ifdef __DAVAENGINE_IPHONE__
 	Rect rect = GetGeometricData().GetUnrotatedRect();//GetRect(true);
 	textFieldiPhone->UpdateRect(rect);
@@ -254,17 +252,16 @@ void UITextField::WillAppear()
 
 void UITextField::DidAppear()
 {
-    showNativeControl = true;
+#ifdef __DAVAENGINE_IPHONE__
+    textFieldiPhone->ShowField();
+#endif
 }
 
 void UITextField::WillDisappear()
 {
 #ifdef __DAVAENGINE_IPHONE__
     textFieldiPhone->HideField();
-#elif defined(__DAVAENGINE_ANDROID__)
-    textFieldAndroid->HideField();
 #endif
-    showNativeControl = false;
 }
     
 void UITextField::OnFocused()
@@ -523,7 +520,14 @@ WideString UITextField::GetAppliedChanges(int32 replacementLocation, int32 repla
     
     if(replacementLocation >= 0)
     {
-        txt.replace(replacementLocation, replacementLength, replacementString);
+        if(replacementLocation <= (int32)txt.length())
+        {
+            txt.replace(replacementLocation, replacementLength, replacementString);
+        }
+        else
+        {
+            Logger::Error("[UITextField::GetAppliedChanges] - index out of bounds.");
+        }
     }
     
     return txt;
@@ -951,16 +955,61 @@ void UITextField::SetCursorPos(uint32 pos)
     // TODO! implement for other OS!
 }
 
-void UITextField::SetVisible(bool isVisible, bool hierarchic)
+void UITextField::SetMaxLength(int32 maxLength)
 {
-    UIControl::SetVisible(isVisible, hierarchic);
+    this->maxLength = maxLength;
+#ifdef __DAVAENGINE_IPHONE__
+    textFieldiPhone->SetMaxLength(maxLength);
+#elif defined(__DAVAENGINE_ANDROID__)
+	textFieldAndroid->SetMaxLength(maxLength);
+#endif
+	// TODO! implement for other OS!
+}
+
+int32 UITextField::GetMaxLength() const
+{
+    return maxLength;
+}
+
+void UITextField::SetVisible(bool isVisible)
+{
+    UIControl::SetVisible(isVisible);
 
 #ifdef __DAVAENGINE_IPHONE__
 	textFieldiPhone->SetVisible(isVisible);
 #elif defined(__DAVAENGINE_ANDROID__)
 	textFieldAndroid->SetVisible(isVisible);
+#else
+    staticText->SetVisible(isVisible);
 #endif
 }
+
+void UITextField::WillBecomeVisible()
+{
+    UIControl::WillBecomeVisible();
+
+#ifdef __DAVAENGINE_IPHONE__
+    textFieldiPhone->SetVisible(visible);
+#elif defined(__DAVAENGINE_ANDROID__)
+    textFieldAndroid->SetVisible(visible);
+#else
+    staticText->SetVisible(visible);
+#endif
+}
+
+void UITextField::WillBecomeInvisible()
+{
+    UIControl::WillBecomeInvisible();
+
+#ifdef __DAVAENGINE_IPHONE__
+    textFieldiPhone->SetVisible(false);
+#elif defined(__DAVAENGINE_ANDROID__)
+    textFieldAndroid->SetVisible(false);
+#else
+    staticText->SetVisible(false);
+#endif
+}
+
 }; // namespace
 
 

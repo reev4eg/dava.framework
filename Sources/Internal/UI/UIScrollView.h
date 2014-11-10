@@ -31,12 +31,15 @@
 #ifndef __DAVAENGINE_UISCROLLVIEW_H__
 #define __DAVAENGINE_UISCROLLVIEW_H__
 
-#include "DAVAEngine.h"
+#include "Base/BaseTypes.h"
+#include "UI/UIControl.h"
+#include "UI/UIScrollBar.h"
 
 namespace DAVA
 {
 
 class UIScrollViewContainer;
+class ScrollHelper;
 
 class UIScrollView : public UIControl, public UIScrollBarDelegate
 {
@@ -72,7 +75,7 @@ public:
 	virtual UIControl *Clone();
 	virtual void CopyDataFrom(UIControl *srcControl);
 	
-	virtual void SetRect(const Rect &rect, bool rectInAbsoluteCoordinates = FALSE);
+	virtual void SetRect(const Rect &rect);
 	virtual void SetSize(const Vector2 &newSize);
 	
 	void SetPadding(const Vector2 & padding);
@@ -92,7 +95,9 @@ public:
     virtual float32 TotalAreaSize(UIScrollBar *forScrollBar);
     virtual float32 ViewPosition(UIScrollBar *forScrollBar);
     virtual void OnViewPositionChanged(UIScrollBar *byScrollBar, float32 newPosition);
-	
+
+    virtual const String GetDelegateControlPath() const;
+
 protected:
 	virtual void LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader);
     virtual void LoadFromYamlNodeCompleted();

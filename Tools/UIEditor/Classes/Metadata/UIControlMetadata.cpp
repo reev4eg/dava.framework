@@ -337,34 +337,18 @@ bool UIControlMetadata::GetVisible() const
     {
         return false;
     }
-    
+
     return GetActiveUIControl()->GetVisible();
 }
 
 void UIControlMetadata::SetVisible(const bool value)
-{
-    // Don't set Visible flag hierarchically for common UI Controls.
-    SetUIControlVisible(value, false);
-}
-
-bool UIControlMetadata::GetRecursiveVisible() const
-{
-    if (!VerifyActiveParamID())
-    {
-        return false;
-    }
-
-    return GetActiveUIControl()->GetRecursiveVisible();
-}
-
-void UIControlMetadata::SetRecursiveVisible(const bool value)
 {
     if (!VerifyActiveParamID())
     {
         return;
     }
 
-    GetActiveUIControl()->SetRecursiveVisible(value);
+    GetActiveUIControl()->SetVisible(value);
 }
 
 bool UIControlMetadata::GetInput() const
@@ -408,7 +392,7 @@ void UIControlMetadata::SetClipContents(const bool value)
     GetActiveUIControl()->SetClipContents(value);
 }
 
-void UIControlMetadata::ApplyMove(const Vector2& moveDelta)
+void UIControlMetadata::ApplyMove(const Vector2& moveDelta, bool alignControlsToIntegerPos)
 {
     if (!VerifyActiveParamID())
     {
@@ -437,8 +421,8 @@ void UIControlMetadata::ApplyMove(const Vector2& moveDelta)
 	Vector2 pivotPoint = GetActiveUIControl()->pivotPoint;
 	rect.x -= pivotPoint.x;
 	rect.y -= pivotPoint.y;
-	
-	SetActiveControlRect(rect, false);
+
+	SetActiveControlRect(rect, false, alignControlsToIntegerPos);
 }
 
 void UIControlMetadata::ApplyResize(const Rect& /*originalRect*/, const Rect& newRect)
@@ -509,6 +493,25 @@ void UIControlMetadata::SetColorInheritType(int value)
     }
     
     GetActiveUIControl()->GetBackground()->SetColorInheritType((UIControlBackground::eColorInheritType)value);
+}
+
+int UIControlMetadata::GetPerPixelAccuracyType()
+{
+    if (!VerifyActiveParamID())
+    {
+        return UIControlBackground::PER_PIXEL_ACCURACY_DISABLED;
+    }
+    
+    return (int)GetActiveUIControl()->GetBackground()->GetPerPixelAccuracyType();
+}
+void UIControlMetadata::SetPerPixelAccuracyType(int value)
+{
+    if (!VerifyActiveParamID())
+    {
+        return;
+    }
+    
+    GetActiveUIControl()->GetBackground()->SetPerPixelAccuracyType((UIControlBackground::ePerPixelAccuracyType)value);
 }
     
 int UIControlMetadata::GetAlign()
@@ -610,7 +613,7 @@ void UIControlMetadata::UpdateThumbSizeForUIControlThumb()
     }
 }
     
-QString UIControlMetadata::GetSprite()
+QString UIControlMetadata::GetSprite() const
 {
     if (!VerifyActiveParamID())
     {
@@ -935,7 +938,7 @@ void UIControlMetadata::SetBottomAlignEnabled(const bool value)
 	GetActiveUIControl()->SetBottomAlignEnabled(value);
 }
 
-void UIControlMetadata::SetActiveControlRect(const Rect& rect, bool restoreAlign)
+void UIControlMetadata::SetActiveControlRect(const Rect& rect, bool restoreAlign, bool alignToIntegerPos)
 {
 	// Save/restore Align Data before changing the Control Rect, if requested.
 	UIControl* activeControl = GetActiveUIControl();
@@ -947,6 +950,14 @@ void UIControlMetadata::SetActiveControlRect(const Rect& rect, bool restoreAlign
 	}
 
 	activeControl->SetRect(rect);
+    
+    if (alignToIntegerPos)
+    {
+        Vector2 controlPos = activeControl->GetPosition();
+        controlPos.x = Round(controlPos.x);
+        controlPos.y = Round(controlPos.y);
+        activeControl->SetPosition(controlPos);
+    }
 
 	if (restoreAlign)
 	{
@@ -1023,16 +1034,6 @@ void UIControlMetadata::ResizeScrollViewContent(UIControl * control)
 	{
 		ResizeScrollViewContent(parentControl);
 	}
-}
-
-void UIControlMetadata::SetUIControlVisible(const bool value, bool hierarchic)
-{
-    if (!VerifyActiveParamID())
-    {
-        return;
-    }
-    
-    GetActiveUIControl()->SetVisible(value, hierarchic);
 }
 
 };

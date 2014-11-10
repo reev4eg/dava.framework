@@ -25,6 +25,8 @@
 #import <sys/utsname.h>
 #import <AdSupport/ASIdentifierManager.h>
 
+#import "Reachability.h"
+
 namespace DAVA
 {
 
@@ -95,6 +97,11 @@ String DeviceInfo::GetModel()
 		if ([modelName hasPrefix:@"iPhone6,2"])
 			model = "iPhone 5S GSM+CDMA";
 
+        if ([modelName hasPrefix:@"iPhone7,1"])
+			model = "iPhone 6 Plus";
+		if ([modelName hasPrefix:@"iPhone7,2"])
+			model = "iPhone 6";
+        
 		// iPad
 		if ([modelName hasPrefix:@"iPad1,1"])
 			model = "iPad 1";
@@ -233,7 +240,7 @@ WideString DeviceInfo::GetName()
     
     return WideString ( (wchar_t*) [ pSData bytes ], [ pSData length] / sizeof ( wchar_t ) );
 }
-
+    
 // Not impletemted yet
 String DeviceInfo::GetHTTPProxyHost()
 {
@@ -257,6 +264,48 @@ eGPUFamily DeviceInfo::GetGPUFamily()
     return GPU_POWERVR_IOS;
 }
     
+DeviceInfo::NetworkInfo DeviceInfo::GetNetworkInfo()
+{
+    static const struct
+    {
+        NetworkStatus platformNetworkStatus;
+        DeviceInfo::eNetworkType internalNetworkType;
+    }
+    networkStatusMap[] =
+    {
+        { NotReachable, DeviceInfo::NETWORK_TYPE_NOT_CONNECTED },
+        { ReachableViaWiFi, DeviceInfo::NETWORK_TYPE_WIFI },
+        { ReachableViaWWAN, DeviceInfo::NETWORK_TYPE_CELLULAR }
+    };
+
+    NetworkInfo networkInfo;
+    
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+
+    uint32 networkStatusMapCount = COUNT_OF(networkStatusMap);
+    for (uint32 i = 0; i < networkStatusMapCount; i ++)
+    {
+        if (networkStatusMap[i].platformNetworkStatus == networkStatus)
+        {
+            networkInfo.networkType = networkStatusMap[i].internalNetworkType;
+            break;
+        }
+    }
+
+    [reachability stopNotifier];
+
+    // No way to determine signal strength under iOS.
+    return networkInfo;
+}
+
+int32 DeviceInfo::GetCpuCount()
+{
+    return (int32)[[NSProcessInfo processInfo] processorCount];
+}
+
 }
 
 #endif

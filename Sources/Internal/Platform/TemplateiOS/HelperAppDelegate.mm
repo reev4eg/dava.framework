@@ -14,9 +14,9 @@
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =====================================================================================*/
 #include "BaseTypes.h"
-#include "Platform/DeviceInfo.h"
 #if defined(__DAVAENGINE_IPHONE__)
 
+#include "Platform/DeviceInfo.h"
 
 #import <UIKit/UIKit.h>
 #import "HelperAppDelegate.h"
@@ -35,49 +35,28 @@ int DAVA::Core::Run(int argc, char * argv[], AppHandle handle)
 	::UIScreen* mainScreen = [::UIScreen mainScreen];
 	unsigned int width = [mainScreen bounds].size.width;
 	unsigned int height = [mainScreen bounds].size.height;
-    eScreenOrientation orientation = Instance()->GetScreenOrientation();
-    //if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
-    
-    //@NOTE: this changes for WOTG project
-    /*
-    if ((orientation==SCREEN_ORIENTATION_LANDSCAPE_LEFT)||
+	eScreenOrientation orientation = Instance()->GetScreenOrientation();
+
+	if ((orientation==SCREEN_ORIENTATION_LANDSCAPE_LEFT)||
 		(orientation==SCREEN_ORIENTATION_LANDSCAPE_RIGHT)||
 		(orientation==SCREEN_ORIENTATION_LANDSCAPE_AUTOROTATE))
-     */
 	{
 		width = [mainScreen bounds].size.height;
-        height = [mainScreen bounds].size.width;
-	}
-	unsigned int scale = 1;
-    
-    //@NOTE: this changes for WOTG project
-    //if (DAVA::Core::IsAutodetectContentScaleFactor())
-	{
-		if ([::UIScreen instancesRespondToSelector: @selector(scale) ]
-			&& [::UIView instancesRespondToSelector: @selector(contentScaleFactor) ])
-		{
-			scale = (unsigned int)[[::UIScreen mainScreen] scale];
-		}
+		height = [mainScreen bounds].size.width;
 	}
 		
-	// DF-2274 - Setup screen info - actual width and height
-	DeviceInfo::SetScreenInfo(width, height, scale);
+	unsigned int scale = 1;
+		
+    if ([::UIScreen instancesRespondToSelector: @selector(scale) ]
+        && [::UIView instancesRespondToSelector: @selector(contentScaleFactor) ])
+    {
+        scale = (unsigned int)[[::UIScreen mainScreen] scale];
+    }
+
+    DeviceInfo::SetScreenInfo(width, height, scale);
 
 	FrameworkDidLaunched();
-	/*
-	if (DAVA::Core::IsAutodetectContentScaleFactor())
-	{
-		if ([::UIScreen instancesRespondToSelector: @selector(scale) ]
-			&& [::UIView instancesRespondToSelector: @selector(contentScaleFactor) ])
-		{
-			scale = (unsigned int)[[::UIScreen mainScreen] scale];
-		}
-	}
-     */
-	
-	// DF-2274 - Setup screen info - actual scale
-	//DeviceInfo::SetScreenInfo(width, height, scale);
-	
+
 	DAVA::UIControlSystem::Instance()->SetInputScreenAreaSize(width, height);
 	DAVA::Core::Instance()->SetPhysicalScreenSize(width*scale, height*scale);
 		

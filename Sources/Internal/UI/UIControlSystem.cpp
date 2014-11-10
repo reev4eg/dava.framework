@@ -35,6 +35,7 @@
 #include "Debug/DVAssert.h"
 #include "Platform/SystemTimer.h"
 #include "Debug/Replay.h"
+#include "Debug/Stats.h"
 
 namespace DAVA 
 {
@@ -122,29 +123,43 @@ UIScreen *UIControlSystem::GetScreen()
 	
 void UIControlSystem::AddPopup(UIPopup *newPopup)
 {
-	for (Vector<UIPopup*>::iterator it = popupsToRemove.begin(); it != popupsToRemove.end(); it++)
-	{
-        if (*it == newPopup) 
-        {
-            popupsToRemove.erase(it);
-            return;
-        }
-	}
-	newPopup->LoadGroup();
-	popupContainer->AddControl(newPopup);
+    Set<UIPopup*>::const_iterator it = popupsToRemove.find(newPopup);
+    if (popupsToRemove.end() != it)
+    {
+        popupsToRemove.erase(it);
+        return;
+    }
+
+    newPopup->LoadGroup();
+    popupContainer->AddControl(newPopup);
 }
 	
 void UIControlSystem::RemovePopup(UIPopup *popup)
 {
-	popupsToRemove.push_back(popup);
+    if (popupsToRemove.count(popup))
+    {
+        Logger::Warning("[UIControlSystem::RemovePopup] attempt to double remove popup during one frame.");
+        return;
+    }
+
+    const List<UIControl*> &popups = popupContainer->GetChildren();
+    if (popups.end() == std::find(popups.begin(), popups.end(), DynamicTypeCheck<UIPopup*>(popup)))
+    {
+        Logger::Error("[UIControlSystem::RemovePopup] attempt to remove uknown popup.");
+        DVASSERT(false);
+        return;
+    }
+
+    popupsToRemove.insert(popup);
 }
 	
 void UIControlSystem::RemoveAllPopups()
 {
+    popupsToRemove.clear();
 	const List<UIControl*> &totalChilds = popupContainer->GetChildren();
 	for (List<UIControl*>::const_iterator it = totalChilds.begin(); it != totalChilds.end(); it++)
 	{
-		popupsToRemove.push_back((UIPopup *)*it);
+		popupsToRemove.insert(DynamicTypeCheck<UIPopup*>(*it));
 	}
 }
 	
@@ -210,6 +225,8 @@ void UIControlSystem::ProcessScreenLogic()
                 {
                     if(currentScreen)
                     {
+                        if (currentScreen->IsOnScreen())
+                            currentScreen->SystemWillBecomeInvisible();
                         currentScreen->SystemWillDisappear();
                         if ((nextScreenProcessed == 0) || (currentScreen->GetGroupId() != nextScreenProcessed->GetGroupId()))
                         {
@@ -222,6 +239,8 @@ void UIControlSystem::ProcessScreenLogic()
                     loadingTransition->SystemWillAppear();
                     currentScreen = loadingTransition;
                     loadingTransition->SystemDidAppear();
+                    if (loadingTransition->IsOnScreen())
+                        loadingTransition->SystemWillBecomeVisible();
                 }
 			}
 		}
@@ -230,6 +249,8 @@ void UIControlSystem::ProcessScreenLogic()
 			// if we have current screen we call events, unload resources for it group
 			if(currentScreen)
 			{
+                if (currentScreen->IsOnScreen())
+                    currentScreen->SystemWillBecomeInvisible();
 				currentScreen->SystemWillDisappear();
 				if ((nextScreenProcessed == 0) || (currentScreen->GetGroupId() != nextScreenProcessed->GetGroupId()))
 				{
@@ -248,6 +269,8 @@ void UIControlSystem::ProcessScreenLogic()
             if (nextScreenProcessed)
             {
 				nextScreenProcessed->SystemDidAppear();
+                if (nextScreenProcessed->IsOnScreen())
+                    nextScreenProcessed->SystemWillBecomeVisible();
             }
 			
 			UnlockInput();
@@ -259,7 +282,7 @@ void UIControlSystem::ProcessScreenLogic()
 	/*
 	 if we have popups to remove, we removes them here
 	 */
-	for (Vector<UIPopup*>::iterator it = popupsToRemove.begin(); it != popupsToRemove.end(); it++)
+	for (Set<UIPopup*>::iterator it = popupsToRemove.begin(); it != popupsToRemove.end(); it++)
 	{
 		UIPopup *p = *it;
 		if (p) 
@@ -275,6 +298,8 @@ void UIControlSystem::ProcessScreenLogic()
 
 void UIControlSystem::Update()
 {
+	TIME_PROFILE("UIControlSystem::Update");
+
     updateCounter = 0;
 	ProcessScreenLogic();
 	
@@ -296,6 +321,8 @@ void UIControlSystem::Update()
 	
 void UIControlSystem::Draw()
 {
+    TIME_PROFILE("UIControlSystem::Draw");
+
     drawCounter = 0;
     if (!ui3DViewCount)
     {
@@ -712,7 +739,7 @@ UIControl *UIControlSystem::GetFocusedControl()
     
 
 	
-const UIGeometricData &UIControlSystem::GetBaseGeometricData()
+const UIGeometricData &UIControlSystem::GetBaseGeometricData() const
 {
 	return baseGeometricData;	
 }

@@ -531,18 +531,13 @@ bool TexturePacker::WriteDefinition(const FilePath & /*excludeFolder*/, const Fi
 		Rect2i *destRect = lastPackedPacker->SearchRectForPtr(&defFile->frameRects[frame]);
 		Rect2i origRect = defFile->frameRects[frame];
 		Rect2i writeRect = ReduceRectToOriginalSize(*destRect);
-		WriteDefinitionString(fp, writeRect, origRect, 0);
+        String frameName = defFile->frameNames.size() > 0 ? defFile->frameNames[frame] : String();
+		WriteDefinitionString(fp, writeRect, origRect, 0, frameName);
 
 		if(!CheckFrameSize(Size2i(defFile->spriteWidth, defFile->spriteHeight), writeRect.GetSize()))
         {
             Logger::Warning("In sprite %s.psd frame %d has size bigger than sprite size. Frame will be cropped.", defFile->filename.GetBasename().c_str(), frame);
         }
-	}
-    
-    for (int frameNameLine = 0; frameNameLine < (int)defFile->frameNames.size(); ++frameNameLine)
-	{
-		String & frameName = defFile->frameNames[frameNameLine];
-		fprintf(fp, "%s\n", frameName.c_str());
 	}
 	
 	for (int pathInfoLine = 0; pathInfoLine < (int)defFile->pathsInfo.size(); ++pathInfoLine)
@@ -618,7 +613,8 @@ bool TexturePacker::WriteMultipleDefinition(const FilePath & /*excludeFolder*/, 
 		{
 			Rect2i origRect = defFile->frameRects[frame];
 			Rect2i writeRect = ReduceRectToOriginalSize(*destRect);
-			WriteDefinitionString(fp, writeRect, origRect, packerIndex);
+            String frameName = defFile->frameNames.size() > 0 ? defFile->frameNames[frame] : String();
+			WriteDefinitionString(fp, writeRect, origRect, packerIndex, frameName);
 
             if(!CheckFrameSize(Size2i(defFile->spriteWidth, defFile->spriteHeight), writeRect.GetSize()))
             {
@@ -634,12 +630,6 @@ bool TexturePacker::WriteMultipleDefinition(const FilePath & /*excludeFolder*/, 
 			FileSystem::Instance()->DeleteFile(outputPath + fileName);
 			return false;
 		}
-	}
-    
-    for (int frameNameLine = 0; frameNameLine < (int)defFile->frameNames.size(); ++frameNameLine)
-	{
-		String & frameName = defFile->frameNames[frameNameLine];
-		fprintf(fp, "%s\n", frameName.c_str());
 	}
 	
 	for (int pathInfoLine = 0; pathInfoLine < (int)defFile->pathsInfo.size(); ++pathInfoLine)
@@ -671,11 +661,10 @@ void TexturePacker::ExportImage(PngImageExt *image, const FilePath &exportedPath
     image->DitherAlpha();
     image->Write(exportedPathname);
 
-    eGPUFamily gpuFamily = (eGPUFamily)descriptor->exportedAsGpuFamily;
-    if(gpuFamily != GPU_UNKNOWN)
+    eGPUFamily gpuFamily = GPUFamilyDescriptor::ConvertValueToGPU(descriptor->exportedAsGpuFamily);
+    if(GPUFamilyDescriptor::IsGPUForDevice(gpuFamily))
     {
 		TextureConverter::ConvertTexture(*descriptor, gpuFamily, false, quality);
-        
         FileSystem::Instance()->DeleteFile(exportedPathname);
     }
 
@@ -693,10 +682,10 @@ TextureDescriptor * TexturePacker::CreateDescriptor(eGPUFamily forGPU)
 	TexturePacker::FilterItem ftItem = GetDescriptorFilter(descriptor->GetGenerateMipMaps());
 	descriptor->drawSettings.minFilter = ftItem.minFilter;
 	descriptor->drawSettings.magFilter = ftItem.magFilter;
-	
-    if(forGPU == GPU_UNKNOWN)   // not need compression
+
+	if(!GPUFamilyDescriptor::IsGPUForDevice(forGPU)) // not need compression
         return descriptor;
-    
+
     descriptor->exportedAsGpuFamily = forGPU;
 
     const String gpuNameFlag = "--" + GPUFamilyDescriptor::GetGPUName(forGPU);
@@ -719,14 +708,14 @@ TextureDescriptor * TexturePacker::CreateDescriptor(eGPUFamily forGPU)
 									formatName.c_str(),
 									GPUFamilyDescriptor::GetGPUName(forGPU).c_str()));
 			
-			descriptor->exportedAsGpuFamily = GPU_UNKNOWN;
+			descriptor->exportedAsGpuFamily = GPU_PNG;
 		}
     }
     else
     {
         Logger::Warning("params for GPU %s were not set.\n", gpuNameFlag.c_str());
         
-        descriptor->exportedAsGpuFamily = GPU_UNKNOWN;
+        descriptor->exportedAsGpuFamily = GPU_PNG;
     }
     
     return descriptor;
@@ -792,7 +781,7 @@ TexturePacker::FilterItem TexturePacker::GetDescriptorFilter(bool generateMipMap
     
 bool TexturePacker::NeedSquareTextureForCompression(eGPUFamily forGPU)
 {
-    if(forGPU != GPU_UNKNOWN)
+    if(GPUFamilyDescriptor::IsGPUForDevice(forGPU))
     {
         const String gpuNameFlag = "--" + GPUFamilyDescriptor::GetGPUName(forGPU);
         if(CommandLineParser::Instance()->IsFlagSet(gpuNameFlag))
@@ -844,15 +833,15 @@ void TexturePacker::DrawToFinalImage( PngImageExt & finalImage, PngImageExt & dr
 	}
 }
 
-void TexturePacker::WriteDefinitionString(FILE *fp, const Rect2i & writeRect, const Rect2i &originRect, int textureIndex)
+void TexturePacker::WriteDefinitionString(FILE *fp, const Rect2i & writeRect, const Rect2i &originRect, int textureIndex, const String& frameName)
 {
 	if(CommandLineParser::Instance()->IsFlagSet("--disableCropAlpha"))
 	{
-		fprintf(fp, "%d %d %d %d %d %d %d\n", writeRect.x, writeRect.y, writeRect.dx, writeRect.dy, 0, 0, textureIndex);
+		fprintf(fp, "%d %d %d %d %d %d %d %s\n", writeRect.x, writeRect.y, writeRect.dx, writeRect.dy, 0, 0, textureIndex, frameName.c_str());
 	}
 	else
 	{
-		fprintf(fp, "%d %d %d %d %d %d %d\n", writeRect.x, writeRect.y, writeRect.dx, writeRect.dy, originRect.x, originRect.y, textureIndex);
+		fprintf(fp, "%d %d %d %d %d %d %d %s\n", writeRect.x, writeRect.y, writeRect.dx, writeRect.dy, originRect.x, originRect.y, textureIndex, frameName.c_str());
 	}
 }
 

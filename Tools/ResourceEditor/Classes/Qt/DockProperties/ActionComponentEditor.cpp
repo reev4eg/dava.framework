@@ -82,9 +82,10 @@ namespace
 }
 
 
-ActionComponentEditor::ActionComponentEditor(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ActionComponentEditor)
+ActionComponentEditor::ActionComponentEditor(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::ActionComponentEditor)
+    , isModified(false)
 {
     ui->setupUi(this);
 	
@@ -102,7 +103,10 @@ ActionComponentEditor::ActionComponentEditor(QWidget *parent) :
 
     actionTypes[DAVA::ActionComponent::Action::TYPE_PARTICLE_EFFECT_START] = "Particle start";
     actionTypes[DAVA::ActionComponent::Action::TYPE_PARTICLE_EFFECT_STOP] = "Particle stop";
-    actionTypes[DAVA::ActionComponent::Action::TYPE_SOUND] = "Sound";
+    actionTypes[DAVA::ActionComponent::Action::TYPE_ANIMATION_START] = "Animation start";
+    actionTypes[DAVA::ActionComponent::Action::TYPE_ANIMATION_STOP] = "Animation stop";
+    actionTypes[DAVA::ActionComponent::Action::TYPE_SOUND_START] = "Sound start";
+    actionTypes[DAVA::ActionComponent::Action::TYPE_SOUND_STOP] = "Sound stop";
 
     eventTypes[DAVA::ActionComponent::Action::EVENT_SWITCH_CHANGED] = "Switch";
     eventTypes[DAVA::ActionComponent::Action::EVENT_ADDED_TO_SCENE] = "Added";
@@ -178,6 +182,7 @@ void ActionComponentEditor::OnAddAction()
 		UpdateTableFromComponent(targetComponent);
 		
 		ui->buttonAddItem->setEnabled(false);
+        isModified = true;
 	}
 }
 
@@ -198,6 +203,7 @@ void ActionComponentEditor::OnRemoveAction()
 		}
 		
 		ui->buttonAddItem->setEnabled(!IsActionPresent(GetDefaultAction()));
+        isModified = true;
 	}
 }
 
@@ -252,6 +258,12 @@ void ActionComponentEditor::Update()
 	ui->tableActions->resizeRowsToContents();
 
 	ui->buttonAddItem->setEnabled(!IsActionPresent(GetDefaultAction()));
+    isModified = true;
+}
+
+bool ActionComponentEditor::IsModified() const
+{
+    return isModified;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,7 +275,10 @@ ActionItemEditDelegate::ActionItemEditDelegate(QObject *parent)
 {
     actionTypes["Particle start"] = DAVA::ActionComponent::Action::TYPE_PARTICLE_EFFECT_START;
     actionTypes["Particle stop"] = DAVA::ActionComponent::Action::TYPE_PARTICLE_EFFECT_STOP;
-    actionTypes["Sound"] = DAVA::ActionComponent::Action::TYPE_SOUND;
+    actionTypes["Animation start"] = DAVA::ActionComponent::Action::TYPE_ANIMATION_START;
+    actionTypes["Animation stop"] = DAVA::ActionComponent::Action::TYPE_ANIMATION_STOP;
+    actionTypes["Sound start"] = DAVA::ActionComponent::Action::TYPE_SOUND_START;
+    actionTypes["Sound stop"] = DAVA::ActionComponent::Action::TYPE_SOUND_STOP;
 
     eventTypes["Switch"] = DAVA::ActionComponent::Action::EVENT_SWITCH_CHANGED;
     eventTypes["Added"] = DAVA::ActionComponent::Action::EVENT_ADDED_TO_SCENE;

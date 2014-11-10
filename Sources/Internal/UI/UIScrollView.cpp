@@ -30,8 +30,10 @@
 
 
 #include "UIScrollView.h"
-#include "Base/ObjectFactory.h"
 #include "UI/UIScrollViewContainer.h"
+#include "UI/ScrollHelper.h"
+
+#include "UIYamlLoader.h"
 
 namespace DAVA 
 {
@@ -62,9 +64,9 @@ UIScrollView::~UIScrollView()
 	SafeRelease(scrollVertical);
 }
 
-void UIScrollView::SetRect(const Rect &rect, bool rectInAbsoluteCoordinates/* = FALSE*/)
+void UIScrollView::SetRect(const Rect &rect)
 {
-	UIControl::SetRect(rect, rectInAbsoluteCoordinates);
+	UIControl::SetRect(rect);
 
 	scrollHorizontal->SetViewSize(rect.dx);
 	scrollVertical->SetViewSize(rect.dy);
@@ -147,7 +149,7 @@ Vector2 UIScrollView::GetMaxSize(UIControl * parentControl, Vector2 currentMaxSi
 	for(List<UIControl*>::const_iterator it = childslist.begin(); it != childslist.end(); ++it)
 	{
     	UIControl *childControl = (*it);
-		if ( !(childControl && childControl->GetRecursiveVisible()) )
+		if ( !(childControl && childControl->GetVisible()) )
 			continue;
 		
 		const Rect &childRect = childControl->GetRect();
@@ -497,6 +499,11 @@ void UIScrollView::ScrollToPosition( const Vector2& pos, float32 timeSec )
 {
     scrollHorizontal->ScrollToPosition(pos.x, timeSec);
     scrollVertical->ScrollToPosition(pos.y, timeSec);
+}
+    
+const String UIScrollView::GetDelegateControlPath() const
+{
+    return UIYamlLoader::GetControlPath(this);
 }
 
 };

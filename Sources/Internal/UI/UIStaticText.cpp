@@ -34,6 +34,7 @@
 #include "UI/UIYamlLoader.h"
 #include "Utils/StringFormat.h"
 #include "FileSystem/LocalizationSystem.h"
+#include "FileSystem/YamlNode.h"
 #include "Render/2D/FontManager.h"
 #include "Animation/LinearAnimation.h"
 
@@ -42,18 +43,26 @@ namespace DAVA
 
 UIStaticText::UIStaticText(const Rect &rect, bool rectInAbsoluteCoordinates/* = FALSE*/)
 :	UIControl(rect, rectInAbsoluteCoordinates)
-    , textColor(1.0f, 1.0f, 1.0f, 1.0f)
     , shadowOffset(0, 0)
-    , shadowColor(0, 0, 0, 1)
 {
     SetInputEnabled(false, false);
     textBlock = TextBlock::Create(Vector2(rect.dx, rect.dy));
     background->SetAlign(ALIGN_HCENTER | ALIGN_VCENTER);
     background->SetPerPixelAccuracyType(UIControlBackground::PER_PIXEL_ACCURACY_ENABLED);
 
-    shadowBg = new UIControlBackground();
     textBg = new UIControlBackground();
     textBg->SetDrawType(UIControlBackground::DRAW_ALIGNED);
+	textBg->SetColorInheritType(UIControlBackground::COLOR_MULTIPLY_ON_PARENT);
+
+	textBg->SetPerPixelAccuracyType(UIControlBackground::PER_PIXEL_ACCURACY_ENABLED);
+    
+    shadowBg = new UIControlBackground();
+    shadowBg->SetDrawType(UIControlBackground::DRAW_ALIGNED);
+	shadowBg->SetColorInheritType(UIControlBackground::COLOR_MULTIPLY_ON_PARENT);
+    shadowBg->SetPerPixelAccuracyType(UIControlBackground::PER_PIXEL_ACCURACY_ENABLED);
+
+    SetTextColor(Color::White);
+    SetShadowColor(Color::Black);
     SetTextAlign(ALIGN_HCENTER | ALIGN_VCENTER);
 }
 
@@ -65,7 +74,7 @@ UIStaticText::~UIStaticText()
 }
 
 
-UIControl *UIStaticText::Clone()
+UIStaticText *UIStaticText::Clone()
 {
     UIStaticText *t = new UIStaticText(GetRect());
     t->CopyDataFrom(this);
@@ -80,19 +89,12 @@ void UIStaticText::CopyDataFrom(UIControl *srcControl)
     SafeRelease(textBlock);
     textBlock = t->textBlock->Clone();
 
-    textColor = t->textColor;
-    shadowColor = t->shadowColor;
     shadowOffset = t->shadowOffset;
 
     SafeRelease(shadowBg);
     SafeRelease(textBg);
     shadowBg = t->shadowBg->Clone();
     textBg = t->textBg->Clone();
-}
-
-UIStaticText *UIStaticText::CloneStaticText()
-{
-    return (UIStaticText *)Clone();
 }
 
 void UIStaticText::SetText(const WideString& _string, const Vector2 &requestedTextRectSize/* = Vector2(0,0)*/)
@@ -123,7 +125,7 @@ void UIStaticText::SetFont(Font * _font)
 
 void UIStaticText::SetTextColor(const Color& color)
 {
-    textColor = color;
+    textBg->SetColor(color);
 }
 
 void UIStaticText::SetShadowOffset(const Vector2 &offset)
@@ -133,7 +135,7 @@ void UIStaticText::SetShadowOffset(const Vector2 &offset)
 
 void UIStaticText::SetShadowColor(const Color &color)
 {
-    shadowColor = color;
+    shadowBg->SetColor(color);
 }
 
 void UIStaticText::SetMultiline(bool _isMultilineEnabled, bool bySymbol)
@@ -181,12 +183,12 @@ const Vector2 & UIStaticText::GetTextSize()
 
 const Color &UIStaticText::GetTextColor() const
 {
-    return textColor;
+    return textBg->GetColor();
 }
 
 const Color &UIStaticText::GetShadowColor() const
 {
-    return shadowColor;
+    return shadowBg->GetColor();
 }
 
 const Vector2 &UIStaticText::GetShadowOffset() const
@@ -196,46 +198,50 @@ const Vector2 &UIStaticText::GetShadowOffset() const
 
 void UIStaticText::Draw(const UIGeometricData &geometricData)
 {
-	if(GetText() == L"")
-	{
-		return;
-	}
+	if(GetText().empty()) return;
+
 	textBlock->SetRectSize(size);
-	PrepareSprite();
+	textBlock->SetPosition(geometricData.position);
+	textBlock->SetPivotPoint(geometricData.pivotPoint);
 	textBlock->PreDraw();
-	
-	shadowBg->SetColorInheritType(GetBackground()->GetColorInheritType());
-	textBg->SetColorInheritType(GetBackground()->GetColorInheritType());
+	PrepareSprite();
 
     UIControl::Draw(geometricData);
 
-    if(0 != shadowColor.a && (0 != shadowOffset.dx || 0 != shadowOffset.dy))
-    {
-        UIGeometricData shadowGeomData = geometricData;
+	UIGeometricData textGeomData;
+	textGeomData.position = textBlock->GetSpriteOffset();
+	textGeomData.size = GetSize();
+	textGeomData.AddToGeometricData(geometricData);
 
-        shadowGeomData.position += shadowOffset;
-        shadowGeomData.unrotatedRect += shadowOffset;
+    if(!FLOAT_EQUAL(shadowBg->GetDrawColor().a, 0.0f) && (!FLOAT_EQUAL(shadowOffset.dx, 0.0f) || !FLOAT_EQUAL(shadowOffset.dy, 0.0f)))
+    {
+		textBlock->Draw(shadowBg->GetDrawColor(), &shadowOffset);
+        UIGeometricData shadowGeomData;
+        shadowGeomData.position = shadowOffset;
+        shadowGeomData.size = GetSize();
+        shadowGeomData.AddToGeometricData(textGeomData);
 
         shadowBg->SetAlign(textBg->GetAlign());
-        shadowBg->SetPerPixelAccuracyType(background->GetPerPixelAccuracyType());
-		shadowBg->SetColor(shadowColor);
-		shadowBg->SetParentColor(parent->GetBackground()->GetDrawColor());
-		shadowBg->Draw(shadowGeomData);
-	}
+        shadowBg->Draw(shadowGeomData);
+    }
 
-	textBg->SetPerPixelAccuracyType(background->GetPerPixelAccuracyType());
-	textBg->SetColor(textColor);
-	textBg->SetParentColor(parent->GetBackground()->GetDrawColor());
-	textBg->Draw(geometricData);
+    textBlock->Draw(textBg->GetDrawColor());
+	textBg->Draw(textGeomData);
 }
 
+void UIStaticText::SetParentColor(const Color &parentColor)
+{
+    UIControl::SetParentColor(parentColor);
+    shadowBg->SetParentColor(parentColor);
+    textBg->SetParentColor(parentColor);
+}
 
-const Vector<WideString> & UIStaticText::GetMultilineStrings()
+const Vector<WideString> & UIStaticText::GetMultilineStrings() const
 {
     return textBlock->GetMultilineStrings();
 }
 
-const WideString & UIStaticText::GetText()
+const WideString & UIStaticText::GetText() const
 {
     return textBlock->GetText();
 }
@@ -255,6 +261,7 @@ void UIStaticText::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader
     const YamlNode * textAlignNode = node->Get("textalign");
     const YamlNode * textColorInheritTypeNode = node->Get("textcolorInheritType");
     const YamlNode * shadowColorInheritTypeNode = node->Get("shadowcolorInheritType");
+    const YamlNode * textPerPixelAccuracyTypeNode = node->Get("textperPixelAccuracyType");
 
     if (fontNode)
     {
@@ -306,11 +313,20 @@ void UIStaticText::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader
     {
         GetShadowBackground()->SetColorInheritType((UIControlBackground::eColorInheritType)loader->GetColorInheritTypeFromNode(shadowColorInheritTypeNode));
     }
+    
+    if (textPerPixelAccuracyTypeNode)
+    {
+    	GetTextBackground()->SetPerPixelAccuracyType((UIControlBackground::ePerPixelAccuracyType)loader->GetPerPixelAccuracyTypeFromNode(textPerPixelAccuracyTypeNode));
+	    GetShadowBackground()->SetPerPixelAccuracyType((UIControlBackground::ePerPixelAccuracyType)loader->GetPerPixelAccuracyTypeFromNode(textPerPixelAccuracyTypeNode));
+    }
 }
 
 YamlNode * UIStaticText::SaveToYamlNode(UIYamlLoader * loader)
 {
     YamlNode *node = UIControl::SaveToYamlNode(loader);
+    
+    // UIStaticText has its own default value for Pixel Accuracy
+    node->RemoveNodeFromMap("perPixelAccuracy");
 
     UIStaticText *baseControl = new UIStaticText();
 
@@ -323,10 +339,26 @@ YamlNode * UIStaticText::SaveToYamlNode(UIYamlLoader * loader)
     node->Set("font", nodeValue);
 
     //TextColor
+    const Color &textColor = GetTextColor();
     if (baseControl->GetTextColor() != textColor)
     {
         nodeValue->SetColor(textColor);
         node->Set("textcolor", nodeValue);
+    }
+    
+    // Base per pixel accuracy
+    int perPixelAccuracyType = GetBackground()->GetPerPixelAccuracyType();
+    if (baseControl->GetBackground()->GetPerPixelAccuracyType() != perPixelAccuracyType)
+    {
+    	node->Set("perPixelAccuracy", loader->GetPerPixelAccuracyTypeNodeValue(perPixelAccuracyType));
+    }
+    
+    // ShadowColor
+    const Color &shadowColor = GetShadowColor();
+    if (baseControl->GetShadowColor() != shadowColor)
+    {
+        nodeValue->SetColor(shadowColor);
+        node->Set("shadowcolor", nodeValue);
     }
 
     // Text Color Inherit Type.
@@ -336,18 +368,18 @@ YamlNode * UIStaticText::SaveToYamlNode(UIYamlLoader * loader)
         node->Set("textcolorInheritType", loader->GetColorInheritTypeNodeValue(colorInheritType));
     }
 
-    // ShadowColor
-    if (baseControl->GetShadowColor() != shadowColor)
-    {
-        nodeValue->SetColor(shadowColor);
-        node->Set("shadowcolor", nodeValue);
-    }
-
     // Shadow Color Inherit Type.
     colorInheritType = (int32)GetShadowBackground()->GetColorInheritType();
     if (baseControl->GetShadowBackground()->GetColorInheritType() != colorInheritType)
     {
         node->Set("shadowcolorInheritType", loader->GetColorInheritTypeNodeValue(colorInheritType));
+    }
+    
+    // Text Per Pixel Accuracy Type - text and text shadow
+    int32 textPerPixelAccuracyType = (int32)GetTextBackground()->GetPerPixelAccuracyType();
+    if (baseControl->GetTextBackground()->GetPerPixelAccuracyType() != textPerPixelAccuracyType)
+    {
+    	node->Set("textperPixelAccuracyType", loader->GetPerPixelAccuracyTypeNodeValue(textPerPixelAccuracyType));
     }
 
     // ShadowOffset
@@ -359,8 +391,11 @@ YamlNode * UIStaticText::SaveToYamlNode(UIYamlLoader * loader)
     }
 
     //Text
-    nodeValue->SetWideString(GetText());
-    node->Set("text", nodeValue);
+    const WideString &text = GetText();
+    if (baseControl->GetText() != text)
+    {
+        node->Set("text", text);
+    }
     //Multiline
     if (baseControl->textBlock->GetMultiline() != this->textBlock->GetMultiline())
     {
@@ -397,14 +432,14 @@ YamlNode * UIStaticText::SaveToYamlNode(UIYamlLoader * loader)
 
 Animation * UIStaticText::TextColorAnimation(const Color & finalColor, float32 time, Interpolation::FuncType interpolationFunc /*= Interpolation::LINEAR*/, int32 track /*= 0*/)
 {
-    LinearAnimation<Color> * animation = new LinearAnimation<Color>(this, &textColor, finalColor, time, interpolationFunc);
+    LinearAnimation<Color> * animation = new LinearAnimation<Color>(this, &textBg->color, finalColor, time, interpolationFunc);
     animation->Start(track);
     return animation;
 }
 
 Animation * UIStaticText::ShadowColorAnimation(const Color & finalColor, float32 time, Interpolation::FuncType interpolationFunc /*= Interpolation::LINEAR*/, int32 track /*= 1*/)
 {
-    LinearAnimation<Color> * animation = new LinearAnimation<Color>(this, &shadowColor, finalColor, time, interpolationFunc);
+    LinearAnimation<Color> * animation = new LinearAnimation<Color>(this, &shadowBg->color, finalColor, time, interpolationFunc);
     animation->Start(track);
     return animation;
 }

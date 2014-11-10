@@ -40,6 +40,7 @@
 #include "Utils/Utils.h"
 #include "Input/InputSystem.h"
 #include "Utils/StringFormat.h"
+#include "FileSystem/YamlNode.h"
 
 namespace DAVA
 {
@@ -48,7 +49,6 @@ namespace DAVA
     {
         parent = NULL;
         controlState = STATE_NORMAL;
-        recursiveVisible = true;
         visible = true;
         visibleForUIEditor = true;
         /*
@@ -57,23 +57,15 @@ namespace DAVA
             for particular controls it can be changed, but no make sense to make that for all controls.
          */
         inputEnabled = true;
+        inputProcessorsCount = 1;
         focusEnabled = true;
 
         background = new UIControlBackground();
-        needToRecalcFromAbsoluteCoordinates = false;
         eventDispatcher = NULL;
         clipContents = false;
 
-//		scaleInParent = true;
-
-//		Vector2 relativePosition;
-//		Vector2 size;
-
-
-//		absoluteRect = Rect(0,0,0,0);
         debugDrawEnabled = false;
         debugDrawColor = Color(1.0f, 0.0f, 0.0f, 1.0f);
-        absolutePosition = Vector2(0, 0);
 
         drawPivotPointMode = DRAW_NEVER;
 
@@ -106,48 +98,32 @@ namespace DAVA
 
         SetRect(rect, rectInAbsoluteCoordinates);
 
-#ifdef ENABLE_CONTROL_EDIT
-        __touchStart = Vector2(0.f, 0.f);
-        __oldRect = relativeRect;
-#endif
         initialState = STATE_NORMAL;
     }
 
     UIControl::~UIControl()
-	{
-		if(totalTouches > 0)
-		{
-			UIControlSystem::Instance()->CancelInputs(this);
-		}
-		SafeRelease(background);
-		SafeRelease(eventDispatcher);
-		RemoveAllControls();
-	}
-	
-	void UIControl::SetParent(UIControl *newParent)
-	{
-		if (!newParent)
-		{
-			if(totalTouches > 0)
-			{
-				UIControlSystem::Instance()->CancelInputs(this);
-			}
-		}
-		parent = newParent;
-		if(parent && needToRecalcFromAbsoluteCoordinates)
-		{
-			relativePosition = absolutePosition - parent->GetGeometricData().position;
-			needToRecalcFromAbsoluteCoordinates = false;
-		}
-	}
-	UIControl *UIControl::GetParent()
-	{
-		return parent;
-	}
-	
-    bool UIControl::GetExclusiveInput() const
     {
-        return exclusiveInput;
+        UIControlSystem::Instance()->CancelInputs(this);
+        SafeRelease(background);
+        SafeRelease(eventDispatcher);
+        RemoveAllControls();
+    }
+
+    void UIControl::SetParent(UIControl *newParent)
+    {
+        if (parent)
+        {
+            parent->UnregisterInputProcessors(inputProcessorsCount);
+        }
+        parent = newParent;
+        if (parent)
+        {
+            parent->RegisterInputProcessors(inputProcessorsCount);
+        }
+    }
+    UIControl *UIControl::GetParent() const
+    {
+        return parent;
     }
 
     void UIControl::SetExclusiveInput(bool isExclusiveInput, bool hierarchic/* = true*/)
@@ -162,11 +138,6 @@ namespace DAVA
                 (*it)->SetExclusiveInput(isExclusiveInput, hierarchic);
             }
         }
-    }
-
-    bool UIControl::GetMultiInput() const
-    {
-        return multiInput;
     }
 
     void UIControl::SetMultiInput(bool isMultiInput, bool hierarchic/* = true*/)
@@ -276,42 +247,14 @@ namespace DAVA
         return false;
     }
 
-    String UIControl::GetSpriteFrameworkPath( const Sprite* sprite)
-    {
-        if (!sprite)
-        {
-            return "";
-        }
-
-        FilePath path(sprite->GetRelativePathname());
-        String pathName = "";
-        if (!path.IsEmpty())
-        {
-            path.TruncateExtension();
-            pathName = path.GetFrameworkPath();
-        }
-
-        return pathName;
-    }
-
     void UIControl::SetName(const String & _name)
     {
         name = _name;
     }
 
-    const String & UIControl::GetName() const
-    {
-        return name;
-    }
-
     void UIControl::SetTag(int32 _tag)
     {
         tag = _tag;
-    }
-
-    DAVA::int32 UIControl::GetTag() const
-    {
-        return tag;
     }
 
     // return first control with given name
@@ -332,19 +275,12 @@ namespace DAVA
         return 0;
     }
 
-
-
-    DAVA::int32 UIControl::GetState() const
-    {
-        return controlState;
-    }
-
     void UIControl::SetState(int32 state)
     {
         controlState = state;
     }
 
-    Sprite* UIControl::GetSprite()
+    Sprite* UIControl::GetSprite() const
     {
         return background->GetSprite();
     }
@@ -374,9 +310,9 @@ namespace DAVA
     {
         background->SetFrame(spriteFrame);
     }
-	void UIControl::SetSpriteFrameByName(const String& frameName)
+	void UIControl::SetSpriteFrame(const FastName& frameName)
 	{
-		background->SetFrameByName(frameName);
+		background->SetFrame(frameName);
 	}
     void UIControl::SetSpriteDrawType(UIControlBackground::eDrawType drawType)
     {
@@ -769,83 +705,91 @@ namespace DAVA
         background = newBg->Clone();
     }
 
-    UIControlBackground *UIControl::GetBackground()
+    UIControlBackground *UIControl::GetBackground() const
     {
         return background;
     }
 
-	const UIGeometricData &UIControl::GetGeometricData() const
-	{
-		tempGeometricData.position = relativePosition;
-		tempGeometricData.size = size;
-		tempGeometricData.pivotPoint = pivotPoint;
-		tempGeometricData.scale = scale;
-		tempGeometricData.angle = angle;
-		if(!parent)
-		{
-			tempGeometricData.AddToGeometricData(UIControlSystem::Instance()->GetBaseGeometricData());
-			return tempGeometricData;
-		}
-		tempGeometricData.AddToGeometricData(parent->GetGeometricData());
-		return tempGeometricData;
-	}
-
-    const Vector2 &UIControl::GetPosition(bool absoluteCoordinates/* = false*/)
+    const UIGeometricData &UIControl::GetGeometricData() const
     {
-        if(!absoluteCoordinates)
+        tempGeometricData.position = relativePosition;
+        tempGeometricData.size = size;
+        tempGeometricData.pivotPoint = pivotPoint;
+        tempGeometricData.scale = scale;
+        tempGeometricData.angle = angle;
+        if(!parent)
         {
-            return relativePosition;
+            tempGeometricData.AddGeometricData(UIControlSystem::Instance()->GetBaseGeometricData());
+            return tempGeometricData;
         }
-        if(parent)
-        {
-            absolutePosition = GetGeometricData().position;
-            return absolutePosition;
-        }
-        if(!needToRecalcFromAbsoluteCoordinates)
-        {
-            return relativePosition;
-        }
-        return absolutePosition;
+        tempGeometricData.AddGeometricData(parent->GetGeometricData());
+        return tempGeometricData;
     }
 
-    void UIControl::SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates/* = false*/)
+    UIGeometricData UIControl::GetLocalGeometricData() const
+    {
+        UIGeometricData drawData;
+        drawData.position = relativePosition;
+        drawData.size = size;
+        drawData.pivotPoint = pivotPoint;
+        drawData.scale = scale;
+        drawData.angle = angle;
+
+        return drawData;
+    }
+
+    Vector2 UIControl::GetPosition(bool absoluteCoordinates)
+    {
+        if(!absoluteCoordinates || !parent)
+        {
+            return GetPosition();
+        }
+
+        return GetAbsolutePosition();
+    }
+
+    Vector2 UIControl::GetAbsolutePosition()
+    {
+        return GetGeometricData().position;
+    }
+
+    void UIControl::SetPosition(const Vector2 &position)
+    {
+        relativePosition = position;
+    }
+
+    void UIControl::SetPosition(const Vector2 &position, bool positionInAbsoluteCoordinates)
     {
         if(!positionInAbsoluteCoordinates)
         {
-            relativePosition = position;
-            needToRecalcFromAbsoluteCoordinates = false;
+            SetPosition(position);
         }
         else
         {
-            if(parent)
-            {
-                relativePosition = position - parent->GetGeometricData().position;
-                needToRecalcFromAbsoluteCoordinates = false;
-            }
-            else
-            {
-                needToRecalcFromAbsoluteCoordinates = true;
-                relativePosition = absolutePosition = position;
-            }
+            SetAbsolutePosition(position);
         }
     }
 
-    const Vector2 &UIControl::GetSize() const
+    void UIControl::SetAbsolutePosition(const Vector2 &position)
     {
-        return size;
+        if(parent)
+        {
+            const UIGeometricData &parentGD = parent->GetGeometricData();
+            SetPosition(position - parentGD.position + parentGD.pivotPoint);
+        }
+        else
+        {
+            SetPosition(position);
+        }
     }
+
     void UIControl::SetSize(const Vector2 &newSize)
     {
         size = newSize;
         // Update size and align of childs
         RecalculateChildsSize();
     }
-	
-    float32 UIControl::GetAngle() const
-    {
-        return angle;
-    }
-    
+
     float32 UIControl::GetParentsTotalAngle(bool includeOwn)
     {
         float32 angle = 0;
@@ -864,66 +808,57 @@ namespace DAVA
     {
         angle = angleInRad;
     }
-	
-    const Rect &UIControl::GetRect(bool absoluteCoordinates/* = FALSE*/)
+
+    Rect UIControl::GetRect(bool absoluteCoordinates)
     {
-        Vector2 pos = GetPosition(absoluteCoordinates) - pivotPoint;
-        returnedRect = Rect(pos.x, pos.y, size.x, size.y);
-        return returnedRect;
+        if(!absoluteCoordinates)
+            return GetRect();
+
+        return GetAbsoluteRect();
     }
-	
-	void UIControl::SetRect(const Rect &rect, bool rectInAbsoluteCoordinates/* = FALSE*/)
-	{
-		RecalculatePivotPoint(rect);
-	
-        Vector2 t(rect.dx, rect.dy);
-        SetSize(t);
-        t.x = rect.x;
-        t.y = rect.y;
-        t += pivotPoint;
-        SetPosition(t, rectInAbsoluteCoordinates);
-		
-		// Update aligns if control was resized manually
-		RecalculateAlignProperties();
-		
-        //childControlSize.x = abs(round(newSize.dx / 2) - hcenter - childLeftAlign - childRightAlign;
-        /*
-        scale.x = 1.0;
-        scale.y = 1.0;
-        if(parent && scaleInParent)
+
+    Rect UIControl::GetAbsoluteRect()
+    {
+        return Rect(GetAbsolutePosition() - pivotPoint, size);
+    }
+
+    void UIControl::SetRect(const Rect &rect)
+    {
+        RecalculatePivotPoint(rect);
+
+        SetSize(rect.GetSize());
+        SetPosition(rect.GetPosition() + pivotPoint);
+
+        // Update aligns if control was resized manually
+        RecalculateAlignProperties();
+    }
+
+    void UIControl::SetAbsoluteRect(const Rect &rect)
+    {
+        if (!parent)
         {
-            realScale.x = scale.x * parent->GetRealScale().x;
-            realScale.y = scale.y * parent->GetRealScale().y;
-        }
-        else
-        {
-            realScale = scale;
+            SetRect(rect);
+            return;
         }
 
-        if(!rectInAbsoluteCoordinates)
+        Rect localRect = rect;
+        const UIGeometricData &parentGD = parent->GetGeometricData();
+        localRect.SetPosition(rect.GetPosition() - parentGD.position + parentGD.pivotPoint);
+        SetRect(localRect);
+    }
+
+    void UIControl::SetRect(const Rect &rect, bool rectInAbsoluteCoordinates/* = false*/)
+    {
+        if (!rectInAbsoluteCoordinates)
         {
-            relativeRect = rect;
-            RecalcScaledRect();
-            needToRecalcFromAbsoluteCoordinates = false;
+            SetRect(rect);
         }
         else
         {
-            if(parent)
-            {
-                relativeRect = rect - parent->GetRect(TRUE).GetPosition();
-                RecalcScaledRect();
-                needToRecalcFromAbsoluteCoordinates = false;
-            }
-            else
-            {
-                needToRecalcFromAbsoluteCoordinates = true;
-                relativeRect = absoluteRect = rect;
-                RecalcScaledRect();
-            }
+            SetAbsoluteRect(rect);
         }
-         */
     }
-	
+
     void UIControl::SetScaledRect(const Rect &rect, bool rectInAbsoluteCoordinates/* = false*/)
     {
         if(!rectInAbsoluteCoordinates || !parent)
@@ -941,120 +876,103 @@ namespace DAVA
         }
     }
 
-	
-    bool UIControl::GetVisible() const
+    void UIControl::SetVisible(bool isVisible)
     {
-        return visible;
+        if (visible == isVisible)
+        {
+            return;
+        }
+
+        bool oldSystemVisible = GetSystemVisible();
+        visible = isVisible;
+        if (GetSystemVisible() == oldSystemVisible)
+        {
+            return;
+        }
+
+        SystemNotifyVisibilityChanged();
     }
-	
-	void UIControl::SetVisible(bool isVisible, bool hierarchic/* = true*/)
-	{
-		visible = isVisible;
-		if (!visible) 
-		{
-			if(totalTouches > 0)
-			{
-				UIControlSystem::Instance()->CancelInputs(this);
-			}
-		}
-		
+
+    void UIControl::SetVisibleForUIEditor(bool value)
+    {
+        if (visibleForUIEditor == value)
+        {
+            return;
+        }
+
+        bool oldSystemVisible = GetSystemVisible();
+        visibleForUIEditor = value;
+        if (GetSystemVisible() == oldSystemVisible)
+        {
+            return;
+        }
+
+        SystemNotifyVisibilityChanged();
+    }
+
+    void UIControl::SystemNotifyVisibilityChanged()
+    {
+        if (parent && parent->IsOnScreen())
+        {
+            if (GetSystemVisible())
+            {
+                SystemWillBecomeVisible();
+            }
+            else
+            {
+                SystemWillBecomeInvisible();
+            }
+        }
+    }
+
+    void UIControl::SetInputEnabled(bool isEnabled, bool hierarchic/* = true*/)
+    {
+        if (isEnabled != inputEnabled)
+        {
+            inputEnabled = isEnabled;
+            if (inputEnabled)
+            {
+                RegisterInputProcessor();
+            }
+            else
+            {
+                UnregisterInputProcessor();
+            }
+        }
         if(hierarchic)
         {
             List<UIControl*>::iterator it = childs.begin();
             for(; it != childs.end(); ++it)
             {
-                (*it)->SetVisible(isVisible, hierarchic);
+                (*it)->SetInputEnabled(isEnabled, hierarchic);
             }
         }
     }
 
-    bool UIControl::GetRecursiveVisible() const
-    {
-        return recursiveVisible;
-    }
-
-    void UIControl::SetRecursiveVisible(bool isVisible)
-    {
-        if (recursiveVisible == isVisible)
-            return;
-
-        bool onScreen = IsOnScreen();
-        if (onScreen && !isVisible)
-        {
-            SystemWillDisappear();
-            SystemDidDisappear();
-        }
-
-        recursiveVisible = isVisible;
-
-        if (!onScreen && isVisible)
-        {
-            SystemWillAppear();
-            SystemDidAppear();
-        }
-    }
-
-	void UIControl::SetVisibleForUIEditor(bool value, bool hierarchic/* = true*/)
-	{
-		visibleForUIEditor = value;
-		if(hierarchic)
-		{
-			List<UIControl*>::iterator it = childs.begin();
-			for(; it != childs.end(); ++it)
-			{
-				(*it)->SetVisibleForUIEditor(value, hierarchic);
-			}
-		}
-	}
-
-	bool UIControl::GetInputEnabled() const
-	{
-		return inputEnabled;
-	}
-	
-	void UIControl::SetInputEnabled(bool isEnabled, bool hierarchic/* = true*/)
-	{
-		inputEnabled = isEnabled;
-		if(hierarchic)
-		{	
-			List<UIControl*>::iterator it = childs.begin();
-			for(; it != childs.end(); ++it)
-			{
-				(*it)->SetInputEnabled(isEnabled, hierarchic);
-			}
-		}
-	}
-    
-    bool UIControl::GetFocusEnabled() const
-    {
-        return focusEnabled;
-    }
-    
-	void UIControl::SetFocusEnabled(bool isEnabled)
+    void UIControl::SetFocusEnabled(bool isEnabled)
     {
         focusEnabled = isEnabled;
     }
 
-	
-	bool UIControl::GetDisabled() const
-	{
-		return ((controlState & STATE_DISABLED) != 0);
-	}
-	
-	void UIControl::SetDisabled(bool isDisabled, bool hierarchic/* = true*/)
-	{
-		if(isDisabled)
-		{
-			controlState |= STATE_DISABLED;
-            
+    bool UIControl::GetDisabled() const
+    {
+        return ((controlState & STATE_DISABLED) != 0);
+    }
+
+    void UIControl::SetDisabled(bool isDisabled, bool hierarchic/* = true*/)
+    {
+        if(isDisabled)
+        {
+            controlState |= STATE_DISABLED;
+
             // Cancel all inputs because of DF-2943.
             UIControlSystem::Instance()->CancelInputs(this);
-		}
-		else
-		{
-			controlState &= ~STATE_DISABLED;
-		}
-		
+        }
+        else
+        {
+            controlState &= ~STATE_DISABLED;
+        }
+
         if(hierarchic)
         {
             List<UIControl*>::iterator it = childs.begin();
@@ -1064,12 +982,12 @@ namespace DAVA
             }
         }
     }
-	
-	bool UIControl::GetSelected() const
-	{
-		return ((controlState & STATE_SELECTED) != 0);
-	}
-	
+
+    bool UIControl::GetSelected() const
+    {
+        return ((controlState & STATE_SELECTED) != 0);
+    }
+
     void UIControl::SetSelected(bool isSelected, bool hierarchic/* = true*/)
     {
         if(isSelected)
@@ -1080,7 +998,7 @@ namespace DAVA
         {
             controlState &= ~STATE_SELECTED;
         }
-		
+
         if(hierarchic)
         {
             List<UIControl*>::iterator it = childs.begin();
@@ -1091,11 +1009,6 @@ namespace DAVA
         }
     }
 
-	
-    bool UIControl::GetClipContents() const
-    {
-        return clipContents;
-    }
     void UIControl::SetClipContents(bool isNeedToClipContents)
     {
         clipContents = isNeedToClipContents;
@@ -1103,38 +1016,33 @@ namespace DAVA
 
     bool UIControl::GetHover() const
     {
-		return (controlState & STATE_HOVER) != 0;
-	}
-
-//	void UIControl::SystemClearHoverState()
-//	{
-//		controlState &= ~STATE_HOVER;
-//		List<UIControl*>::iterator it = childs.begin();
-//		for(; it != childs.end(); ++it)
-//		{
-//			(*it)->SystemClearHoverState();
-//		}
-//	}
+        return (controlState & STATE_HOVER) != 0;
+    }
 
     void UIControl::AddControl(UIControl *control)
     {
         control->Retain();
         control->RemoveFromParent();
 
-        bool onScreen = IsOnScreen();
-        if(onScreen)
+        bool inHierarchy = InViewHierarchy();
+        if (inHierarchy)
         {
             control->SystemWillAppear();
         }
         control->isUpdated = false;
         control->SetParent(this);
         childs.push_back(control);
-        if(onScreen)
+        if (inHierarchy)
         {
             control->SystemDidAppear();
         }
+
+        if (IsOnScreen() && control->GetSystemVisible())
+            control->SystemWillBecomeVisible();
+
         isIteratorCorrupted = true;
     }
+    
     void UIControl::RemoveControl(UIControl *control)
     {
         if (NULL == control)
@@ -1147,14 +1055,17 @@ namespace DAVA
         {
             if((*it) == control)
             {
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                if (IsOnScreen() && control->GetSystemVisible())
+                    control->SystemWillBecomeInvisible();
+
+                bool inHierarchy = InViewHierarchy();
+                if (inHierarchy)
                 {
                     control->SystemWillDisappear();
                 }
                 control->SetParent(NULL);
                 childs.erase(it);
-                if(onScreen)
+                if (inHierarchy)
                 {
                     control->SystemDidDisappear();
                 }
@@ -1220,17 +1131,21 @@ namespace DAVA
                 control->Retain();
                 control->RemoveFromParent();
 
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                bool inHierarchy = InViewHierarchy();
+                if(inHierarchy)
                 {
                     control->SystemWillAppear();
                 }
                 childs.insert(it, control);
                 control->SetParent(this);
-                if(onScreen)
+                if(inHierarchy)
                 {
                     control->SystemDidAppear();
                 }
+
+                if (IsOnScreen() && control->GetSystemVisible())
+                    control->SystemWillBecomeVisible();
+
                 isIteratorCorrupted = true;
                 return;
             }
@@ -1248,17 +1163,21 @@ namespace DAVA
                 control->Retain();
                 control->RemoveFromParent();
 
-                bool onScreen = IsOnScreen();
-                if(onScreen)
+                bool inHierarchy = InViewHierarchy();
+                if(inHierarchy)
                 {
                     control->SystemWillAppear();
                 }
                 childs.insert(++it, control);
                 control->SetParent(this);
-                if(onScreen)
+                if(inHierarchy)
                 {
                     control->SystemDidAppear();
                 }
+
+                if (IsOnScreen() && control->GetSystemVisible())
+                    control->SystemWillBecomeVisible();
+
                 isIteratorCorrupted = true;
                 return;
             }
@@ -1332,7 +1251,7 @@ namespace DAVA
         c->CopyDataFrom(this);
         return c;
     }
-	
+
     void UIControl::CopyDataFrom(UIControl *srcControl)
     {
         relativePosition = srcControl->relativePosition;
@@ -1342,89 +1261,100 @@ namespace DAVA
         angle = srcControl->angle;
         SafeRelease(background);
         background = srcControl->background->Clone();
-		
+
         leftAlign = srcControl->leftAlign;
         hcenterAlign = srcControl->hcenterAlign;
         rightAlign = srcControl->rightAlign;
         topAlign = srcControl->topAlign;
         vcenterAlign = srcControl->vcenterAlign;
         bottomAlign = srcControl->bottomAlign;
-		
+
         leftAlignEnabled = srcControl->leftAlignEnabled;
         hcenterAlignEnabled = srcControl->hcenterAlignEnabled;
         rightAlignEnabled = srcControl->rightAlignEnabled;
         topAlignEnabled = srcControl->topAlignEnabled;
         vcenterAlignEnabled = srcControl->vcenterAlignEnabled;
         bottomAlignEnabled = srcControl->bottomAlignEnabled;
-		
-        if (background && srcControl->background)
-        {
-            background->SetLeftRightStretchCap(srcControl->background->GetLeftRightStretchCap());
-            background->SetTopBottomStretchCap(srcControl->background->GetTopBottomStretchCap());
-        }
 
         tag = srcControl->GetTag();
         name = srcControl->name;
 
-		needToRecalcFromAbsoluteCoordinates = srcControl->needToRecalcFromAbsoluteCoordinates;
+        controlState = srcControl->controlState;
+        visible = srcControl->visible;
+        visibleForUIEditor = srcControl->visibleForUIEditor;
+        inputEnabled = srcControl->inputEnabled;
+        clipContents = srcControl->clipContents;
 
-		controlState = srcControl->controlState;
-        recursiveVisible = srcControl->recursiveVisible;
-		visible = srcControl->visible;
-		visibleForUIEditor = srcControl->visibleForUIEditor;
-		inputEnabled = srcControl->inputEnabled;
-		clipContents = srcControl->clipContents;
+        customControlType = srcControl->GetCustomControlType();
+        initialState = srcControl->GetInitialState();
+        drawPivotPointMode = srcControl->drawPivotPointMode;
+        debugDrawColor = srcControl->debugDrawColor;
+        debugDrawEnabled = srcControl->debugDrawEnabled;
 
-		customControlType = srcControl->GetCustomControlType();
-		initialState = srcControl->GetInitialState();
-		drawPivotPointMode = srcControl->drawPivotPointMode;
-		debugDrawColor = srcControl->debugDrawColor;
-		debugDrawEnabled = srcControl->debugDrawEnabled;
+        SafeRelease(eventDispatcher);
+        if(srcControl->eventDispatcher)
+        {
+            eventDispatcher = new EventDispatcher();
+            eventDispatcher->CopyDataFrom(srcControl->eventDispatcher);
+        }
 
-		SafeRelease(eventDispatcher);
-		if(srcControl->eventDispatcher)
-		{
-			eventDispatcher = new EventDispatcher();
-			eventDispatcher->CopyDataFrom(srcControl->eventDispatcher);
-		}
-		
-		RemoveAllControls();
-        
+        RemoveAllControls();
+        if (inputEnabled)
+        {
+            inputProcessorsCount = 1;
+        }
+        else
+        {
+            inputProcessorsCount = 0;
+        }
+
         // Yuri Coder, 2012/11/30. Use Real Children List to avoid copying
         // unnecessary children we have on the for example UIButton.
         const List<UIControl*>& realChildren = srcControl->GetRealChildren();
-		List<UIControl*>::const_iterator it = realChildren.begin();
-		for(; it != realChildren.end(); ++it)
-		{
-			
-			UIControl *c = (*it)->Clone();
-			AddControl(c);
-			c->Release();
-		}
-	}
+        List<UIControl*>::const_iterator it = realChildren.begin();
+        for(; it != realChildren.end(); ++it)
+        {
 
-	
+            UIControl *c = (*it)->Clone();
+            AddControl(c);
+            c->Release();
+        }
+    }
+
+
+    bool UIControl::InViewHierarchy() const
+    {
+        if (UIControlSystem::Instance()->GetScreen() == this ||
+            UIControlSystem::Instance()->GetPopupContainer() == this)
+        {
+            return true;
+        }
+
+        if (parent)
+            return parent->InViewHierarchy();
+
+        return false;
+    }
+
+
     bool UIControl::IsOnScreen() const
     {
         if(UIControlSystem::Instance()->GetScreen() == this ||
            UIControlSystem::Instance()->GetPopupContainer() == this)
         {
-            return GetRecursiveVisible();
+            return GetSystemVisible();
         }
 
-        if( !GetRecursiveVisible() || !parent )
+        if( !GetSystemVisible() || !parent )
             return false;
 
-		return parent->IsOnScreen();
-	}
+        return parent->IsOnScreen();
+    }
 
 
-	void UIControl::SystemWillAppear()
-	{
-        if (!GetRecursiveVisible())
-            return;
-
-		WillAppear();
+    void UIControl::SystemWillAppear()
+    {
+        WillAppear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1442,25 +1372,9 @@ namespace DAVA
             ++it;
         }
     }
-	
-	void UIControl::SystemWillDisappear()
-	{
-        if (GetHover())
-        {
-            UIControlSystem::Instance()->SetHoveredControl(NULL);
-        }
-        if (UIControlSystem::Instance()->GetFocusedControl() == this) 
-        {
-            UIControlSystem::Instance()->SetFocusedControl(NULL, true);
-        }
-        if (GetInputEnabled())
-        {
-            UIControlSystem::Instance()->CancelInputs(this, false);
-        }
 
-        if (!GetRecursiveVisible())
-            return;
-
+    void UIControl::SystemWillDisappear()
+    {
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
         {
@@ -1477,15 +1391,12 @@ namespace DAVA
             ++it;
         }
 
-		WillDisappear();
-	}
-	
-	void UIControl::SystemDidAppear()
-	{
-        if (!GetRecursiveVisible())
-            return;
+        WillDisappear();
+    }
 
-		DidAppear();
+    void UIControl::SystemDidAppear()
+    {
+        DidAppear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1503,13 +1414,10 @@ namespace DAVA
             ++it;
         }
     }
-	
-	void UIControl::SystemDidDisappear()
-	{
-        if (!GetRecursiveVisible())
-            return;
 
-		DidDisappear();
+    void UIControl::SystemDidDisappear()
+    {
+        DidDisappear();
 
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
@@ -1527,11 +1435,11 @@ namespace DAVA
             ++it;
         }
     }
-    
-	void UIControl::SystemScreenSizeDidChanged(const Rect &newFullScreenRect)
+
+    void UIControl::SystemScreenSizeDidChanged(const Rect &newFullScreenRect)
     {
-		ScreenSizeDidChanged(newFullScreenRect);
-        
+        ScreenSizeDidChanged(newFullScreenRect);
+
         List<UIControl*>::iterator it = childs.begin();
         while(it != childs.end())
         {
@@ -1549,42 +1457,43 @@ namespace DAVA
         }
     }
 
-    
-	
-	
-	void UIControl::WillAppear()
-	{
-		
-	}
-	void UIControl::WillDisappear()
-	{
-		
-	}
-	void UIControl::DidAppear()
-	{
-		
-	}
-	void UIControl::DidDisappear()
-	{
-		
-	}
+
+
+
+    void UIControl::WillAppear()
+    {
+
+    }
+    void UIControl::WillDisappear()
+    {
+
+    }
+    void UIControl::DidAppear()
+    {
+
+    }
+    void UIControl::DidDisappear()
+    {
+
+    }
     void UIControl::ScreenSizeDidChanged(const Rect &newFullScreenRect)
     {
-        
-    }
-    
-	
 
-	void UIControl::SystemUpdate(float32 timeElapsed)
-	{
-		Update(timeElapsed);
-		isUpdated = true;
-		List<UIControl*>::iterator it = childs.begin();
-		for(; it != childs.end(); ++it)
-		{
-			(*it)->isUpdated = false;
-		}
-		
+    }
+
+
+
+    void UIControl::SystemUpdate(float32 timeElapsed)
+    {
+        UIControlSystem::Instance()->updateCounter++;
+        Update(timeElapsed);
+        isUpdated = true;
+        List<UIControl*>::iterator it = childs.begin();
+        for(; it != childs.end(); ++it)
+        {
+            (*it)->isUpdated = false;
+        }
+
         it = childs.begin();
         while(it != childs.end())
         {
@@ -1605,50 +1514,29 @@ namespace DAVA
         }
     }
 
-	void UIControl::SystemDraw(const UIGeometricData &geometricData)
-	{
-        if( !recursiveVisible )
+    void UIControl::SystemDraw(const UIGeometricData &geometricData)
+    {
+        if (!GetSystemVisible())
             return;
-		UIGeometricData drawData;
-		drawData.position = relativePosition;
-		drawData.size = size;
-		drawData.pivotPoint = pivotPoint;
-		drawData.scale = scale;
-		drawData.angle = angle;
-		drawData.AddToGeometricData(geometricData);
-		
-        if(parent)
-        {
-            GetBackground()->SetParentColor(parent->GetBackground()->GetDrawColor());
-        }
-        else
-        {
-            GetBackground()->SetParentColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
-        }
-				
-		const Rect& unrotatedRect = drawData.GetUnrotatedRect();
-		
-		if(clipContents)
-		{//WARNING: for now clip contents don't work for rotating controls if you have any ideas you are welcome
-			RenderManager::Instance()->ClipPush();
-			RenderManager::Instance()->ClipRect(unrotatedRect);
-		}
 
-		if(visible && visibleForUIEditor)
-		{
-			Draw(drawData);
-		}
-	
-		if (debugDrawEnabled && !clipContents)
-		{	//TODO: Add debug draw for rotated controls
-			DrawDebugRect(drawData, false);
-		}
-		DrawPivotPoint(unrotatedRect);
-		
-		
-		// Do not draw child controls if parent is not visible
-		if (visible && visibleForUIEditor)
-		{
+        UIControlSystem::Instance()->drawCounter++;
+        UIGeometricData drawData = GetLocalGeometricData();
+        drawData.AddGeometricData(geometricData);
+
+        const Color &parentColor = parent ? parent->GetBackground()->GetDrawColor() : Color::White;
+
+        SetParentColor(parentColor);
+
+        const Rect& unrotatedRect = drawData.GetUnrotatedRect();
+
+        if(clipContents)
+        {//WARNING: for now clip contents don't work for rotating controls if you have any ideas you are welcome
+            RenderManager::Instance()->ClipPush();
+            RenderManager::Instance()->ClipRect(unrotatedRect);
+        }
+
+        Draw(drawData);
+
         isIteratorCorrupted = false;
         List<UIControl*>::iterator it = childs.begin();
         List<UIControl*>::iterator itEnd = childs.end();
@@ -1656,34 +1544,30 @@ namespace DAVA
         {
             (*it)->SystemDraw(drawData);
             DVASSERT(!isIteratorCorrupted);
-			}
         }
 
-        if(visible && visibleForUIEditor)
-        {
-            DrawAfterChilds(drawData);
-        }
+        DrawAfterChilds(drawData);
+
         if(clipContents)
         {
             RenderManager::Instance()->ClipPop();
-			
-            if(debugDrawEnabled)
-            { //TODO: Add debug draw for rotated controls
-                DrawDebugRect(drawData, false);
-            }
         }
-		
-		DrawPivotPoint(unrotatedRect);
 
-        if(debugDrawEnabled && NULL != parent && parent->GetClipContents())
+        if(debugDrawEnabled)
         {
             RenderManager::Instance()->ClipPush();
-            RenderManager::Instance()->ClipRect(Rect(0, 0, -1, -1));
-            DrawDebugRect(drawData, true);
+            RenderManager::Instance()->RemoveClip();
+            DrawDebugRect(drawData, false);
+            DrawPivotPoint(unrotatedRect);
             RenderManager::Instance()->ClipPop();
         }
     }
-	
+
+    void UIControl::SetParentColor( const Color &parentColor )
+    {
+        GetBackground()->SetParentColor(parentColor);
+    }
+
     void UIControl::DrawDebugRect(const UIGeometricData &gd, bool useAlpha)
     {
         Color oldColor = RenderManager::Instance()->GetColor();
@@ -1722,7 +1606,7 @@ namespace DAVA
         {
             return;
         }
-		
+
         if (drawPivotPointMode == DRAW_ONLY_IF_NONZERO && pivotPoint.IsZero())
         {
             return;
@@ -1735,8 +1619,8 @@ namespace DAVA
         RenderManager::Instance()->ClipPush();
         RenderManager::Instance()->SetColor(Color(1.0f, 0.0f, 0.0f, 1.0f));
 
-		Vector2 pivotPointCenter = drawRect.GetPosition() + pivotPoint;
-		RenderHelper::Instance()->DrawCircle(pivotPointCenter, PIVOT_POINT_MARK_RADIUS, RenderState::RENDERSTATE_2D_BLEND);
+        Vector2 pivotPointCenter = drawRect.GetPosition() + pivotPoint;
+        RenderHelper::Instance()->DrawCircle(pivotPointCenter, PIVOT_POINT_MARK_RADIUS, RenderState::RENDERSTATE_2D_BLEND);
 
         // Draw the cross mark.
         Vector2 lineStartPoint = pivotPointCenter;
@@ -1744,7 +1628,7 @@ namespace DAVA
         lineStartPoint.y -= PIVOT_POINT_MARK_HALF_LINE_LENGTH;
         lineEndPoint.y += PIVOT_POINT_MARK_HALF_LINE_LENGTH;
         RenderHelper::Instance()->DrawLine(lineStartPoint, lineEndPoint, RenderState::RENDERSTATE_2D_BLEND);
-		
+
         lineStartPoint = pivotPointCenter;
         lineEndPoint = pivotPointCenter;
         lineStartPoint.x -= PIVOT_POINT_MARK_HALF_LINE_LENGTH;
@@ -1754,17 +1638,17 @@ namespace DAVA
         RenderManager::Instance()->ClipPop();
         RenderManager::Instance()->SetColor(oldColor);
     }
-	
-	bool UIControl::IsPointInside(const Vector2 &_point, bool expandWithFocus/* = false*/) const
-	{
+
+    bool UIControl::IsPointInside(const Vector2 &_point, bool expandWithFocus/* = false*/) const
+    {
         Vector2 point = _point;
 
-		if(InputSystem::Instance()->IsCursorPining())
-		{
-			point.x = Core::Instance()->GetVirtualScreenWidth() / 2;
+        if(InputSystem::Instance()->IsCursorPining())
+        {
+            point.x = Core::Instance()->GetVirtualScreenWidth() / 2;
             point.y = Core::Instance()->GetVirtualScreenHeight() / 2;
-		}
-        
+        }
+
         const UIGeometricData &gd = GetGeometricData();
         Rect rect = gd.GetUnrotatedRect();
         if(expandWithFocus)
@@ -1782,12 +1666,12 @@ namespace DAVA
             return rect.PointInside(testPoint);
         }
 
-		return rect.PointInside(point);
-	}
+        return rect.PointInside(point);
+    }
 
     bool UIControl::SystemProcessInput(UIEvent *currentInput)
     {
-        if(!inputEnabled || !visible || controlState & STATE_DISABLED)
+        if(!inputEnabled || !GetSystemVisible() || controlState & STATE_DISABLED)
         {
             return false;
         }
@@ -1796,9 +1680,9 @@ namespace DAVA
         {
             return false;
         }
-		
-		switch (currentInput->phase)
-		{
+
+        switch (currentInput->phase)
+        {
 #if !defined(__DAVAENGINE_IPHONE__) && !defined(__DAVAENGINE_ANDROID__)
             case UIEvent::PHASE_KEYCHAR:
             {
@@ -1825,11 +1709,6 @@ namespace DAVA
             {
                 if (!currentInput->touchLocker && IsPointInside(currentInput->point))
                 {
-#ifdef ENABLE_CONTROL_EDIT
-					__touchStart = currentInput->point;
-					__oldRect = relativeRect;
-#endif
-                    
                     if(multiInput || !currentInputID)
                     {
 
@@ -1847,7 +1726,7 @@ namespace DAVA
                             UIControlSystem::Instance()->SetExclusiveInputLocker(this, currentInput->tid);
                         }
 
-   						PerformEventWithData(EVENT_TOUCH_DOWN, currentInput);
+                        PerformEventWithData(EVENT_TOUCH_DOWN, currentInput);
 
                         if(!multiInput)
                         {
@@ -1874,9 +1753,6 @@ namespace DAVA
                     {
                         if(controlState & STATE_PRESSED_INSIDE || controlState & STATE_PRESSED_OUTSIDE)
                         {
-#ifdef ENABLE_CONTROL_EDIT
-							relativePosition = __oldPosition + currentInput->point - __touchStart;
-#endif
                             if (IsPointInside(currentInput->point, true))
                             {
                                 if(currentInput->controlState == UIEvent::CONTROL_STATE_OUTSIDE)
@@ -1888,7 +1764,7 @@ namespace DAVA
                                         controlState |= STATE_PRESSED_INSIDE;
                                         controlState &= ~STATE_PRESSED_OUTSIDE;
 #if !defined(__DAVAENGINE_IPHONE__) && !defined(__DAVAENGINE_ANDROID__)
-										controlState |= STATE_HOVER;
+                                        controlState |= STATE_HOVER;
 #endif
                                     }
                                 }
@@ -1936,20 +1812,14 @@ namespace DAVA
                                     controlState |= STATE_HOVER;
                                 }
 #endif
-							}
+                            }
 
-							currentInput->controlState = UIEvent::CONTROL_STATE_RELEASED;
-						
+                            currentInput->controlState = UIEvent::CONTROL_STATE_RELEASED;
+
                             if(totalTouches == 0)
                             {
-#ifdef ENABLE_CONTROL_EDIT
-								relativePosition = __oldPosition + currentInput->point - __touchStart;
-								__oldPosition = relativePosition;
-								__touchStart = Vector2(0.f, 0.f);
-								Logger::FrameworkDebug("DEBUG_CONTROL_COORDINATE: Vector2(%.1f, %.1f)", relativeRect.x, relativeRect.y); 
-#endif
-								if (IsPointInside(currentInput->point, true))
-								{
+                                if (IsPointInside(currentInput->point, true))
+                                {
                                     if (UIControlSystem::Instance()->GetFocusedControl() != this && focusEnabled)
                                     {
                                         UIControlSystem::Instance()->SetFocusedControl(this, false);
@@ -1973,11 +1843,11 @@ namespace DAVA
                                 controlState |= STATE_PRESSED_OUTSIDE;
                                 controlState &= ~STATE_PRESSED_INSIDE;
 #if !defined(__DAVAENGINE_IPHONE__) && !defined(__DAVAENGINE_ANDROID__)
-								controlState &= ~STATE_HOVER;
+                                controlState &= ~STATE_HOVER;
 #endif
-							}
-						}
-					}
+                            }
+                        }
+                    }
 
                     currentInput->touchLocker = NULL;
                     return true;
@@ -1989,21 +1859,22 @@ namespace DAVA
                 Input(currentInput);
             }
         }
-		
-		return false;
-	}
 
-	bool UIControl::SystemInput(UIEvent *currentInput)
-	{
-		isUpdated = true;
+        return false;
+    }
 
-        if( !recursiveVisible )
+    bool UIControl::SystemInput(UIEvent *currentInput)
+    {
+        UIControlSystem::Instance()->inputCounter++;
+        isUpdated = true;
+
+        if( !GetSystemVisible() )
             return false;
 
-		//if(currentInput->touchLocker != this)
-		{
-			if(clipContents
-               && (currentInput->phase != UIEvent::PHASE_DRAG 
+        //if(currentInput->touchLocker != this)
+        {
+            if(clipContents
+               && (currentInput->phase != UIEvent::PHASE_DRAG
                    && currentInput->phase != UIEvent::PHASE_ENDED
                    && currentInput->phase != UIEvent::PHASE_KEYCHAR
                    && currentInput->phase != UIEvent::PHASE_JOYSTICK))
@@ -2013,54 +1884,51 @@ namespace DAVA
                     return false;
                 }
             }
-			// Do not handle input for child controls which are insibible from parent
-			if (visible)
-			{
-				List<UIControl*>::reverse_iterator it = childs.rbegin();
-				List<UIControl*>::reverse_iterator itEnd = childs.rend();
-				for(; it != itEnd; ++it)
-				{
-					(*it)->isUpdated = false;
-				}
-			
-				it = childs.rbegin();
-				itEnd = childs.rend();
-				while(it != itEnd)
-				{
-					isIteratorCorrupted = false;
-					UIControl *current = *it;
-					if(!current->isUpdated)
-					{
-						current->Retain();
-						if(current->SystemInput(currentInput))
-						{
-							current->Release();
-							return true;
-						}
-						current->Release();
-						if(isIteratorCorrupted)
-						{
-							it = childs.rbegin();
-							continue;
-						}
-					}
-					++it;
-				}
-			}
-		}
-		return SystemProcessInput(currentInput);
-	}
-	
-	void UIControl::SystemInputCancelled(UIEvent *currentInput)
-	{
-		if(currentInput->controlState != UIEvent::CONTROL_STATE_RELEASED)
-		{
-			--totalTouches;
-		}
-		if(currentInput->controlState == UIEvent::CONTROL_STATE_INSIDE)
-		{
-			--touchesInside;
-		}
+
+            List<UIControl*>::reverse_iterator it = childs.rbegin();
+            List<UIControl*>::reverse_iterator itEnd = childs.rend();
+            for(; it != itEnd; ++it)
+            {
+                (*it)->isUpdated = false;
+            }
+
+            it = childs.rbegin();
+            itEnd = childs.rend();
+            while(it != itEnd)
+            {
+                isIteratorCorrupted = false;
+                UIControl *current = *it;
+                if(!current->isUpdated)
+                {
+                    current->Retain();
+                    if(current->inputProcessorsCount > 0 && current->SystemInput(currentInput))
+                    {
+                        current->Release();
+                        return true;
+                    }
+                    current->Release();
+                    if(isIteratorCorrupted)
+                    {
+                        it = childs.rbegin();
+                        continue;
+                    }
+                }
+                ++it;
+            }
+        }
+        return SystemProcessInput(currentInput);
+    }
+
+    void UIControl::SystemInputCancelled(UIEvent *currentInput)
+    {
+        if(currentInput->controlState != UIEvent::CONTROL_STATE_RELEASED)
+        {
+            --totalTouches;
+        }
+        if(currentInput->controlState == UIEvent::CONTROL_STATE_INSIDE)
+        {
+            --touchesInside;
+        }
 
         if(touchesInside == 0)
         {
@@ -2072,549 +1940,572 @@ namespace DAVA
                 UIControlSystem::Instance()->SetExclusiveInputLocker(NULL, -1);
             }
         }
-		
-		currentInput->controlState = UIEvent::CONTROL_STATE_RELEASED;
-		if(currentInput->tid == currentInputID)
-		{
-			currentInputID = 0;
-		}
-		currentInput->touchLocker = NULL;
+
+        currentInput->controlState = UIEvent::CONTROL_STATE_RELEASED;
+        if(currentInput->tid == currentInputID)
+        {
+            currentInputID = 0;
+        }
+        currentInput->touchLocker = NULL;
 
 
-		InputCancelled(currentInput);
-	}
-    
+        InputCancelled(currentInput);
+    }
+
     void UIControl::SystemDidSetHovered()
     {
         controlState |= STATE_HOVER;
         PerformEventWithData(EVENT_HOVERED_SET, NULL);
         DidSetHovered();
     }
-    
-	void UIControl::SystemDidRemoveHovered()
+
+    void UIControl::SystemDidRemoveHovered()
     {
         PerformEventWithData(EVENT_HOVERED_REMOVED, NULL);
-		controlState &= ~STATE_HOVER;
+        controlState &= ~STATE_HOVER;
         DidRemoveHovered();
     }
-    
+
     void UIControl::DidSetHovered()
     {
     }
-    
-	void UIControl::DidRemoveHovered()
+
+    void UIControl::DidRemoveHovered()
     {
     }
 
-	void UIControl::Input(UIEvent *currentInput)
-	{
-		currentInput->SetInputHandledType(UIEvent::INPUT_NOT_HANDLED);
-	}
+    void UIControl::Input(UIEvent *currentInput)
+    {
+        currentInput->SetInputHandledType(UIEvent::INPUT_NOT_HANDLED);
+    }
 
-	void UIControl::InputCancelled(UIEvent *currentInput)
-	{
-	}
+    void UIControl::InputCancelled(UIEvent *currentInput)
+    {
+    }
 
-	void UIControl::Update(float32 timeElapsed)
-	{
-		
-	}
-	void UIControl::Draw(const UIGeometricData &geometricData)
-	{
-		background->Draw(geometricData);
-	}
-	void UIControl::DrawAfterChilds(const UIGeometricData &geometricData)
-	{
-		
-	}
-	
-	YamlNode* UIControl::SaveToYamlNode(UIYamlLoader * loader)
-	{
-		// Temp variables
-		String stringValue;
-		VariantType *nodeValue = new VariantType();
-		// Return node
-		YamlNode *node = new YamlNode(YamlNode::TYPE_MAP);
-		// Model UIControl to be used in comparing
-		UIControl *baseControl = new UIControl();
+    void UIControl::Update(float32 timeElapsed)
+    {
 
-		// Control name
-		//node->Set("name", this->GetName());
-        // Recursive Visible
-        if (baseControl->GetRecursiveVisible() != GetRecursiveVisible())
+    }
+    void UIControl::Draw(const UIGeometricData &geometricData)
+    {
+        background->Draw(geometricData);
+    }
+    void UIControl::DrawAfterChilds(const UIGeometricData &geometricData)
+    {
+
+    }
+
+    void UIControl::SystemWillBecomeVisible()
+    {
+        WillBecomeVisible();
+
+        List<UIControl*>::const_iterator it = childs.begin();
+        List<UIControl*>::const_iterator end = childs.end();
+        for (; it != end; ++it)
         {
-            node->Set("recursiveVisible", GetRecursiveVisible());
+            if ((*it)->GetSystemVisible())
+                (*it)->SystemWillBecomeVisible();
         }
-		// Visible
-		if (baseControl->GetVisible() != this->GetVisible())
-		{
-			node->Set("visible", this->GetVisible());
-		}
-		// Enabled
-		if (baseControl->GetDisabled() != this->GetDisabled())
-		{
-			node->Set("enabled", !this->GetDisabled());
-		}
-		// Clip contents
-		if (baseControl->GetClipContents() != this->GetClipContents())
-		{
-			node->Set("clip", this->GetClipContents());
-		}
-		// Input
-		if (baseControl->GetInputEnabled() != this->GetInputEnabled())
-		{
-			node->Set("noInput", !this->GetInputEnabled());
-		}
-		// Sprite
-		Sprite *sprite =  this->GetSprite();
-		if (sprite)
-		{
-			node->Set("sprite", GetSpriteFrameworkPath(sprite));
-		}
+    }
 
-		// Color
-		const Color &color =  this->GetBackground()->GetColor();
-		if (baseControl->GetBackground()->color != color)
-		{
-			nodeValue->SetColor(color);
-			node->Set("color", nodeValue);
-		}
-		// Frame
-		if (baseControl->GetFrame() != this->GetFrame())
-		{
-			node->Set("frame", this->GetFrame());
-		}
-		// Rect
-		Rect rect = this->GetRect();
-		if (baseControl->GetRect() != rect)
-		{
-			Vector4 rectVector4(rect.x + pivotPoint.x, rect.y + pivotPoint.y, rect.dx, rect.dy);
-			nodeValue->SetVector4(rectVector4);
-			node->Set("rect", nodeValue);
-		}
-		// Align
-		int32 align = this->GetSpriteAlign();
-		if (baseControl->GetSpriteAlign() != align)
-		{
-			node->AddNodeToMap("align", loader->GetAlignNodeValue(align));
-		}
-		// Left Align
-		if (this->GetLeftAlignEnabled())
-		{
-			node->Set("leftAlign", this->GetLeftAlign());
-		}
-		// Horizontal Center Align
-		if (this->GetHCenterAlignEnabled())
-		{
-			node->Set("hcenterAlign", this->GetHCenterAlign());
-		}
-		// Right Align
-		if (this->GetRightAlignEnabled())
-		{
-			node->Set("rightAlign", this->GetRightAlign());
-		}
-		// Top Align
-		if (this->GetTopAlignEnabled())
-		{
-			node->Set("topAlign", this->GetTopAlign());
-		}
-		// Vertical Center Align
-		if (this->GetVCenterAlignEnabled())
-		{
-			node->Set("vcenterAlign", this->GetVCenterAlign());
-		}
-		// Bottom Align
-		if (this->GetBottomAlignEnabled())
-		{
-			node->Set("bottomAlign", this->GetBottomAlign());
-		}
-		
-		// Pivot
-		if (baseControl->pivotPoint != this->pivotPoint)
-		{
-			nodeValue->SetVector2(this->pivotPoint);
-			node->Set("pivot", nodeValue);
-		}
-		// Color inherit
-		UIControlBackground::eColorInheritType colorInheritType =  this->GetBackground()->GetColorInheritType();
-		if (baseControl->GetBackground()->GetColorInheritType() != colorInheritType)
-		{
-			node->Set("colorInherit", loader->GetColorInheritTypeNodeValue(colorInheritType));
-		}
-		// Draw type, obligatory for UI controls.
-		UIControlBackground::eDrawType drawType =  this->GetBackground()->GetDrawType();
-		node->Set("drawType", loader->GetDrawTypeNodeValue(drawType));
+    void UIControl::SystemWillBecomeInvisible()
+    {
+        if (GetHover())
+        {
+            UIControlSystem::Instance()->SetHoveredControl(NULL);
+        }
+        if (UIControlSystem::Instance()->GetFocusedControl() == this)
+        {
+            UIControlSystem::Instance()->SetFocusedControl(NULL, true);
+        }
+        if (GetInputEnabled())
+        {
+            UIControlSystem::Instance()->CancelInputs(this, false);
+        }
 
-		// LeftRightStretchCapNode
-		if (baseControl->GetBackground()->GetLeftRightStretchCap() != this->GetBackground()->GetLeftRightStretchCap())
-		{
-			node->Set("leftRightStretchCap", this->GetBackground()->GetLeftRightStretchCap());
-		}
-		// topBottomStretchCap
-		if (baseControl->GetBackground()->GetTopBottomStretchCap() != this->GetBackground()->GetTopBottomStretchCap())
-		{
-			node->Set("topBottomStretchCap", this->GetBackground()->GetTopBottomStretchCap());
-		}
-		// Angle
-		if (baseControl->angle != this->angle)
-		{
-			node->Set("angle", this->angle);
-		}
-		// Tag
-		if (baseControl->tag != this->tag)
-		{
-			node->Set("tag", this->tag);
-		}
-		// spriteModification
-		if (baseControl->GetBackground()->GetModification() != this->GetBackground()->GetModification())
-		{
-			node->Set("spriteModification", this->GetBackground()->GetModification());
-		}
+        List<UIControl*>::const_iterator it = childs.begin();
+        List<UIControl*>::const_iterator end = childs.end();
+        for (; it != end; ++it)
+        {
+            if ((*it)->GetSystemVisible())
+                (*it)->SystemWillBecomeInvisible();
+        }
 
-		// Initial state.
-		if (baseControl->GetInitialState() != this->initialState)
-		{
-			node->Set("initialState", this->initialState);
-		}
+        WillBecomeInvisible();
+    }
 
-		// Release variantType variable
-		SafeDelete(nodeValue);
-		// Release model variable
-		SafeRelease(baseControl);
+    void UIControl::WillBecomeVisible()
+    {
+    }
 
+    void UIControl::WillBecomeInvisible()
+    {
+    }
+
+    YamlNode* UIControl::SaveToYamlNode(UIYamlLoader * loader)
+    {
+        // Return node
+        YamlNode *node = YamlNode::CreateMapNode(false);
+        // Model UIControl to be used in comparing
+        UIControl *baseControl = new UIControl();
+
+        // Control name
         SetPreferredNodeType(node, GetClassName());
-		return node;
-	}
 
-	void UIControl::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader)
-	{
-		const YamlNode * spriteNode = node->Get("sprite");
-		const YamlNode * colorNode = node->Get("color");
-		const YamlNode * frameNode = node->Get("frame"); 
-		const YamlNode * rectNode = node->Get("rect");
-		const YamlNode * alignNode = node->Get("align");
-		const YamlNode * leftAlignNode = node->Get("leftAlign");
-		const YamlNode * hcenterAlignNode = node->Get("hcenterAlign");
-		const YamlNode * rightAlignNode = node->Get("rightAlign");
-		const YamlNode * topAlignNode = node->Get("topAlign");
-		const YamlNode * vcenterAlignNode = node->Get("vcenterAlign");
-		const YamlNode * bottomAlignNode = node->Get("bottomAlign");
-		const YamlNode * pivotNode = node->Get("pivot");
-		const YamlNode * colorInheritNode = node->Get("colorInherit");
-        
-        const YamlNode * drawTypeNode = node->Get("drawType");
-        const YamlNode * leftRightStretchCapNode = node->Get("leftRightStretchCap");
-        const YamlNode * topBottomStretchCapNode = node->Get("topBottomStretchCap");
-		
-		const YamlNode * angleNode = node->Get("angle");
-		const YamlNode * tagNode = node->Get("tag");
-
-		const YamlNode * spriteModificationNode = node->Get("spriteModification");
-		const YamlNode * initialStateNode = node->Get("initialState");
-		
-		Rect rect = GetRect();
-		if (rectNode)
-		{
-			rect = rectNode->AsRect();
-		}
-		
-		Sprite * sprite = 0;
-		if(spriteNode)
-		{
-			sprite = Sprite::Create(spriteNode->AsString());
-			if (rect.dx == -1.0f)rect.dx = (float32)sprite->GetWidth();
-			if (rect.dy == -1.0f)rect.dy = (float32)sprite->GetHeight();
-		}
-		
-		if(colorNode)
-		{
-			GetBackground()->SetColor( loader->GetColorFromYamlNode(colorNode) );
-			if(!spriteNode)
-			{
-				GetBackground()->SetDrawType(UIControlBackground::DRAW_FILL);
-			}
-		}
-		SetRect(rect);
-		
-		int frame = 0;
-		if (frameNode)frame = frameNode->AsInt();
-
-		if(spriteNode)
-		{
-			GetBackground()->SetSprite(sprite, frame);
-			SafeRelease(sprite);
-		}
-		
-		if (alignNode)
-		{
-			int32 align = loader->GetAlignFromYamlNode(alignNode);
-			SetSpriteAlign(align);
-        	//GetBackground()->SetAlign(align);
-		}
-		
-		if (leftAlignNode)
-		{
-			int32 leftAlign = leftAlignNode->AsInt();
-			SetLeftAlignEnabled(true);
-			SetLeftAlign(leftAlign);
-		}
-		if (hcenterAlignNode)
-		{
-			int32 hcenterAlign = hcenterAlignNode->AsInt();
-			SetHCenterAlignEnabled(true);
-			SetHCenterAlign(hcenterAlign);
-			
-		}
-		if (rightAlignNode)
-		{
-			int32 rightAlign = rightAlignNode->AsInt();
-			SetRightAlignEnabled(true);
-			SetRightAlign(rightAlign);
-		}
-		if (topAlignNode)
-		{
-			int32 topAlign = topAlignNode->AsInt();
-			SetTopAlignEnabled(true);
-			SetTopAlign(topAlign);
-		}
-		if (vcenterAlignNode)
-		{
-			int32 vcenterAlign = vcenterAlignNode->AsInt();
-			SetVCenterAlignEnabled(true);
-			SetVCenterAlign(vcenterAlign);
-		}
-		if (bottomAlignNode)
-		{
-			int32 bottomAlign = bottomAlignNode->AsInt();
-			SetBottomAlignEnabled(true);
-			SetBottomAlign(bottomAlign);
-		}
-	
-		const YamlNode * clipNode = node->Get("clip");
-		if (clipNode)
-		{
-			bool clipContents = loader->GetBoolFromYamlNode(clipNode, false); 
-			SetClipContents(clipContents);
-		}
-
-        const YamlNode * recursiveVisibleNode = node->Get("recursiveVisible");
-        if(recursiveVisibleNode)
+        // Transform data
+        // Position
+        const Vector2 &position = GetPosition();
+        if (baseControl->GetPosition() != position)
         {
-            bool isVisible = loader->GetBoolFromYamlNode(recursiveVisibleNode, true);
-            SetRecursiveVisible(isVisible);
+            node->Set("position", position);
         }
-		
-		const YamlNode * visibleNode = node->Get("visible");
-		if(visibleNode)
-		{
-			bool visible = loader->GetBoolFromYamlNode(visibleNode, false); 
-			SetVisible(visible);
-		}
-		
-		if (pivotNode)
-		{
-            if (pivotNode->GetType() == YamlNode::TYPE_STRING)
+        // Size
+        const Vector2 &size = GetSize();
+        if (baseControl->GetSize() != size)
+        {
+            node->Set("size", size);
+        }
+        // Pivot
+        if (baseControl->GetPivotPoint() != GetPivotPoint())
+        {
+            node->Set("pivot", GetPivotPoint());
+        }
+        // Angle
+        if (baseControl->GetAngle() != GetAngle())
+        {
+            node->Set("angle", GetAngle());
+        }
+        // Visible
+        if (baseControl->GetVisible() != GetVisible())
+        {
+            node->Set("visible", GetVisible());
+        }
+        // Enabled
+        if (baseControl->GetDisabled() != GetDisabled())
+        {
+            node->Set("enabled", !GetDisabled());
+        }
+        // Clip contents
+        if (baseControl->GetClipContents() != GetClipContents())
+        {
+            node->Set("clip", GetClipContents());
+        }
+        // Input
+        if (baseControl->GetInputEnabled() != GetInputEnabled())
+        {
+            node->Set("noInput", !GetInputEnabled());
+        }
+        // Tag
+        if (baseControl->GetTag() != GetTag())
+        {
+            node->Set("tag", GetTag());
+        }
+        // Initial state.
+        if (baseControl->GetInitialState() != GetInitialState())
+        {
+            node->Set("initialState", GetInitialState());
+        }
+
+        // Anchor data
+        // Left Align
+        if (GetLeftAlignEnabled())
+        {
+            node->Set("leftAlign", GetLeftAlign());
+        }
+        // Horizontal Center Align
+        if (GetHCenterAlignEnabled())
+        {
+            node->Set("hcenterAlign", GetHCenterAlign());
+        }
+        // Right Align
+        if (GetRightAlignEnabled())
+        {
+            node->Set("rightAlign", GetRightAlign());
+        }
+        // Top Align
+        if (GetTopAlignEnabled())
+        {
+            node->Set("topAlign", GetTopAlign());
+        }
+        // Vertical Center Align
+        if (GetVCenterAlignEnabled())
+        {
+            node->Set("vcenterAlign", GetVCenterAlign());
+        }
+        // Bottom Align
+        if (GetBottomAlignEnabled())
+        {
+            node->Set("bottomAlign", GetBottomAlign());
+        }
+        // Anchor data
+
+        UIControlBackground *baseBackground = baseControl->GetBackground();
+        if (!baseBackground->IsEqualTo(GetBackground()))
+        {
+            // Draw type, obligatory for UI controls.
+            UIControlBackground::eDrawType drawType =  GetBackground()->GetDrawType();
+            if (baseBackground->GetDrawType() != drawType)
             {
-                if (pivotNode->AsString() == "center")
-                {
-                    pivotPoint.x = floor(rect.dx / 2.f);
-                    pivotPoint.y = floor(rect.dy / 2.f);
-                }
+                node->Set("drawType", loader->GetDrawTypeNodeValue(drawType));
             }
-            else
+            // Sprite
+            String spritePath = Sprite::GetPathString(GetBackground()->GetSprite());
+            if (Sprite::GetPathString(baseBackground->GetSprite()) != spritePath)
             {
-			    pivotPoint = pivotNode->AsPoint();
+                node->Set("sprite", spritePath);
             }
-		}
+            // Frame
+            if (baseBackground->GetFrame() != GetBackground()->GetFrame())
+            {
+                node->Set("frame", GetFrame());
+            }
+            // Color
+            const Color &color =  GetBackground()->GetColor();
+            if (baseBackground->GetColor() != color)
+            {
+                node->Set("color", VariantType(color));
+            }
+            // Color inherit
+            UIControlBackground::eColorInheritType colorInheritType =  GetBackground()->GetColorInheritType();
+            if (baseBackground->GetColorInheritType() != colorInheritType)
+            {
+                node->Set("colorInherit", loader->GetColorInheritTypeNodeValue(colorInheritType));
+            }
+            // Per pixel accuracy
+            UIControlBackground::ePerPixelAccuracyType perPixelAccuracyType = GetBackground()->GetPerPixelAccuracyType();
+            if (baseBackground->GetPerPixelAccuracyType() != perPixelAccuracyType)
+            {
+                node->Set("perPixelAccuracy", loader->GetPerPixelAccuracyTypeNodeValue(perPixelAccuracyType));
+            }
+            // Align
+            int32 align = GetBackground()->GetAlign();
+            if (baseBackground->GetAlign() != align)
+            {
+                node->AddNodeToMap("align", loader->GetAlignNodeValue(align));
+            }
+            // LeftRightStretchCapNode
+            if (baseBackground->GetLeftRightStretchCap() != GetBackground()->GetLeftRightStretchCap())
+            {
+                node->Set("leftRightStretchCap", GetBackground()->GetLeftRightStretchCap());
+            }
+            // topBottomStretchCap
+            if (baseBackground->GetTopBottomStretchCap() != GetBackground()->GetTopBottomStretchCap())
+            {
+                node->Set("topBottomStretchCap", GetBackground()->GetTopBottomStretchCap());
+            }
+            // spriteModification
+            if (baseBackground->GetModification() != GetBackground()->GetModification())
+            {
+                node->Set("spriteModification", GetBackground()->GetModification());
+            }
+        }
+        // Release model variable
+        SafeRelease(baseControl);
+        return node;
+    }
+
+    void UIControl::LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader)
+    {
+        const YamlNode * rectNode = node->Get("rect");
+        if (rectNode)
+        {
+            Rect rect = rectNode->AsRect();
+            SetRect(rect);
+        }
+        else
+        {
+            const YamlNode * positionNode = node->Get("position");
+            if (positionNode)
+                SetPosition(positionNode->AsVector2());
+
+            const YamlNode * sizeNode = node->Get("size");
+            if (sizeNode)
+                SetSize(sizeNode->AsVector2());
+        }
+
+        const YamlNode * pivotNode = node->Get("pivot");
+        if (pivotNode)
+        {
+            DVASSERT(pivotNode->GetType() == YamlNode::TYPE_ARRAY);
+            SetPivotPoint(pivotNode->AsPoint());
+        }
+
+        const YamlNode * angleNode = node->Get("angle");
+        if (angleNode)
+        {
+            SetAngle(angleNode->AsFloat());
+        }
+
+        const YamlNode * enabledNode = node->Get("enabled");
+        if (enabledNode)
+        {
+            SetDisabled(!enabledNode->AsBool());
+        }
+
+        const YamlNode * clipNode = node->Get("clip");
+        if (clipNode)
+        {
+            SetClipContents(clipNode->AsBool());
+        }
 
         const YamlNode * inputNode = node->Get("noInput");
-
         if (inputNode)
         {
-            bool inputDis = loader->GetBoolFromYamlNode(inputNode, false);
-            SetInputEnabled(!inputDis, false);
+            SetInputEnabled(!inputNode->AsBool(), false);
         }
 
-		if(colorInheritNode)
-		{
-			UIControlBackground::eColorInheritType type = (UIControlBackground::eColorInheritType)loader->GetColorInheritTypeFromNode(colorInheritNode);
-			GetBackground()->SetColorInheritType(type);
-		}
-        
-        if(drawTypeNode)
-		{
-			UIControlBackground::eDrawType type = (UIControlBackground::eDrawType)loader->GetDrawTypeFromNode(drawTypeNode);
-			GetBackground()->SetDrawType(type);
-            
-            if(leftRightStretchCapNode)
-            {
-                float32 leftStretchCap = leftRightStretchCapNode->AsFloat();
-                GetBackground()->SetLeftRightStretchCap(leftStretchCap);
-            }
-            
-            if(topBottomStretchCapNode)
-            {
-                float32 topStretchCap = topBottomStretchCapNode->AsFloat();
-                GetBackground()->SetTopBottomStretchCap(topStretchCap);
-            }
-		}
-
-		if(angleNode)
-		{
-			angle = angleNode->AsFloat();
-		}
-
-		if(tagNode)
-		{
-			tag = tagNode->AsInt();
-		}
-
-		if(spriteModificationNode)
+        const YamlNode * tagNode = node->Get("tag");
+        if (tagNode)
         {
-			int32 spriteModification = spriteModificationNode->AsInt32();
-            GetBackground()->SetModification(spriteModification);
+            SetTag(tagNode->AsInt32());
         }
-		
-		if (initialStateNode)
-		{
-			int32 newInitialState = initialStateNode->AsInt32();
-			SetInitialState(newInitialState);
-			SetState(newInitialState);
-		}
-	}
-	
-	Animation *	UIControl::WaitAnimation(float32 time, int32 track)
-	{
-		Animation * animation = new Animation(this, time, Interpolation::LINEAR);
-		animation->Start(track);
-		return animation;
-	}
-	
-	Animation *	UIControl::PositionAnimation(const Vector2 & _position, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &relativePosition, _position, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
-	
-	Animation *	UIControl::SizeAnimation(const Vector2 & _size, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &size, _size, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
-	
-	Animation *	UIControl::ScaleAnimation(const Vector2 & newScale, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &scale, newScale, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
 
-	Animation * UIControl::AngleAnimation(float32 newAngle, float32 time, Interpolation::FuncType interpolationFunc /*= Interpolation::LINEAR*/, int32 track /*= 0*/)
-	{
-		LinearAnimation<float32> * animation = new LinearAnimation<float32>(this, &angle, newAngle, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
+        const YamlNode * initialStateNode = node->Get("initialState");
+        if (initialStateNode)
+        {
+            int32 newInitialState = initialStateNode->AsInt32();
+            SetInitialState(newInitialState);
+            SetState(newInitialState);
+        }
 
+        const YamlNode * leftAlignNode = node->Get("leftAlign");
+        if (leftAlignNode)
+        {
+            int32 leftAlign = leftAlignNode->AsInt32();
+            SetLeftAlignEnabled(true);
+            SetLeftAlign(leftAlign);
+        }
 
-	Animation * UIControl::MoveAnimation(const Rect & rect, float time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		TwoVector2LinearAnimation *animation = new TwoVector2LinearAnimation(this
-				, &relativePosition, Vector2(rect.x + pivotPoint.x, rect.y + pivotPoint.y)
-				, &size, Vector2(rect.dx, rect.dy), time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
-	
-	Animation *	UIControl::ScaledRectAnimation(const Rect & rect, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		Vector2 finalScale(rect.dx / size.x, rect.dy / size.y);
-		
-		TwoVector2LinearAnimation *animation = new TwoVector2LinearAnimation(this
-				, &relativePosition, Vector2(rect.x + pivotPoint.x * finalScale.x, rect.y + pivotPoint.y * finalScale.y)
-				, &scale, finalScale, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
-	
-	Animation *	UIControl::ScaledSizeAnimation(const Vector2 & newSize, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
-	{
-		Vector2 finalScale(newSize.x / size.x, newSize.y / size.y);
-		LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &scale, finalScale, time, interpolationFunc);
-		animation->Start(track);
-		return animation;
-	}
+        const YamlNode * hcenterAlignNode = node->Get("hcenterAlign");
+        if (hcenterAlignNode)
+        {
+            int32 hcenterAlign = hcenterAlignNode->AsInt32();
+            SetHCenterAlignEnabled(true);
+            SetHCenterAlign(hcenterAlign);
+        }
 
+        const YamlNode * rightAlignNode = node->Get("rightAlign");
+        if (rightAlignNode)
+        {
+            int32 rightAlign = rightAlignNode->AsInt32();
+            SetRightAlignEnabled(true);
+            SetRightAlign(rightAlign);
+        }
 
-	void UIControl::TouchableAnimationCallback(BaseObject * caller, void * param, void *callerData)
-	{
-		bool * params = (bool*)param;
-		SetInputEnabled(params[0], params[1]);
-		delete[]params;
-	}
-	
-	Animation * UIControl::TouchableAnimation(bool touchable, bool hierarhic/* = true*/, int32 track/* = 0*/)
-	{
-		//TODO: change to bool animation - Dizz
-		Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
-		bool * params = new bool[2];
-		params[0] = touchable;
-		params[1] = hierarhic;
-		animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::TouchableAnimationCallback, (void*)params));
-		animation->Start(track);
-		return animation;
-	}
-	
-	void UIControl::DisabledAnimationCallback(BaseObject * caller, void * param, void *callerData)
-	{
-		bool * params = (bool*)param;
-		SetDisabled(params[0], params[1]);
-		delete[]params;
-	}
-	
-	Animation * UIControl::DisabledAnimation(bool disabled, bool hierarhic/* = true*/, int32 track/* = 0*/)
-	{
-		//TODO: change to bool animation - Dizz
-		Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
-		bool * params = new bool[2];
-		params[0] = disabled;
-		params[1] = hierarhic;
-		animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::DisabledAnimationCallback, (void*)params));
-		animation->Start(track);
-		return animation;
-	}
+        const YamlNode * topAlignNode = node->Get("topAlign");
+        if (topAlignNode)
+        {
+            int32 topAlign = topAlignNode->AsInt32();
+            SetTopAlignEnabled(true);
+            SetTopAlign(topAlign);
+        }
 
-	void UIControl::VisibleAnimationCallback(BaseObject * caller, void * param, void *callerData)
-	{
-		bool * params = (bool*)param;
-		SetVisible(params[0], params[1]);
-		delete[]params;
-	}
+        const YamlNode * vcenterAlignNode = node->Get("vcenterAlign");
+        if (vcenterAlignNode)
+        {
+            int32 vcenterAlign = vcenterAlignNode->AsInt32();
+            SetVCenterAlignEnabled(true);
+            SetVCenterAlign(vcenterAlign);
+        }
 
-    void UIControl::RecursiveVisibleAnimationCallback( BaseObject * caller, void * param, void *callerData )
-    {
-        bool visible = ( pointer_size(param) > 0 );
-        SetRecursiveVisible(visible);
+        const YamlNode * bottomAlignNode = node->Get("bottomAlign");
+        if (bottomAlignNode)
+        {
+            int32 bottomAlign = bottomAlignNode->AsInt32();
+            SetBottomAlignEnabled(true);
+            SetBottomAlign(bottomAlign);
+        }
+
+        const YamlNode * visibleNode = node->Get("visible");
+        const YamlNode * recursiveVisibleNode = node->Get("recursiveVisible");
+        bool visibilityFlag = true;
+        if(visibleNode)
+        {
+            visibilityFlag = loader->GetBoolFromYamlNode(visibleNode, true);
+        }
+        if (recursiveVisibleNode)
+        {
+            visibilityFlag &= loader->GetBoolFromYamlNode(recursiveVisibleNode, true);
+        }
+
+        SetVisible(visibilityFlag);
+
+        const YamlNode * drawTypeNode = node->Get("drawType");
+        if (drawTypeNode)
+        {
+            UIControlBackground::eDrawType type = (UIControlBackground::eDrawType)loader->GetDrawTypeFromNode(drawTypeNode);
+            GetBackground()->SetDrawType(type);
+        }
+
+        const YamlNode * spriteNode = node->Get("sprite");
+        if (spriteNode)
+        {
+            GetBackground()->SetSprite(spriteNode->AsString(), GetFrame());
+        }
+
+        const YamlNode * frameNode = node->Get("frame");
+        if (frameNode)
+        {
+            GetBackground()->SetFrame(frameNode->AsInt32());
+        }
+
+        const YamlNode * colorNode = node->Get("color");
+        if (colorNode)
+        {
+            GetBackground()->SetColor(loader->GetColorFromYamlNode(colorNode));
+        }
+
+        const YamlNode * perPixelAccuracyTypeNode = node->Get("perPixelAccuracy");
+        if(perPixelAccuracyTypeNode)
+        {
+            GetBackground()->SetPerPixelAccuracyType((UIControlBackground::ePerPixelAccuracyType)loader->GetPerPixelAccuracyTypeFromNode(perPixelAccuracyTypeNode));
+        }
+
+        const YamlNode * colorInheritNode = node->Get("colorInherit");
+        if (colorInheritNode)
+        {
+            GetBackground()->SetColorInheritType((UIControlBackground::eColorInheritType)loader->GetColorInheritTypeFromNode(colorInheritNode));
+        }
+
+        const YamlNode * alignNode = node->Get("align");
+        if (alignNode)
+        {
+            GetBackground()->SetAlign(loader->GetAlignFromYamlNode(alignNode));
+        }
+
+        const YamlNode * leftRightStretchCapNode = node->Get("leftRightStretchCap");
+        if (leftRightStretchCapNode)
+        {
+            GetBackground()->SetLeftRightStretchCap(leftRightStretchCapNode->AsFloat());
+        }
+
+        const YamlNode * topBottomStretchCapNode = node->Get("topBottomStretchCap");
+        if (topBottomStretchCapNode)
+        {
+            GetBackground()->SetTopBottomStretchCap(topBottomStretchCapNode->AsFloat());
+        }
+
+        const YamlNode * spriteModificationNode = node->Get("spriteModification");
+        if (spriteModificationNode)
+        {
+            GetBackground()->SetModification(spriteModificationNode->AsInt32());
+        }
     }
 
-    Animation * UIControl::VisibleAnimation(bool visible, bool hierarhic/* = true*/, int32 track/* = 0*/)
+    Animation * UIControl::WaitAnimation(float32 time, int32 track)
     {
-        //TODO: change to bool animation - Dizz
-        Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
-        bool * params = new bool[2];
-        params[0] = visible;
-        params[1] = hierarhic;
-        animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::VisibleAnimationCallback, (void*)params));
+        Animation * animation = new Animation(this, time, Interpolation::LINEAR);
         animation->Start(track);
         return animation;
     }
 
-    Animation * UIControl::RecursiveVisibleAnimation(bool visible, int32 track/* = 0*/)
+    Animation * UIControl::PositionAnimation(const Vector2 & _position, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &relativePosition, _position, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+    Animation * UIControl::SizeAnimation(const Vector2 & _size, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &size, _size, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+    Animation * UIControl::ScaleAnimation(const Vector2 & newScale, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &scale, newScale, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+    Animation * UIControl::AngleAnimation(float32 newAngle, float32 time, Interpolation::FuncType interpolationFunc /*= Interpolation::LINEAR*/, int32 track /*= 0*/)
+    {
+        LinearAnimation<float32> * animation = new LinearAnimation<float32>(this, &angle, newAngle, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+
+    Animation * UIControl::MoveAnimation(const Rect & rect, float time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        TwoVector2LinearAnimation *animation = new TwoVector2LinearAnimation(this
+                , &relativePosition, Vector2(rect.x + pivotPoint.x, rect.y + pivotPoint.y)
+                , &size, Vector2(rect.dx, rect.dy), time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+    Animation * UIControl::ScaledRectAnimation(const Rect & rect, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        Vector2 finalScale(rect.dx / size.x, rect.dy / size.y);
+
+        TwoVector2LinearAnimation *animation = new TwoVector2LinearAnimation(this
+                , &relativePosition, Vector2(rect.x + pivotPoint.x * finalScale.x, rect.y + pivotPoint.y * finalScale.y)
+                , &scale, finalScale, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+    Animation * UIControl::ScaledSizeAnimation(const Vector2 & newSize, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+    {
+        Vector2 finalScale(newSize.x / size.x, newSize.y / size.y);
+        LinearAnimation<Vector2> * animation = new LinearAnimation<Vector2>(this, &scale, finalScale, time, interpolationFunc);
+        animation->Start(track);
+        return animation;
+    }
+
+
+    void UIControl::TouchableAnimationCallback(BaseObject * caller, void * param, void *callerData)
+    {
+        bool * params = (bool*)param;
+        SetInputEnabled(params[0], params[1]);
+        delete[]params;
+    }
+
+    Animation * UIControl::TouchableAnimation(bool touchable, bool hierarhic/* = true*/, int32 track/* = 0*/)
+    {
+        //TODO: change to bool animation - Dizz
+        Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
+        bool * params = new bool[2];
+        params[0] = touchable;
+        params[1] = hierarhic;
+        animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::TouchableAnimationCallback, (void*)params));
+        animation->Start(track);
+        return animation;
+    }
+
+    void UIControl::DisabledAnimationCallback(BaseObject * caller, void * param, void *callerData)
+    {
+        bool * params = (bool*)param;
+        SetDisabled(params[0], params[1]);
+        delete[]params;
+    }
+
+    Animation * UIControl::DisabledAnimation(bool disabled, bool hierarhic/* = true*/, int32 track/* = 0*/)
+    {
+        //TODO: change to bool animation - Dizz
+        Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
+        bool * params = new bool[2];
+        params[0] = disabled;
+        params[1] = hierarhic;
+        animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::DisabledAnimationCallback, (void*)params));
+        animation->Start(track);
+        return animation;
+    }
+
+    void UIControl::VisibleAnimationCallback( BaseObject * caller, void * param, void *callerData )
+    {
+        bool visible = ( pointer_size(param) > 0 );
+        SetVisible(visible);
+    }
+
+    Animation * UIControl::VisibleAnimation(bool visible, int32 track/* = 0*/)
     {
         Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
-        animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::RecursiveVisibleAnimationCallback, (void*)(pointer_size)visible));
+        animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::VisibleAnimationCallback, (void*)(pointer_size)visible));
         animation->Start(track);
         return animation;
     }
@@ -2627,25 +2518,25 @@ namespace DAVA
         }
     }
 
-    Animation *	UIControl::RemoveControlAnimation(int32 track)
+    Animation * UIControl::RemoveControlAnimation(int32 track)
     {
         Animation * animation = new Animation(this, 0.01f, Interpolation::LINEAR);
         animation->AddEvent(Animation::EVENT_ANIMATION_START, Message(this, &UIControl::RemoveControlAnimationCallback));
         animation->Start(track);
         return animation;
     }
-	
-    Animation *	 UIControl::ColorAnimation(const Color & finalColor, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
+
+    Animation * UIControl::ColorAnimation(const Color & finalColor, float32 time, Interpolation::FuncType interpolationFunc, int32 track)
     {
         LinearAnimation<Color> * animation = new LinearAnimation<Color>(this, &background->color, finalColor, time, interpolationFunc);
         animation->Start(track);
         return animation;
     }
 
-	void UIControl::OnAllAnimationsFinished()
-	{
-		PerformEvent(UIControl::EVENT_ALL_ANIMATIONS_FINISHED);
-	}
+    void UIControl::OnAllAnimationsFinished()
+    {
+        PerformEvent(UIControl::EVENT_ALL_ANIMATIONS_FINISHED);
+    }
 	
     void UIControl::SetDebugDraw(bool _debugDrawEnabled, bool hierarchic/* = false*/)
     {
@@ -2717,11 +2608,11 @@ namespace DAVA
             pivotPoint = GetSize()/2.f;
         }
     }
-	
+
     void UIControl::RecalculateAlignProperties()
     {
         Rect controlRect = this->GetRect(false);
-	
+
         // Set left align property
         if (this->GetLeftAlignEnabled())
         {
@@ -2732,11 +2623,11 @@ namespace DAVA
         {
             topAlign = (int32)controlRect.y;
         }
-		
+
         UIControl *parent = this->GetParent();
         if (!parent)
             return;
-			
+
         // Set right align property
         if (this->GetRightAlignEnabled())
         {
@@ -2780,11 +2671,10 @@ namespace DAVA
             }
         }
     }
-	
+
     void UIControl::RecalculateChildsSize()
     {
-//		const List<UIControl*>& realChildren = this->GetRealChildren();
-        const List<UIControl*>& realChildren = this->GetChildren();	//YZ recalculate size for all controls
+        const List<UIControl*>& realChildren = this->GetChildren();//YZ recalculate size for all controls
         for(List<UIControl*>::const_iterator iter = realChildren.begin(); iter != realChildren.end(); ++iter)
         {
             UIControl* child = (*iter);
@@ -2815,90 +2705,90 @@ namespace DAVA
             }
         }
     }
-	
+
     float32 UIControl::GetSizeX(UIControl *parent, int32 leftAlign, int32 rightAlign, bool useHalfParentSize /* = FALSE*/)
     {
         if (!parent)
             return 0;
-			
+
         float32 parentSize = useHalfParentSize ? Round(parent->GetSize().x / 2) : parent->GetSize().x;
         float32 size = abs(parentSize - leftAlign - rightAlign);
 
         return size;
     }
-	
+
     float32 UIControl::GetSizeY(UIControl *parent, int32 topAlign, int32 bottomAlign, bool useHalfParentSize /* = FALSE*/)
     {
         if (!parent)
             return 0;
-			
+
         float32 parentSize = useHalfParentSize ? Round(parent->GetSize().y / 2) : parent->GetSize().y;
         float32 size = abs(parentSize - topAlign - bottomAlign);
 
         return size;
     }
-	
+
     float32 UIControl::GetCenterX(UIControl *parent, int32 centerAlign, UIControl* child)
     {
         if (!parent || !child)
             return 0;
-			
-		float32 position = Round(parent->GetSize().x / 2) + centerAlign - Round(child->GetSize().x / 2);
-		
-		return position;
-	}
-	
+
+        float32 position = Round(parent->GetSize().x / 2) + centerAlign - Round(child->GetSize().x / 2);
+
+        return position;
+    }
+
     float32 UIControl::GetCenterY(UIControl *parent, int32 centerAlign, UIControl* child)
     {
         if (!parent || !child)
             return 0;
-			
-		float32 position = Round(parent->GetSize().y / 2) + centerAlign - Round(child->GetSize().y / 2);
-		
-		return position;
-	}
-	
-	float32 UIControl::GetRelativeX(UIControl *parent, int32 align)
-	{
-		if (!parent)
-			return (float32)align;
 
-		float32 position = Round(parent->GetSize().x / 2) + align;
-		
+        float32 position = Round(parent->GetSize().y / 2) + centerAlign - Round(child->GetSize().y / 2);
+
         return position;
     }
-	
-	float32 UIControl::GetRelativeX(UIControl *parent, int32 align, UIControl *child, bool useHalfParentSize /* = FALSE*/)
-	{
-		if (!parent || !child)
-			return (float32)align;
-			
-		float32 parentSize = useHalfParentSize ? Round(parent->GetSize().x / 2) : parent->GetSize().x;
-		float32 position = parentSize - align - child->GetSize().x;
-		
-		return position;
-	}
-	
+
+    float32 UIControl::GetRelativeX(UIControl *parent, int32 align)
+    {
+        if (!parent)
+            return (float32)align;
+
+        float32 position = Round(parent->GetSize().x / 2) + align;
+
+        return position;
+    }
+
+    float32 UIControl::GetRelativeX(UIControl *parent, int32 align, UIControl *child, bool useHalfParentSize /* = FALSE*/)
+    {
+        if (!parent || !child)
+            return (float32)align;
+
+        float32 parentSize = useHalfParentSize ? Round(parent->GetSize().x / 2) : parent->GetSize().x;
+        float32 position = parentSize - align - child->GetSize().x;
+
+        return position;
+    }
+
     float32 UIControl::GetRelativeY(UIControl *parent, int32 align)
     {
         if (!parent)
             return (float32)align;
-	
-		float32 position = Round(parent->GetSize().y / 2) + align;
-		
-		return position;
-	}
-	
-	float32 UIControl::GetRelativeY(UIControl *parent, int32 align, UIControl *child, bool useHalfParentSize /* = FALSE*/)
-	{
-		if (!parent || !child)
-			return (float32)align;
-			
+
+        float32 position = Round(parent->GetSize().y / 2) + align;
+
+        return position;
+    }
+
+    float32 UIControl::GetRelativeY(UIControl *parent, int32 align, UIControl *child, bool useHalfParentSize /* = FALSE*/)
+    {
+        if (!parent || !child)
+            return (float32)align;
+
         float32 parentSize = useHalfParentSize ? Round(parent->GetSize().y / 2) : parent->GetSize().y;
         float32 position = parentSize - align - child->GetSize().y;
-		
-		return position;
-	}
+
+        return position;
+    }
 
     void UIControl::RecalculatePivotPoint(const Rect &newRect)
     {
@@ -2909,8 +2799,8 @@ namespace DAVA
             float32 xMultiup = pivotPoint.x / oldRect.dx;
             float32 yMultiup = pivotPoint.y / oldRect.dy;
 
-            pivotPoint.x = Round(xMultiup * newRect.dx);
-            pivotPoint.y = Round(yMultiup * newRect.dy);
+            pivotPoint.x = xMultiup * newRect.dx;
+            pivotPoint.y = yMultiup * newRect.dy;
         }
     }
 
@@ -2918,22 +2808,22 @@ namespace DAVA
     {
         RecalculateChildsSize();
     }
-	
-	String UIControl::GetCustomControlType() const
-	{
-		return customControlType;
-	}
 
-	void UIControl::SetCustomControlType(const String& value)
-	{
-		customControlType = value;
-	}
+    const String &UIControl::GetCustomControlType() const
+    {
+        return customControlType;
+    }
+
+    void UIControl::SetCustomControlType(const String& value)
+    {
+        customControlType = value;
+    }
 
     void UIControl::ResetCustomControlType()
     {
         customControlType = String();
     }
-	
+
     void UIControl::SetPreferredNodeType(YamlNode* node, const String& nodeTypeName)
     {
         // Do we have Custom Control name? If yes, use it as type and passed one
@@ -2959,5 +2849,69 @@ namespace DAVA
     void UIControl::SetInitialState(int32 newState)
     {
         initialState = newState;
+    }
+
+    void UIControl::RegisterInputProcessor()
+    {
+        inputProcessorsCount++;
+        if (parent)
+        {
+            parent->RegisterInputProcessor();
+        }
+    }
+
+    void UIControl::RegisterInputProcessors(int32 processorsCount)
+    {
+        inputProcessorsCount += processorsCount;
+        if (parent)
+        {
+            parent->RegisterInputProcessors(processorsCount);
+        }
+    }
+
+    void UIControl::UnregisterInputProcessor()
+    {
+        inputProcessorsCount--;
+        DVASSERT(inputProcessorsCount >= 0);
+        if (parent)
+        {
+            parent->UnregisterInputProcessor();
+        }
+    }
+    void UIControl::UnregisterInputProcessors(int32 processorsCount)
+    {
+        inputProcessorsCount -= processorsCount;
+        DVASSERT(inputProcessorsCount >= 0);
+        if (parent)
+        {
+            parent->UnregisterInputProcessors(processorsCount);
+        }
+    }
+
+    void UIControl::DumpInputs(int32 depthLevel)
+    {
+        String outStr;
+        for (int32 i = 0; i < depthLevel; i++)
+        {
+            outStr += "| ";
+        }
+        outStr += "\\-";
+        outStr += name;
+        if (inputProcessorsCount > 0)
+        {
+            outStr += " ";
+            outStr += Format("%d", inputProcessorsCount);
+        }
+
+        if (inputEnabled)
+        {
+            outStr += " ***";
+        }
+        Logger::Info("%s", outStr.c_str());
+        List<UIControl*>::iterator it = childs.begin();
+        for(; it != childs.end(); ++it)
+        {
+            (*it)->DumpInputs(depthLevel + 1);
+        }
     }
 }
