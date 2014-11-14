@@ -53,7 +53,6 @@ class Font;
 
 class UIYamlLoader : public BaseObject
 {
-    friend class UIPackageLoader;
 protected:
     ~UIYamlLoader(){}
     UIYamlLoader();
@@ -109,6 +108,8 @@ public:
     YamlNode * GetFittingOptionNodeValue(int32 fitting) const;
 
     void AddScrollBarToLink(UIScrollBar* scroll,const String& delegatePath);
+    static String GetControlPath(const UIControl* conrol);
+    static UIControl* GetControlByPath(const String& controlPath, UIControl* rootControl);
 
     inline bool GetAssertIfCustomControlNotFound() const;
 

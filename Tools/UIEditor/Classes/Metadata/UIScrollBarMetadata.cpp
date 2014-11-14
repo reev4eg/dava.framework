@@ -28,7 +28,6 @@
 
 #include "UIScrollBarMetadata.h"
 #include "HierarchyTreeController.h"
-#include "UI/UIControlHelpers.h"
 
 namespace DAVA {
 
@@ -82,7 +81,7 @@ QString UIScrollBarMetadata::GetUIScrollBarDelegateName()
         return "";
     }
     
-    return QString::fromStdString(GetActiveUIScrollBar()->GetDelegatePath(NULL));
+    return QString::fromStdString(GetActiveUIScrollBar()->GetDelegatePath());
 }
 
 void UIScrollBarMetadata::SetUIScrollBarDelegateName(const QString& value)
@@ -93,7 +92,7 @@ void UIScrollBarMetadata::SetUIScrollBarDelegateName(const QString& value)
     }
     String name = value.toStdString();
     UIControl * rootControl = HierarchyTreeController::Instance()->GetActiveScreen()->GetScreen();
-    UIControl * delegate = UIControlHelpers::GetControlByPath(name, rootControl);
+    UIControl * delegate = UIYamlLoader::GetControlByPath(name, rootControl);
     GetActiveUIScrollBar()->SetDelegate( dynamic_cast<UIScrollBarDelegate*>(delegate));
 }
 

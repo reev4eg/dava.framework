@@ -105,9 +105,8 @@ namespace DAVA
     {
         YamlNode *node = UIButton::SaveToYamlNode(loader);
 
-        ScopedPtr<UIListCell> baseControl(new UIListCell());
         //Identifier
-        if (baseControl->GetIdentifier() != GetIdentifier())
+        if( !GetIdentifier().empty() )
         {
             node->Set("identifier", GetIdentifier());
         }

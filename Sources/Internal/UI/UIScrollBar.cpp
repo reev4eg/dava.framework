@@ -30,9 +30,10 @@
 
 #include "UI/UIScrollBar.h"
 #include "UI/UIEvent.h"
-#include "UI/UIControlHelpers.h"
-#include "UI/UIYamlLoader.h"
+#include "Base/ObjectFactory.h"
 #include "FileSystem/YamlNode.h"
+
+#include "UIYamlLoader.h"
 
 namespace DAVA 
 {
@@ -60,11 +61,11 @@ void UIScrollBar::SetDelegate(UIScrollBarDelegate *newDelegate)
     delegate = newDelegate;
 }
 
-const String UIScrollBar::GetDelegatePath(const UIControl *rootControl) const
+const String UIScrollBar::GetDelegatePath() const
 {
     if (delegate)
     {
-        return delegate->GetDelegateControlPath(rootControl);
+        return delegate->GetDelegateControlPath();
     } else
     {
         return "";
@@ -174,7 +175,7 @@ YamlNode * UIScrollBar::SaveToYamlNode(UIYamlLoader * loader)
 	String stringValue;
 
 	//Orientation
-	eScrollOrientation orient = (eScrollOrientation)GetOrientation();
+	eScrollOrientation orient = this->GetOrientation();
 	switch(orient)
 	{
 		case ORIENTATION_VERTICAL:
@@ -193,7 +194,7 @@ YamlNode * UIScrollBar::SaveToYamlNode(UIYamlLoader * loader)
     if (delegate)
     {
         UIControl* delegateControl = dynamic_cast<UIControl*>(delegate);
-        node->Set("linkedScrollBarDelegate", UIControlHelpers::GetControlPath(delegateControl));
+        node->Set("linkedScrollBarDelegate", UIYamlLoader::GetControlPath(delegateControl));
     }
     
     
@@ -368,14 +369,14 @@ void UIScrollBar::Draw(const UIGeometricData &geometricData)
     UIControl::Draw(geometricData);
 }
 
-int32 UIScrollBar::GetOrientation() const
+UIScrollBar::eScrollOrientation UIScrollBar::GetOrientation() const
 {
-	return orientation;
+	return (eScrollOrientation)orientation;
 }
 
-void UIScrollBar::SetOrientation(int32 value)
+void UIScrollBar::SetOrientation(eScrollOrientation value)
 {
-	orientation = (eScrollOrientation)value;
+	orientation = value;
 }
 
 float32 UIScrollBar::GetValidSliderSize(float32 size)

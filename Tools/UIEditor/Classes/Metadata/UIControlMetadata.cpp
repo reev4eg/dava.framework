@@ -974,7 +974,7 @@ QString UIControlMetadata::GetCustomControlName() const
 		return QString();
 	}
 	
-	return QString::fromStdString(GetActiveUIControl()->GetCustomControlClassName());
+	return QString::fromStdString(GetActiveUIControl()->GetCustomControlType());
 }
 	
 void UIControlMetadata::SetCustomControlName(const QString& value)
@@ -984,7 +984,14 @@ void UIControlMetadata::SetCustomControlName(const QString& value)
 		return;
 	}
 
-	GetActiveUIControl()->SetCustomControlClassName(value.toStdString());
+	if (value.isEmpty())
+	{
+		GetActiveUIControl()->ResetCustomControlType();
+	}
+	else
+	{
+		GetActiveUIControl()->SetCustomControlType(value.toStdString());
+	}
 }
 
 int UIControlMetadata::GetInitialState() const

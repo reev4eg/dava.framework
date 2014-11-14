@@ -129,7 +129,7 @@ protected:
 public:
     UISpinner(const Rect &rect = Rect(), bool rectInAbsoluteCoordinates = false);
 
-    SpinnerAdapter * GetAdater() const {return adapter;}
+    SpinnerAdapter * GetAdater() {return adapter;}
     void SetAdapter(SpinnerAdapter * adapter);
 
     virtual void LoadFromYamlNode(const YamlNode * node, UIYamlLoader * loader);
@@ -137,10 +137,10 @@ public:
     virtual void CopyDataFrom(UIControl *srcControl);
     virtual YamlNode * SaveToYamlNode(UIYamlLoader * loader);
 
-    UIButton * GetButtonNext() const {return buttonNext;}
-    UIButton * GetButtonPrevious() const {return buttonPrevious;}
+    UIButton * GetButtonNext() {return buttonNext;}
+    UIButton * GetButtonPrevious() {return buttonPrevious;}
     
-    UIControl * GetContent() const {return content;}
+    UIControl * GetContent() {return content;}
     
     /*
      * You have to call it if you change 'content' from code.

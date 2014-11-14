@@ -168,19 +168,6 @@ void JniTextField::SetTextAlign(int32_t align)
 	}
 }
 
-void JniTextField::SetTextUseRtlAlign(bool useRtlAlign)
-{
-	jmethodID mid = GetMethodID("SetTextUseRtlAlign", "(IZ)V");
-	if (mid)
-	{
-		GetEnvironment()->CallStaticVoidMethod(
-				GetJavaClass(),
-				mid,
-				id,
-				useRtlAlign);
-	}
-}
-
 void JniTextField::SetInputEnabled(bool value)
 {
 	jmethodID mid = GetMethodID("SetInputEnabled", "(IZ)V");
@@ -430,18 +417,6 @@ void UITextFieldAndroid::SetTextAlign(DAVA::int32 align)
 DAVA::int32 UITextFieldAndroid::GetTextAlign()
 {
 	return align;
-}
-
-void UITextFieldAndroid::SetTextUseRtlAlign(bool useRtlAlign)
-{
-	this->useRtlAlign = useRtlAlign;
-	JniTextField jniTextField(id);
-	jniTextField.SetTextUseRtlAlign(useRtlAlign);
-}
-
-bool UITextFieldAndroid::GetTextUseRtlAlign() const
-{
-	return useRtlAlign;
 }
 
 void UITextFieldAndroid::SetVisible(bool isVisible)

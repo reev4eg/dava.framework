@@ -180,7 +180,7 @@ void UIWebView::LoadFromYamlNode(const DAVA::YamlNode *node, DAVA::UIYamlLoader 
 
 YamlNode* UIWebView::SaveToYamlNode(DAVA::UIYamlLoader *loader)
 {
-    ScopedPtr<UIWebView> baseControl(new UIWebView());
+    UIWebView* baseControl = new UIWebView();
     YamlNode *node = UIControl::SaveToYamlNode(loader);
     
     // Data Detector Types.
@@ -189,6 +189,7 @@ YamlNode* UIWebView::SaveToYamlNode(DAVA::UIYamlLoader *loader)
         node->Set("dataDetectorTypes", GetDataDetectorTypes());
     }
     
+    SafeRelease(baseControl);
     return node;
 }
 
